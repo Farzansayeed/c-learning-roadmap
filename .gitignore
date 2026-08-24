@@ -1,2 +1,5 @@
 *.exe
 *.user
+.vercel
+.env*
+.vercel-cli-token
