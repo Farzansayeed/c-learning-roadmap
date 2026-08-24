@@ -46,7 +46,7 @@ Every `git push` auto-redeploys via Vercel.
 git clone https://github.com/Farzansayeed/c-learning-roadmap.git
 
 # open
-start roadmap-tracker.html   # or double-click it
+start index.html   # or double-click it
 ```
 
 Set your start date in ⚙ Settings, tick boxes in Today's list, log hours, and **Close the Day** before bedtime.
