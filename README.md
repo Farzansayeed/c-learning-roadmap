@@ -2,7 +2,13 @@
 
 A single-file, zero-dependency learning tracker for a C programming + Data Structures & Algorithms journey — with a personality that fights back.
 
-**Live app:** just open `roadmap-tracker.html` in any modern browser. No install, no server, no internet required.
+**Live app:** open `index.html` in any modern browser — or hit **Live URL** below. No install, no server, works offline.
+
+## Live
+
+🔗 **https://c-learning-roadmap-farzan4.vercel.app**
+
+Every `git push` auto-redeploys via Vercel.
 
 ## Features
 
