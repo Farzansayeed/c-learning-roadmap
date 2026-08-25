@@ -120,6 +120,9 @@ a{color:inherit;text-decoration:none}
 .stat b{display:block;font-family:var(--font-display);font-size:22px;font-weight:600;letter-spacing:-.3px;color:var(--ink,#262b36)}
 [data-theme="dark"] .stat b{color:var(--text)}
 .stat span{font-size:11.5px;color:var(--muted);font-weight:600}
+#statRank b{font-size:15px;line-height:1.15;white-space:normal}
+#statRankSub{font-size:10px;letter-spacing:.3px;font-variant-numeric:tabular-nums;margin-top:3px}
+.dread-chip{min-width:104px}
 .stat.warn b{color:var(--pRoseT)}
 .stat.warn span{color:var(--pRoseT)}
 .xpbar{height:5px;border-radius:99px;background:var(--bg);margin-top:7px;overflow:hidden;border:1px solid color-mix(in srgb,var(--line) 30%,transparent)}
@@ -470,6 +473,8 @@ body.corrupted .logo{background:linear-gradient(160deg,#7f1d1d,#450a0a);color:#f
 .stamp.SHAKY{color:var(--pPeachT)} .stamp.ABYSMAL{color:var(--danger)} .stamp.EARLY{color:var(--muted)}
 .tb-line{text-align:center;font-style:italic;font-size:15px;color:var(--text);margin:0 0 10px;line-height:1.5}
 .tb-msg{text-align:center;font-size:12.5px;color:var(--muted);margin:0 0 16px}
+.stamp.RESTED{color:#c9a227}
+.verdict-badge.rest{background:var(--bg);color:#c9a227;border-color:#c9a227}
 [data-theme="dark"] .stamp.FLAWLESS{color:#ffd700}
 
 /* ═══ Streak Insurance ═══ */
@@ -526,7 +531,11 @@ body.dread-5 .brand h1{text-shadow:0 0 12px rgba(239,68,68,.6)}
 @keyframes pulseDot{50%{opacity:.25}}
 .mini-timer{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace;font-weight:600;font-size:13px;color:var(--good);white-space:nowrap;align-self:center}
 @media(max-width:640px){
-  .hero{padding:22px 16px}
+.hero-stats{grid-template-columns:repeat(auto-fit,minmax(104px,1fr))}
+#statRank b{font-size:13px}
+#statRankSub{font-size:9px}
+.dread-chip{min-width:auto;padding:7px 10px}
+.hero{padding:22px 16px}
   .stage-head{gap:11px;padding:14px 15px}
   .stage-pad{padding:4px 16px 18px}
   .num{width:40px;height:40px}
@@ -577,7 +586,7 @@ body.dread-5 .brand h1{text-shadow:0 0 12px rgba(239,68,68,.6)}
       <div class="stat"><b id="statStages">0/13</b><span>stages cleared</span></div>
       <div class="stat"><b id="statMile">0/4</b><span>milestones built</span></div>
       <div class="stat" id="statProj" title=""><b id="statProjDate">—</b><span id="statProjSub">projection</span></div>
-<div class="stat" id="statRank"><b id="statRankName">Script Kiddie</b><span id="statRankSub">0 XP</span><div class="xpbar"><i id="statRankBar"></i></div></div>
+<div class="stat" id="statRank" title=""><b id="statRankName">Script Kiddie</b><div class="xpbar"><i id="statRankBar"></i></div><span id="statRankSub">0 XP</span></div>
     </div>
     <div class="rhythm">
       <h3>Weekly Rhythm</h3>
@@ -1515,10 +1524,10 @@ function renderDaily(){
       '<span class="target-chip">TARGET '+target+' H TODAY</span>'+
     '</div>'+
     '<div class="dh-week">This week <b>'+weekH.toFixed(1)+' h</b><br>All time <b>'+totH.toFixed(1)+' h</b></div>'+
-    '<div class="dread-chip" title="'+DREAD.flavor[dreadLevel()]+'">'+
+    '<div class="dread-chip" title="'+DREAD.names[dreadLevel()]+' — '+DREAD.flavor[dreadLevel()]+' | P = pardon tokens held · R = rest tokens held">'+
       '<span class="dc-name">'+DREAD.names[dreadLevel()]+'</span>'+
       '<span class="dc-bar"><i style="width:'+(dreadLevel()/5*100)+'%"></i></span>'+
-      '<span class="dc-sub">DREAD '+dreadLevel()+'/5 · PARDONS '+state.pardons+' · REST '+state.restTokens+'</span>'+
+      '<span class="dc-sub">P'+state.pardons+' · R'+state.restTokens+'</span>'+
     '</div>'+
     '<div class="streak-clay"><b>'+ICON_FLAME+nbsp0(streak)+'</b><span>day streak</span></div>'+
     '<button class="icon-btn" id="tribunalBtn" title="Weekly tribunal">'+ICON_SCALES+'</button>'+
@@ -1620,10 +1629,13 @@ function hoursBarHtml(k,target){
     '<span class="hours-num">'+h.toFixed(1)+' / '+target+' h</span>';
 }
 function verdictBadgeHtml(k){
-  const v=state.badLog[k]||{};
-  const pass=v.verdict==='pass';
-  return '<div style="margin-top:14px"><span class="verdict-badge '+(pass?'pass':'fail')+'">'+
-    (pass?'DAY PASSED':'DAY FAILED')+' · '+(v.hours!=null?v.hours.toFixed(1):'?')+' / '+v.target+' h</span></div>';
+const v=state.badLog[k]||{};
+if(v.verdict==='rest'){
+return '<div style="margin-top:14px"><span class="verdict-badge rest">REST DAY · '+(v.hours!=null?v.hours.toFixed(1):'0')+' h logged</span></div>';
+}
+const pass=v.verdict==='pass';
+return '<div style="margin-top:14px"><span class="verdict-badge '+(pass?'pass':'fail')+'">'+
+(pass?'DAY PASSED':'DAY FAILED')+' · '+(v.hours!=null?v.hours.toFixed(1):'?')+' / '+v.target+' h</span></div>';
 }
 function elapsedMin(){
   const t=state.timer;
@@ -1813,7 +1825,7 @@ function recalcAll(){
   const span=nxt?Math.max(1,nxt[1]-floorXp):1;
   const prog=Math.max(0,Math.min(100,((state.xp-floorXp)/span)*100));
   $('#statRankBar').style.width=(nxt?prog:100)+'%';
-  $('#statRankSub').textContent=nxt?(state.xp+' / '+nxt[1]+' XP → '+nxt[0]):('MAX RANK · '+state.xp+' XP');
+  $('#statRankSub').textContent=nxt?(state.xp+' / '+nxt[1]+' XP'):('MAX · '+state.xp+' XP');
   const pr=computeProjection(stats);
   const el=$('#statProj'),pd=$('#statProjDate'),ps=$('#statProjSub');
   if(!el) return;
@@ -1989,12 +2001,15 @@ function closeDay(k){
   }
 }
 function reopenDay(k){
-  if(k!==dateKey(new Date())) return false;
-  delete state.closedDays[k];
-  delete state.badLog[k];
-  save();
-  renderDaily(); renderTimeline();
-  return true;
+if(k!==dateKey(new Date())) return false;
+const bl=state.badLog[k]||{};
+delete state.closedDays[k];
+delete state.badLog[k];
+if(bl.verdict==='rest') state.restTokens=Math.min(2,state.restTokens+1);
+else if(bl.pardoned) state.pardons=Math.min(3,state.pardons+1);
+save();
+renderDaily(); renderTimeline();
+return true;
 }
 
 function openRoast(k,autoMissed){
@@ -2381,7 +2396,7 @@ setTimeout(openTribunal,700);
    Living contract: any feature update MUST sync its group below, bump the
    group's `updated` stamp and APP_VERSION. Coverage table advertises neglect.
    Never remove this block. */
-const APP_VERSION='2.8.0';
+const APP_VERSION='2.8.1';
 const FEATURE_COVERAGE=[
  {id:'schedule-debt',label:'Debt-aware scheduling',group:'core-schedule'},
  {id:'postpone',label:'Postpone / Revert / Resume',group:'handler-pipeline'},
@@ -2906,7 +2921,29 @@ const GUARDIAN={groups:{
      renderDaily(); renderTimeline();
      const tl=document.querySelector('#timeline .dc-status.rest')||document.querySelector('.dc-status.rest');
      const hm=document.querySelector('.hm-cell.rest');
-     if(!tl&&!hm) throw new Error('no rest pill anywhere'); return true;}]
+     if(!tl&&!hm) throw new Error('no rest pill anywhere'); return true;}],
+   ['R9 resume after rest refunds token',function(){
+     const tk=dateKey(new Date());
+     state.startDate=tk; state.checked={}; state.postponed={};
+     state.closedDays={}; state.badLog={}; state.hours={};
+     SCHEDULE=buildSchedule();
+     state.restTokens=1; state.hours[tk]=0.5;
+     burnRest(tk);
+     if(state.restTokens!==0) throw new Error('burn failed');
+     reopenDay(tk);
+     if(state.restTokens!==1) throw new Error('refund '+state.restTokens); return true;}],
+   ['R10 resume after pardoned fail refunds pardon',function(){
+     const tk=dateKey(new Date());
+     state.pardons=0; state.closedDays[tk]=true;
+     state.badLog[tk]={verdict:'fail',pardoned:true,hours:0,target:3,dodged:1,total:1,closedAt:'00:00'};
+     reopenDay(tk);
+     if(state.pardons!==1) throw new Error('pardon refund'); return true;}],
+   ['R11 rest day renders REST badge, not FAILED',function(){
+     const tk=dateKey(new Date());
+     state.closedDays[tk]=true; state.badLog[tk]={verdict:'rest'};
+     const html=verdictBadgeHtml(tk);
+     if(html.indexOf('REST DAY')<0) throw new Error('missing REST DAY');
+     if(html.indexOf('DAY FAILED')>=0) throw new Error('FAILED leaked'); return true;}],
  ]},'state-schema':{updated:'2026-08-24',tests:[
    ['ST1 defaults carry guardian-era fields',function(){
      const d=DEFAULT_STATE();
