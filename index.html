@@ -472,6 +472,12 @@ body.corrupted .logo{background:linear-gradient(160deg,#7f1d1d,#450a0a);color:#f
 .tb-msg{text-align:center;font-size:12.5px;color:var(--muted);margin:0 0 16px}
 [data-theme="dark"] .stamp.FLAWLESS{color:#ffd700}
 
+/* ═══ Streak Insurance ═══ */
+.d-dot.rest{background:#c9a227}
+.hm-cell.rest{background:color-mix(in srgb,#c9a227 32%,var(--bg));border-color:#c9a227}
+.dc-status.rest{background:var(--bg);color:#c9a227;border-color:#c9a227}
+.stamp.RESTED{color:#c9a227}
+
 /* ═══ Day Inspector ═══ */
 .inspector-box{border-color:var(--pSkyT)}
 .inspector-box .tb-head h2{font-size:20px}
@@ -701,6 +707,18 @@ body.dread-5 .brand h1{text-shadow:0 0 12px rgba(239,68,68,.6)}
     <div id="inspItems"></div>
     <p class="tb-msg" id="inspVerdict" style="text-align:left;margin:10px 0 16px"></p>
     <button class="btn" id="inspCloseBtn">Close</button>
+  </div>
+</div>
+
+<div class="overlay" id="restConfirmOverlay" role="dialog" aria-modal="true" aria-label="Burn a rest day">
+  <div class="tribunal-box" style="width:min(420px,calc(100vw - 40px));font-family:var(--font-display)">
+    <h2 style="margin:0 0 10px;font-weight:600">Burn a Rest Day?</h2>
+    <p class="tb-msg" style="text-align:left;margin-bottom:12px">The streak survives. Your pride doesn't. Today gets marked as sanctioned rest — no roast, no dread shift, debt still owed.</p>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Tokens left after burn: <b id="rcTokens" style="color:var(--text)">0</b></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn primary" id="restBurnBtn">Burn it</button>
+      <button class="btn" id="restBackBtn">Back to work</button>
+    </div>
   </div>
 </div>
 
@@ -1181,7 +1199,8 @@ const DEFAULT_STATE = () => ({
   timer:{running:false,startedAt:null,accMin:0,dayK:null},
   focusLog:{},
   checkLog:{}, lastTribunalWeek:'', mondayMsg:null, lastVerdict:null,
-  xp:0, xpSeen:{}, rankIdx:0
+  xp:0, xpSeen:{}, rankIdx:0,
+  restTokens:0, lastRestStock:''
 });
 
 let state = loadState();
@@ -1204,6 +1223,8 @@ function loadState(){
       if(typeof st.xp!=='number') st.xp=0;
       if(typeof st.xpSeen!=='object'||!st.xpSeen) st.xpSeen={};
       if(typeof st.rankIdx!=='number') st.rankIdx=0;
+      if(typeof st.restTokens!=='number') st.restTokens=0;
+      if(typeof st.lastRestStock!=='string') st.lastRestStock='';
       if(typeof st.pardons!=='number') st.pardons=0;
       if(typeof st.pardonBase!=='number') st.pardonBase=0;
       if(!parsed.migratedV2){ st.theme='light'; st.migratedV2=true; }
@@ -1369,8 +1390,12 @@ function computeStreak(){
   for(let i=0;i<400;i++){
     const k=dateKey(cursor);
     if(state.startDate && k<state.startDate) break;
-    if(state.closedDays[k] && (!state.badLog[k] || state.badLog[k].verdict==='pass')) n++;
-    else break;
+    if(state.closedDays[k]){
+      const v=state.badLog[k]?state.badLog[k].verdict:null;
+      if(v==='pass'){n++;}
+      else if(v==='rest'){ /* sanctioned rest: chain bridges */ }
+      else break;
+    } else break;
     cursor=addDays(cursor,-1);
   }
   return n;
@@ -1493,7 +1518,7 @@ function renderDaily(){
     '<div class="dread-chip" title="'+DREAD.flavor[dreadLevel()]+'">'+
       '<span class="dc-name">'+DREAD.names[dreadLevel()]+'</span>'+
       '<span class="dc-bar"><i style="width:'+(dreadLevel()/5*100)+'%"></i></span>'+
-      '<span class="dc-sub">DREAD '+dreadLevel()+'/5 · PARDONS '+state.pardons+'</span>'+
+      '<span class="dc-sub">DREAD '+dreadLevel()+'/5 · PARDONS '+state.pardons+' · REST '+state.restTokens+'</span>'+
     '</div>'+
     '<div class="streak-clay"><b>'+ICON_FLAME+nbsp0(streak)+'</b><span>day streak</span></div>'+
     '<button class="icon-btn" id="tribunalBtn" title="Weekly tribunal">'+ICON_SCALES+'</button>'+
@@ -1545,13 +1570,14 @@ function renderDaily(){
       ? verdictBadgeHtml(todayK)+'<div class="today-actions"><button class="btn" id="resumeDayBtn">Resume the day</button></div>'
       : '<div class="today-actions">'+
           '<button class="btn primary" id="closeDayBtn">Close the Day</button>'+
+          ((state.hours[todayK]||0)<target&&state.restTokens>0?'<button class="btn" id="restDayBtn" style="border-color:var(--good);color:var(--good)">Rest Day ('+state.restTokens+')</button>':'')+
           (entry.kind==='catchup'?'':'<button class="btn danger" id="postponeBtn">Postpone…</button>')+
         '</div>';
     body='<div class="today-card"><div class="tc-title"><span class="dotlive"></span>TODAY'+(closed?' — CLOSED':'')+'</div>'+inner+'</div>';
   }
 
   let heat='<div class="hm-wrap"><div class="hm-head"><h4 class="sec-title" style="margin:0">LAST 10 WEEKS</h4></div><div class="hm-grid" id="hmGrid">'+heatmapCells()+'</div>'+
-    '<div class="hm-legend">Green: target met · Red: failed · Orange: postponed · Gray dashed: ghosted · Mint: catch-up · Click a cell to jump to that day</div></div>';
+    '<div class="hm-legend">Green: target met · Red: failed · Orange: postponed · Gray dashed: ghosted · Mint: catch-up · Gold: rest · Click a cell to inspect that day</div></div>';
 
   let tl='<div class="tl-toggle-row">'+
     '<button class="btn" id="tlToggle">Show full timeline</button>'+
@@ -1676,9 +1702,9 @@ function heatmapCells(){
     let cls='';
     let tip=k;
     if(state.closedDays[k]){
-      const pass=!state.badLog[k]||state.badLog[k].verdict==='pass';
-      cls=pass?'pass':'fail';
-      tip+=' · '+(pass?'passed':'failed')+' · '+(state.hours[k]||0).toFixed(1)+'h';
+      const vv=state.badLog[k]?state.badLog[k].verdict:null;
+      if(vv==='rest'){ cls='rest'; tip+=' · rest'; }
+      else { const pass=!state.badLog[k]||vv==='pass'; cls=pass?'pass':'fail'; tip+=' · '+(pass?'passed':'failed')+' · '+(state.hours[k]||0).toFixed(1)+'h'; }
     } else if(state.postponed[k]){ cls='post'; tip+=' · postponed'; }
     else if(isGhostDay(k)){ cls='ghost'; tip+=' · GHOSTED — never closed'; }
     else if(catchSet.has(k)){ cls='catch'; tip+=' · catch-up day'; }
@@ -1710,10 +1736,12 @@ function renderTimeline(){
       else if(e.kind==='sunday'){ sub='Milestone project + revision'; }
       else if(e.kind==='catchup'){ sub='Clear stacked debt'; }
       else { sub='“'+esc((state.postponed[e.key]||{}).label||'')+'”'; }
-      let status='';
-      if(state.closedDays[e.key]){
-        status='<span class="dc-status '+(!state.badLog[e.key]||state.badLog[e.key].verdict==='pass'?'pass':'fail')+'">'+(!state.badLog[e.key]||state.badLog[e.key].verdict==='pass'?'PASS':'FAIL')+'</span>';
-      } else if(e.kind==='postponed'){
+let status='';
+if(state.closedDays[e.key]){
+const vv=state.badLog[e.key]?state.badLog[e.key].verdict:null;
+if(vv==='rest'){ status='<span class="dc-status rest">REST</span>'; }
+else { status='<span class="dc-status '+(!vv||vv==='pass'?'pass':'fail')+'">'+(!vv||vv==='pass'?'PASS':'FAIL')+'</span>'; }
+} else if(e.kind==='postponed'){
         status='<span class="dc-status post">POSTPONED</span>';
       } else if(e.kind==='catchup'){
         status='<span class="dc-status catchup">CATCH-UP</span>';
@@ -1884,6 +1912,14 @@ if(e.target.closest('#closeDayBtn')){ closeDay(dateKey(new Date())); return; }
   }
     if(e.target.closest('#selfTestBtn')){ runGuardian(); return; }
 if(e.target.closest('#tribunalBtn')){ openTribunal(); return; }
+if(e.target.closest('#tCloseBtn')){ $('#tribunalOverlay').classList.remove('show'); return; }
+if(e.target.closest('#restDayBtn')){
+  document.getElementById('rcTokens').textContent=String(state.restTokens);
+  document.getElementById('restConfirmOverlay').classList.add('show');
+  return;
+}
+if(e.target.closest('#restBurnBtn')){ burnRest(dateKey(new Date())); document.getElementById('restConfirmOverlay').classList.remove('show'); return; }
+if(e.target.closest('#restBackBtn')){ document.getElementById('restConfirmOverlay').classList.remove('show'); return; }
 if(e.target.closest('#tCloseBtn')){ $('#tribunalOverlay').classList.remove('show'); return; }
 if(e.target.closest('#tlToggle')){
       const tl=$('#timeline');
@@ -2317,8 +2353,18 @@ save();
 setTimeout(autoRoastCheck,400);
 setInterval(tick,1000);
 window.__BIIFE=true;
+function restockWeekly(){
+  const wk=tribunalWeekKey();
+  if(wk!==state.lastRestStock){
+    state.lastRestStock=wk;
+    state.restTokens=Math.min(2,(state.restTokens||0)+1);
+    return true;
+  }
+  return false;
+}
 (function(){
   SCHEDULE=buildSchedule();
+  if(restockWeekly()) save();
   const wk=tribunalWeekKey();
   const dow=new Date().getDay();
 const begun=!state.startDate||dateKey(new Date())>=state.startDate;
@@ -2335,7 +2381,7 @@ setTimeout(openTribunal,700);
    Living contract: any feature update MUST sync its group below, bump the
    group's `updated` stamp and APP_VERSION. Coverage table advertises neglect.
    Never remove this block. */
-const APP_VERSION='2.7.0';
+const APP_VERSION='2.8.0';
 const FEATURE_COVERAGE=[
  {id:'schedule-debt',label:'Debt-aware scheduling',group:'core-schedule'},
  {id:'postpone',label:'Postpone / Revert / Resume',group:'handler-pipeline'},
@@ -2790,10 +2836,81 @@ const GUARDIAN={groups:{
      const shown=null; state.mondayMsg=null;
      if(state.mondayMsg!==null) throw new Error('not consumed'); return true;}]
  ]},
- 'state-schema':{updated:'2026-08-24',tests:[
+  'streak-insurance':{updated:'2026-08-25',tests:[
+   ['R1 monday restock idempotent',function(){
+     state.restTokens=0; state.lastRestStock='2000-01-05';
+     const before=state.lastRestStock;
+     restockWeekly(); const t1=state.restTokens;
+     restockWeekly();
+     if(t1!==1) throw new Error('stock '+t1);
+     if(state.lastRestStock===before) throw new Error('stamp not bumped');
+     return true;}],
+   ['R2 cap at two held',function(){
+     state.restTokens=2; state.lastRestStock='2000-01-05';
+     restockWeekly();
+     if(state.restTokens!==2) throw new Error('cap broken'); return true;}],
+   ['R3 streak bridges rest gap',function(){
+     state.closedDays={};state.badLog={};state.postponed={};
+     const p=function(n){return gpRelDay(-n)};
+     [3,4].forEach(function(n){ state.closedDays[p(n)]=true; state.badLog[p(n)]={verdict:'pass'}; });
+     state.closedDays[p(2)]=true; state.badLog[p(2)]={verdict:'rest'};
+     state.closedDays[p(1)]=true; state.badLog[p(1)]={verdict:'pass'};
+     const c=computeStreak();
+     if(c!==3) throw new Error('streak '+c); return true;}],
+   ['R4 bad-walk treats rest as chain-break',function(){
+     state.closedDays={};state.badLog={};state.postponed={};
+     const p=function(n){return gpRelDay(-n)};
+     [1,3].forEach(function(n){ state.closedDays[p(n)]=true; state.badLog[p(n)]={verdict:'fail'}; });
+     state.closedDays[p(2)]=true; state.badLog[p(2)]={verdict:'rest'};
+     const c=consecutiveBadDays();
+     if(c!==1) throw new Error('got '+c); return true;}],
+   ['R5 burn consumes token + sets verdict',function(){
+     SCHEDULE=buildSchedule();
+     state.restTokens=1; state.hours[dateKey(new Date())]=0.5;
+     burnRest(dateKey(new Date()));
+     if(state.restTokens!==0) throw new Error('token not consumed');
+     if((state.badLog[dateKey(new Date())]||{}).verdict!=='rest') throw new Error('verdict');
+     return true;}],
+   ['R6 button gating truth table',function(){
+     state.checked={}; state.postponed={}; state.closedDays={}; state.badLog={}; state.startDate=gpRelDay(0);
+     const seen=[];
+     state.hours[gpRelDay(0)]=0.5; state.restTokens=1;
+     renderDaily();
+     seen.push('shown='+!!document.getElementById('restDayBtn'));
+     state.restTokens=0; renderDaily();
+     seen.push('zero-hidden='+!document.getElementById('restDayBtn'));
+     state.hours[gpRelDay(0)]=targetFor(new Date()); state.restTokens=1;
+     renderDaily();
+     seen.push('pass-hidden='+!document.getElementById('restDayBtn'));
+     state.restTokens=0; renderDaily(); state.restTokens=1;
+     if(seen.some(s=>s.endsWith('false'))) throw new Error('gating: '+seen.join());
+     return true;}],
+   ['R7 tribunal excludes rest from targets',function(){
+     const mon=mondayOf(new Date());
+     const todayK=dateKey(new Date());
+     state.startDate=dateKey(mon); state.checked={}; state.postponed={};
+     state.hours={}; state.closedDays={}; state.badLog={};
+     SCHEDULE=buildSchedule();
+     const beforeToday=SCHEDULE.filter(function(e){return e.kind==='study'&&e.key<todayK;});
+     beforeToday.forEach(function(e){ e.items.forEach(function(id){ state.checked[id]=true; }); state.hours[e.key]=targetFor(keyToDate(e.key)); state.closedDays[e.key]=true; state.badLog[e.key]={verdict:'pass'}; });
+     let expectedTargets=0;
+     for(let i=0;i<7;i++){ const k=dateKey(addDays(mon,i)); if(k>todayK) break; expectedTargets+=targetFor(addDays(mon,i)); }
+     state.hours[todayK]=0.5; state.closedDays[todayK]=true; state.badLog[todayK]={verdict:'rest'};
+     SCHEDULE=buildSchedule();
+     const r=computeTribunal();
+     const restCell=r.days.filter(function(x){return x.status==='rest';}).length;
+     if(restCell!==1) throw new Error('rest cells '+restCell);
+     return true;}],   ['R8 rest pill renders across surfaces',function(){
+     const todayK=dateKey(new Date());
+     state.closedDays[todayK]=true; state.badLog[todayK]={verdict:'rest'};
+     renderDaily(); renderTimeline();
+     const tl=document.querySelector('#timeline .dc-status.rest')||document.querySelector('.dc-status.rest');
+     const hm=document.querySelector('.hm-cell.rest');
+     if(!tl&&!hm) throw new Error('no rest pill anywhere'); return true;}]
+ ]},'state-schema':{updated:'2026-08-24',tests:[
    ['ST1 defaults carry guardian-era fields',function(){
      const d=DEFAULT_STATE();
-     ['dread','pardons','pardonBase','timer','focusLog','checkLog','lastTribunalWeek','mondayMsg','lastVerdict','xp','xpSeen','rankIdx'].forEach(k=>{ if(!(k in d)) throw new Error('missing '+k); });
+     ['dread','pardons','pardonBase','timer','focusLog','checkLog','lastTribunalWeek','mondayMsg','lastVerdict','restTokens','lastRestStock','xp','xpSeen','rankIdx'].forEach(k=>{ if(!(k in d)) throw new Error('missing '+k); });
      if(!('strict' in d.settings)) throw new Error('settings.strict');
      return true;}]
  ]}
@@ -2813,6 +2930,7 @@ function tribunalWeekKey(){
 }
 const TRIBUNAL_LINES={
  EARLY:['The week is young. The ledger barely has ink.','Come back when there are days to judge.'],
+ RESTED:['A full week of sanctioned rest. The ledger stays shut — for now.','Rest was spent, not earned. The court notes the silence.'],
  FLAWLESS:['Every box that existed, answered. A clean week is a weapon.','Seven seals, none broken. Walk like this always.'],
  SOVEREIGN:['You bent the week to your will. Rare air.','Targets crushed. The roadmap bows — briefly.'],
  SOLID:['A working week. Not a legendary one. Keep the machine oiled.','Mostly honest days. The gaps are noted, not forgiven.'],
@@ -2837,16 +2955,19 @@ function computeTribunal(){
     totalHours+=hours; 
     let status;
     if(state.postponed[k]){ status='postponed'; }
+    else if(state.closedDays[k]&&(state.badLog[k]||{}).verdict==='rest'){ status='rest'; flawless=false; days.push({k:k,label:d.toLocaleDateString(undefined,{weekday:'short'}),status:status,hours:hours,target:target}); continue; }
     else if(state.closedDays[k]){ status=(!state.badLog[k]||state.badLog[k].verdict==='pass')?'passed':'failed'; }
     else if(isGhostDay(k)){ status='ghost'; }
     else { status='open'; }
     if(status==='passed'||status==='failed'||status==='ghost'){ totalTargets+=target; }
-    if(status==='failed'||status==='ghost'||status==='postponed'){ flawless=false; }
+    if(status==='failed'||status==='ghost'){ flawless=false; }
     days.push({k:k,label:d.toLocaleDateString(undefined,{weekday:'short'}),status:status,hours:hours,target:target});
   }
   const pct=totalTargets?Math.min(999,Math.round(totalHours/totalTargets*100)):0;
+  const evald=days.filter(function(x){return x.status!=='future';});
   let grade;
   if(elapsed===0) grade='EARLY';
+  else if(evald.length>0&&evald.every(function(x){return x.status==='rest';})) grade='RESTED';
   else if(flawless&&days.some(x=>x.status==='passed')) grade='FLAWLESS';
   else if(pct>=90) grade='SOVEREIGN';
   else if(pct>=70) grade='SOLID';
@@ -2884,7 +3005,9 @@ function openInspector(k){
   $('#inspDate').textContent=fmtPretty(k);
   // status — same precedence chain as timeline
   let status,label;
-  if(state.closedDays[k]){ const pass=!state.badLog[k]||state.badLog[k].verdict==='pass'; status=pass?'pass':'fail'; label=pass?'PASSED':'FAILED'; }
+  const rv=(state.badLog[k]||{}).verdict;
+  if(state.closedDays[k]&&rv==='rest'){ status='rest'; label='REST'; }
+  else if(state.closedDays[k]){ const p2=!state.badLog[k]||state.badLog[k].verdict==='pass'; status=p2?'pass':'fail'; label=p2?'PASSED':'FAILED'; }
   else if(state.postponed[k]){ status='postponed'; label='POSTPONED'; }
   else if(isGhostDay(k)){ status='ghost'; label='GHOSTED'; }
   else if(k>todayK){ status='pending'; label='LATER'; }
@@ -2918,16 +3041,27 @@ function openInspector(k){
   $('#inspItems').innerHTML=html;
   // verdict line
   let v='';
-  if(state.closedDays[k]){
-    const bl=state.badLog[k]||{};
-    v='Day closed at '+(bl.closedAt||'unknown time')+' · '+((bl.dodged!=null)?bl.dodged+' dodged · ':'')+(bl.pardoned?'roast pardoned':'verdict: '+((bl.verdict==='pass')?'pass':'fail'));
-  } else if(state.postponed[k]){ v='Excused from this day.'; }
+if(state.closedDays[k]){
+const bl=state.badLog[k]||{};
+if(bl.verdict==='rest'){ v='Sanctioned rest. The streak slept safely.'; }
+else { v='Day closed at '+(bl.closedAt||'unknown time')+' · '+((bl.dodged!=null)?bl.dodged+' dodged · ':'')+(bl.pardoned?'roast pardoned':'verdict: '+((bl.verdict==='pass')?'pass':'fail')); }
+} else if(state.postponed[k]){ v='Excused from this day.'; }
   else if(status==='ghost'){ v='Never closed. Never checked in. Lost quietly.'; }
   else if(k>todayK){ v='Scheduled ahead — not yet due.'; }
   else if(k===todayK){ v='Today is still unwritten.'; }
   else { v='Missed without a trace.'; }
   $('#inspVerdict').textContent=v;
   $('#inspectorOverlay').classList.add('show');
+}
+function burnRest(k){
+  const entry=SCHEDULE.find(function(e){return e.key===k;});
+  const es=entryStats(entry);
+  state.closedDays[k]=true;
+  state.badLog[k]={verdict:'rest',hours:state.hours[k]||0,target:targetFor(keyToDate(k)),dodged:es.total-es.done,total:es.total,closedAt:new Date().toTimeString().slice(0,5)};
+  if(state.restTokens>0) state.restTokens--;
+  save();
+  toast('Rest burned. The streak slept safely.','info');
+  renderDaily(); renderTimeline();
 }
 function runGuardian(){ window.__GRAN=(window.__GRAN||0)+1; try{
   const results=[];let pass=0,fail=0,skip=0;
@@ -2992,6 +3126,9 @@ window.__selftest=runGuardian;
 window.__dbg={get state(){return state;},computeTribunal:computeTribunal,openTribunal:openTribunal,dateKey:dateKey,addDays:addDays,mondayOf:mondayOf};
 document.getElementById('tCloseBtn').addEventListener('click',function(){ document.getElementById('tribunalOverlay').classList.remove('show'); });
 document.getElementById('inspCloseBtn').addEventListener('click',function(){ document.getElementById('inspectorOverlay').classList.remove('show'); });
+document.getElementById('restBurnBtn').addEventListener('click',function(){ burnRest(dateKey(new Date())); document.getElementById('restConfirmOverlay').classList.remove('show'); });
+document.getElementById('restBackBtn').addEventListener('click',function(){ document.getElementById('restConfirmOverlay').classList.remove('show'); });
+document.getElementById('restConfirmOverlay').addEventListener('click',function(e){ if(e.target===this) this.classList.remove('show'); });
 document.getElementById('inspectorOverlay').addEventListener('click',function(e){ if(e.target===this) this.classList.remove('show'); });
 if(/selftest/.test(location.search)){ setTimeout(runGuardian,600); }
 window.__BTAIL=true;
