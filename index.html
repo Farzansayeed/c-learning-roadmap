@@ -475,12 +475,27 @@ body.corrupted .logo{background:linear-gradient(160deg,#7f1d1d,#450a0a);color:#f
 .tb-msg{text-align:center;font-size:12.5px;color:var(--muted);margin:0 0 16px}
 .stamp.RESTED{color:#c9a227}
 .verdict-badge.rest{background:var(--bg);color:#c9a227;border-color:#c9a227}
-[data-theme="dark"] .stamp.FLAWLESS{color:#ffd700}
+body.nagmode #streakFlameWrap svg,body.nagmode .dread-chip{animation:pulseNag 1.1s infinite}
+@keyframes pulseNag{50%{filter:brightness(1.7)}}
+
+/* ═══ Bedtime Lockout — nag mode lockdown layer ═══ */
+body.nagmode::before{content:'';position:fixed;inset:0;z-index:44;background:rgba(5,5,12,.55);pointer-events:none}
+body.nagmode #dailyPanel{position:relative;z-index:45}
+body.nagmode .today-card{border-color:var(--danger);box-shadow:0 0 0 3px color-mix(in srgb,var(--danger) 30%,transparent),var(--shadow-hover);animation:nagPulse 2.4s ease infinite}
+@keyframes nagPulse{50%{border-color:var(--danger);box-shadow:0 0 0 6px color-mix(in srgb,var(--danger) 18%,transparent),var(--shadow-hover)}}
+#nagBanner{position:sticky;top:0;z-index:60;width:100%;background:color-mix(in srgb,var(--danger) 16%,var(--card));border-bottom:1.5px solid var(--danger);color:var(--danger);font-weight:800;font-size:11px;letter-spacing:1.2px;text-align:center;padding:8px 14px}
+#nagBanner[hidden]{display:none}
 #lateNightOverlay .tribunal-box{border-color:var(--danger)}
 #lnFlavor{font-family:var(--font-display);font-size:17px;line-height:1.55;color:var(--text);margin:0 0 18px}
 #lnAckBtn{background:var(--danger)!important;border-color:var(--danger)!important;color:#fff!important}
 #nagBanner{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--danger) 16%,var(--card));border-bottom:1.5px solid var(--danger);color:var(--danger);font-weight:800;font-size:11px;letter-spacing:1.2px;text-align:center;padding:8px 14px}
 #nagBanner[hidden]{display:none}
+body.nagmode #streakFlameWrap svg,body.nagmode .dread-chip{animation:pulseNag 1.1s infinite}
+@keyframes pulseNag{50%{filter:brightness(1.7)}}
+
+[data-theme="dark"] .stamp.FLAWLESS{color:#ffd700}
+
+/* ═══ Bedtime Lockout — nag mode lockdown layer ═══ */
 body.nagmode #streakFlameWrap svg,body.nagmode .dread-chip{animation:pulseNag 1.1s infinite}
 @keyframes pulseNag{50%{filter:brightness(1.7)}}
 
@@ -739,6 +754,18 @@ body.dread-5 .brand h1{text-shadow:0 0 12px rgba(239,68,68,.6)}
   </div>
 </div>
 
+  <div class="tribunal-box" style="width:min(460px,calc(100vw - 40px));border-color:var(--danger)">
+    <h2 style="margin:0 0 12px;font-weight:700;letter-spacing:2px;color:var(--danger)">GET TO BED.</h2>
+    <p id="lnFlavor" style="font-family:var(--font-display);font-size:17px;line-height:1.55;color:var(--text);margin:0 0 18px"></p>
+    <button class="btn primary" id="lnAckBtn" style="background:var(--danger);border-color:var(--danger);color:#fff">Fine. Going.</button>
+</div>
+
+
+  <div class="tribunal-box" style="width:min(460px,calc(100vw - 40px));border-color:var(--danger)">
+    <h2 style="margin:0 0 12px;font-weight:700;letter-spacing:2px;color:var(--danger)">GET TO BED.</h2>
+    <p id="lnFlavor" style="font-family:var(--font-display);font-size:17px;line-height:1.55;color:var(--text);margin:0 0 18px"></p>
+    <button class="btn primary" id="lnAckBtn" style="background:var(--danger);border-color:var(--danger);color:#fff">Fine. Going.</button>
+</div>
 <div class="overlay" id="lateNightOverlay" role="alertdialog" aria-modal="true" aria-label="Bedtime warning">
   <div class="tribunal-box" style="width:min(460px,calc(100vw - 40px));border-color:var(--danger)">
     <h2 style="margin:0 0 12px;font-weight:700;letter-spacing:2px;color:var(--danger)">GET TO BED.</h2>
@@ -747,15 +774,6 @@ body.dread-5 .brand h1{text-shadow:0 0 12px rgba(239,68,68,.6)}
   </div>
 </div>
 
-<div id="nagBanner" hidden>YOU STAYED UP PAST BEDTIME AND DELIVERED NOTHING — FIRST CHECKBOX CLEARS IT</div>
-
-<div class="overlay" id="lateNightOverlay" role="alertdialog" aria-modal="true" aria-label="Bedtime warning">
-  <div class="tribunal-box" style="width:min(460px,calc(100vw - 40px));border-color:var(--danger)">
-    <h2 style="margin:0 0 12px;font-weight:700;letter-spacing:2px;color:var(--danger)">GET TO BED.</h2>
-    <p id="lnFlavor" style="font-family:var(--font-display);font-size:17px;line-height:1.55;color:var(--text);margin:0 0 18px"></p>
-    <button class="btn primary" id="lnAckBtn" style="background:var(--danger);border-color:var(--danger);color:#fff">Fine. Going.</button>
-  </div>
-</div>
 <div class="roast-overlay" id="roastOverlay" role="alertdialog" aria-modal="true">
   <div class="roast-box">
     <div class="roast-tier" id="roastTier"></div>
