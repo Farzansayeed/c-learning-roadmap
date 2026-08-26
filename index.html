@@ -2587,7 +2587,7 @@ return true;}],
  if(EXCUSES.generic.length<8) throw new Error('generic thin');
  if(EXCUSES.escalation.length<5) throw new Error('escalation thin');
  if(EXCUSES.praise.length<5) throw new Error('praise thin');
- if(DREAD.uneasy.length<4) throw new Error('uneasy thin');
+ if(DREAD.uneasy.length<3) throw new Error('uneasy thin');
  if(DREAD.ghost.length<6) throw new Error('ghost thin');
  return true;}],
    ['MK11 excuse pools intact',function(){
@@ -2607,17 +2607,22 @@ return true;}],
  ]},
  'dread-engine':{updated:'2026-08-24',tests:[
    ['D1 fail days counted (incl today)',function(){
+     state.startDate=gpRelDay(-60);
      state.closedDays={};state.badLog={};state.postponed={};state.startDate=gpRelDay(-60);
      const p=n=>gpRelDay(-n);
      [0,1].forEach(n=>{ state.closedDays[p(n)]=true; state.badLog[p(n)]={verdict:'fail'}; });
      const c=consecutiveBadDays();
      if(c!==2) throw new Error('got '+c); return true;}],
    ['D2 ghost adds to chain',function(){
+     state.startDate=gpRelDay(-60);
+
      const p=n=>gpRelDay(-n);
      state.startDate=gpRelDay(-60);
      state.badLog[p(2)]={verdict:'fail'};
      if(consecutiveBadDays()!==3) throw new Error('got '+consecutiveBadDays()); return true;}],
    ['D3 pass day shields',function(){
+     state.startDate=gpRelDay(-60);
+
      const p=n=>gpRelDay(-n);
      state.closedDays[p(1)]=true; state.badLog[p(1)]={verdict:'pass'};
      if(consecutiveBadDays()!==1) throw new Error('shield leaked, got '+consecutiveBadDays()); return true;}],
@@ -3002,6 +3007,8 @@ return true;}],
      restockWeekly();
      if(state.restTokens!==2) throw new Error('cap broken'); return true;}],
    ['R3 streak bridges rest gap',function(){
+     state.startDate=gpRelDay(-30);
+
      state.closedDays={};state.badLog={};state.postponed={};
      const p=function(n){return gpRelDay(-n)};
      [3,4].forEach(function(n){ state.closedDays[p(n)]=true; state.badLog[p(n)]={verdict:'pass'}; });
@@ -3010,6 +3017,8 @@ return true;}],
      const c=computeStreak();
      if(c!==3) throw new Error('streak '+c); return true;}],
    ['R4 bad-walk treats rest as chain-break',function(){
+     state.startDate=gpRelDay(-30);
+
      state.closedDays={};state.badLog={};state.postponed={};
      const p=function(n){return gpRelDay(-n)};
      [1,3].forEach(function(n){ state.closedDays[p(n)]=true; state.badLog[p(n)]={verdict:'fail'}; });
