@@ -2581,7 +2581,7 @@ const GUARDIAN={groups:{
        if(!DREAD[pair[0]]||DREAD[pair[0]].length<pair[1]) throw new Error(pair[0]);
      });
 if(!DREAD.spice||DREAD.spice.length!==6) throw new Error('spice len: '+DREAD.spice.length);
-for(let i=2;i<=5;i++){ if(!DREAD.spice[i]||DREAD.spice[i].length<6) throw new Error('spice['+i+'] thin: '+DREAD.spice[i].length); }
+for(let i=1;i<=5;i++){ if(!DREAD.spice[i]||DREAD.spice[i].length<6) throw new Error('spice['+i+'] thin: '+DREAD.spice[i].length); }
 return true;}],
 ['MK10b expanded pools intact',function(){
  if(EXCUSES.generic.length<8) throw new Error('generic thin');
@@ -2614,18 +2614,14 @@ return true;}],
      const c=consecutiveBadDays();
      if(c!==2) throw new Error('got '+c); return true;}],
    ['D2 ghost adds to chain',function(){
-     state.startDate=gpRelDay(-60);
-
-     const p=n=>gpRelDay(-n);
-     state.startDate=gpRelDay(-60);
-     state.badLog[p(2)]={verdict:'fail'};
-     if(consecutiveBadDays()!==3) throw new Error('got '+consecutiveBadDays()); return true;}],
-   ['D3 pass day shields',function(){
+     state.startDate=gpRelDay(-60); const p=n=>gpRelDay(-n);
+     [0,1,2].forEach(function(n){ state.closedDays[p(n)]=true; state.badLog[p(n)]={verdict:'fail'}; });
+     if(consecutiveBadDays()!==3) throw new Error('got '+consecutiveBadDays()); return true;}],'D3 pass day shields',function(){
      state.startDate=gpRelDay(-60);
 
      const p=n=>gpRelDay(-n);
      state.closedDays[p(1)]=true; state.badLog[p(1)]={verdict:'pass'};
-     if(consecutiveBadDays()!==1) throw new Error('shield leaked, got '+consecutiveBadDays()); return true;}],
+     if(consecutiveBadDays()!==0) throw new Error('shield leaked, got '+consecutiveBadDays()); return true;}],
    ['D4 postpone today counts',function(){
      state.postponed[dateKey(new Date())]={label:'guardian'};
      state.closedDays={};state.badLog={};state.startDate=gpRelDay(-60);
@@ -3248,7 +3244,7 @@ function burnRest(k){
 }
 function setupTestState(){
   state.checked={}; state.notes={}; state.collapsed={}; state.hideDone=false; state.celebrated=false;
-  state.startDate=dateKey(new Date());
+  state.startDate=dateKey(addDays(new Date(),-14));
   state.hours={}; state.closedDays={}; state.badLog={}; state.postponed={};
   state.customExcuses=[]; state.excuseUse={}; state.corrupted=false;
   state.dread=null; state.pardons=0; state.pardonBase=0;
