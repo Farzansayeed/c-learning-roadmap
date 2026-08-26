@@ -569,6 +569,7 @@ body.dread-5 .brand h1{text-shadow:0 0 12px rgba(239,68,68,.6)}
       <h1>C × DSA Roadmap</h1>
       <p>Zero to data structures — one brutal day at a time</p>
     </div>
+<div id="nagBanner" hidden>YOU STAYED UP PAST BEDTIME AND DELIVERED NOTHING ? FIRST CHECKBOX CLEARS IT</div><div id="nagBanner" hidden>YOU STAYED UP PAST BEDTIME AND DELIVERED NOTHING — FIRST CHECKBOX CLEARS IT</div>
 <div class="topbar-actions">
 <span class="mini-timer" id="miniTimer"></span>
 <button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme"></button>
@@ -748,6 +749,13 @@ body.dread-5 .brand h1{text-shadow:0 0 12px rgba(239,68,68,.6)}
 
 <div id="nagBanner" hidden>YOU STAYED UP PAST BEDTIME AND DELIVERED NOTHING — FIRST CHECKBOX CLEARS IT</div>
 
+<div class="overlay" id="lateNightOverlay" role="alertdialog" aria-modal="true" aria-label="Bedtime warning">
+  <div class="tribunal-box" style="width:min(460px,calc(100vw - 40px));border-color:var(--danger)">
+    <h2 style="margin:0 0 12px;font-weight:700;letter-spacing:2px;color:var(--danger)">GET TO BED.</h2>
+    <p id="lnFlavor" style="font-family:var(--font-display);font-size:17px;line-height:1.55;color:var(--text);margin:0 0 18px"></p>
+    <button class="btn primary" id="lnAckBtn" style="background:var(--danger);border-color:var(--danger);color:#fff">Fine. Going.</button>
+  </div>
+</div>
 <div class="roast-overlay" id="roastOverlay" role="alertdialog" aria-modal="true">
   <div class="roast-box">
     <div class="roast-tier" id="roastTier"></div>
@@ -1188,7 +1196,8 @@ const DREAD = {
   uneasy:[
     'Clean close… though the entity checked the logs twice.',
     'Target met. Something exhaled, and it was not relief.',
-    'A good day. It hates good days. Good days starve it.'
+    'A good day. It hates good days. Good days starve it.',
+    'Flawless arithmetic. It suspects a second ledger exists somewhere.'
   ]
 };
 
@@ -1934,6 +1943,7 @@ function renderAll(){
   applyTheme();
   applyDread();
   updateNag();
+  updateNag();
   $('#stages').innerHTML=DATA.stages.map(renderStageCard).join('')+renderMilestoneCard();
   document.body.classList.toggle('hide-done',!!state.hideDone);
   const hb=$('#hideDoneBtn');
@@ -2461,6 +2471,34 @@ function updateNag(){
   const nb=document.getElementById('nagBanner'); if(nb) nb.hidden=!on;
   document.body.classList.toggle('nagmode',on);
 }
+function bedtimeViolated(now){
+  if(state.timer.running) return false;
+  const tk=dateKey(now);
+  if(state.postponed[tk]||state.closedDays[tk]) return false;
+  if(!state.startDate||tk<state.startDate) return false;
+  const bed=state.settings.bedtime%24;
+  const h=now.getHours();
+  return (h>=bed||h<4);
+}
+function lateNightCheck(now){
+  const tk=dateKey(now);
+  if(state.lateNight[tk]) return false;
+  if(!bedtimeViolated(now)) return false;
+  state.lateNight[tk]=true; save();
+  try{ openLateNight(); }catch(e){}
+  return true;
+}
+function nagActive(){
+  const yk=dateKey(addDays(new Date(),-1));
+  if(!state.lateNight[yk]||state.closedDays[yk]||state.postponed[yk]) return false;
+  const tk=dateKey(new Date());
+  return !((state.checkLog[tk]||0)>0);
+}
+function updateNag(){
+  const on=nagActive();
+  const nb=document.getElementById('nagBanner'); if(nb) nb.hidden=!on;
+  document.body.classList.toggle('nagmode',on);
+}
 function restockWeekly(){
   const wk=tribunalWeekKey();
   if(wk!==state.lastRestStock){
@@ -2489,7 +2527,7 @@ setTimeout(openTribunal,700);
    Living contract: any feature update MUST sync its group below, bump the
    group's `updated` stamp and APP_VERSION. Coverage table advertises neglect.
    Never remove this block. */
-const APP_VERSION='2.8.1';
+const APP_VERSION='2.9.0';
 const FEATURE_COVERAGE=[
  {id:'schedule-debt',label:'Debt-aware scheduling',group:'core-schedule'},
  {id:'postpone',label:'Postpone / Revert / Resume',group:'handler-pipeline'},
@@ -3200,6 +3238,16 @@ function burnRest(k){
   toast('Rest burned. The streak slept safely.','info');
   renderDaily(); renderTimeline();
 }
+function setupTestState(){
+  state.checked={}; state.notes={}; state.collapsed={}; state.hideDone=false; state.celebrated=false;
+  state.startDate=dateKey(new Date());
+  state.hours={}; state.closedDays={}; state.badLog={}; state.postponed={};
+  state.customExcuses=[]; state.excuseUse={}; state.corrupted=false;
+  state.dread=null; state.pardons=0; state.pardonBase=0;
+  state.timer={running:false,startedAt:null,accMin:0,dayK:null};
+  state.focusLog={}; state.lateNight={};
+  SCHEDULE=[];
+}
 function runGuardian(){ window.__GRAN=(window.__GRAN||0)+1; try{
   const results=[];let pass=0,fail=0,skip=0;
   let snap=null,schedSnap=null,gpSink=[],gpOrigToast=null,fatal=null;
@@ -3215,6 +3263,11 @@ function runGuardian(){ window.__GRAN=(window.__GRAN||0)+1; try{
     gpOrigToast=toast;
     toast=function(m){gpSink.push(String(m));};
     Object.keys(GUARDIAN.groups).forEach(function(g){
+      // Reset shared state slices between groups
+      state.closedDays={}; state.badLog={}; state.postponed={};
+      state.hours={}; state.checked={}; state.lateNight={};
+      state.dread=null;
+      SCHEDULE=[];
       GUARDIAN.groups[g].tests.forEach(function(entry){ t(g,entry[0],entry[1]); });
     });
   }catch(f){ fatal=String(f&&(f.message||f)); }
@@ -3262,6 +3315,7 @@ function runGuardian(){ window.__GRAN=(window.__GRAN||0)+1; try{
 window.__selftest=runGuardian;
 window.__dbg={get state(){return state;},computeTribunal:computeTribunal,openTribunal:openTribunal,dateKey:dateKey,addDays:addDays,mondayOf:mondayOf};
 document.getElementById('tCloseBtn').addEventListener('click',function(){ document.getElementById('tribunalOverlay').classList.remove('show'); });
+document.getElementById('lnAckBtn').addEventListener('click',function(){ document.getElementById('lateNightOverlay').classList.remove('show'); });
 document.getElementById('inspCloseBtn').addEventListener('click',function(){ document.getElementById('inspectorOverlay').classList.remove('show'); });
 document.getElementById('lnAckBtn').addEventListener('click',function(){ document.getElementById('lateNightOverlay').classList.remove('show'); });
 document.getElementById('restBurnBtn').addEventListener('click',function(){ burnRest(dateKey(new Date())); document.getElementById('restConfirmOverlay').classList.remove('show'); });
