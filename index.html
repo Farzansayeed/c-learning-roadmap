@@ -1142,7 +1142,8 @@ const DREAD = {
   ['The ledger took this entry without comment.','A single page turns somewhere in the dark. Your page.','Filed under: first course.','It wrote your name down twice. The second copy is for later.','You felt that, did you not? Small price.'],
   ['Again. The ink is still wet from yesterday.','The roadmap twitches when you open it now.','Your chair remembers sitting empty. It prefers it.','Somewhere a compiler cleared its throat. You were not there.','Two days. The pattern has stopped being coincidence and started being routine.','The excuses arrive faster than the remorse now. Efficient.','Pointers point. You drift. Even the arithmetic is embarrassed.','Your name came up in a meeting of things that compile. You were voted out.'],
   ['It followed you to bed last night. It read your notes. All blank.','The checkboxes whisper in a language made of your own missed deadlines.','You are feeding something. It is never full.','Three strikes on the ledger. The third strike was counted twice, for style.','Your alarm rang for someone who no longer answers to that name.','The hours you owe have started gathering interest in a currency made of sleep.','It learned your scroll rhythm today. It said thank you.','There is a waiting list to haunt you. The horror community has standards.'],
-  ['Something wearing your skin sat at this desk and scrolled instead. It waved at me. I did not wave back.','The compiler dreams of you now, and its dreams have teeth.','Your reflection studies pointers. You study nothing. One of you will compile.','The rot started at the streak and worked inward. It reaches your notes tomorrow.','They closed the library wing where your motivation used to live. Structural damage.','Whatever wears your face by night left this review one star. It said the horror was unrealistic ? too slow, not enough dread.','The ledger is full. The pages are your skin. Keep writing.','You did not fail today. You rehearsed failing, professionally, in front of an audience of one dead dream.','The thing behind your chair has started submitting pull requests. Better ones. It signs your name.','Even the dust on your keyboard has given up expecting fingerprints.']
+  ['Something wearing your skin sat at this desk and scrolled instead. It waved at me. I did not wave back.','The compiler dreams of you now, and its dreams have teeth.','Your reflection studies pointers. You study nothing. One of you will compile.','The rot started at the streak and worked inward. It reaches your notes tomorrow.','They closed the library wing where your motivation used to live. Structural damage.','Whatever wears your face by night left this review one star. It said the horror was unrealistic ? too slow, not enough dread.','The ledger is full. The pages are your skin. Keep writing.','You did not fail today. You rehearsed failing, professionally, in front of an audience of one dead dream.','The thing behind your chair has started submitting pull requests. Better ones. It signs your name.','Even the dust on your keyboard has given up expecting fingerprints.','The thing behind your chair has started submitting pull requests. Better ones. It signs your name.',
+   'You did not fail today. You rehearsed failing, professionally, in front of an audience of one dead dream.','The rot reaches your notes tomorrow.','Even your shadow has stopped following you. It found someone who compiles.']
 ],
 
   heads:[
@@ -1198,7 +1199,6 @@ const DREAD = {
     'Target met. Something exhaled, and it was not relief.',
     'A good day. It hates good days. Good days starve it.',
     'Flawless arithmetic. It suspects a second ledger exists somewhere.',
-    'Flawless arithmetic. It suspects a second ledger exists somewhere.'
   ]
 };
 
@@ -1219,10 +1219,7 @@ function consecutiveBadDays(){
   }
   return n;
 }
-function dreadLevel(){
-  if(state.dread==null){ state.dread=Math.min(5,consecutiveBadDays()); }
-  return state.dread;
-}
+function dreadLevel(){ return Math.min(5,consecutiveBadDays()); }
 function applyDread(){
   const l=dreadLevel();
   for(let i=1;i<=5;i++) document.body.classList.toggle('dread-'+i,l>=i);
@@ -3254,6 +3251,7 @@ function runGuardian(){ window.__GRAN=(window.__GRAN||0)+1; try{
   let snap=null,schedSnap=null,gpSink=[],gpOrigToast=null,fatal=null;
   const t=function(g,n,fn){
     try{
+      if(typeof setupTestState==='function') setupTestState();
       const r=fn();
       if(r==='SKIP'){skip++;results.push({g:g,n:n,s:'SKIP'});}
       else{pass++;results.push({g:g,n:n,s:'PASS'});}
