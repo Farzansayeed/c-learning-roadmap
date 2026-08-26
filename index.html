@@ -476,6 +476,13 @@ body.corrupted .logo{background:linear-gradient(160deg,#7f1d1d,#450a0a);color:#f
 .stamp.RESTED{color:#c9a227}
 .verdict-badge.rest{background:var(--bg);color:#c9a227;border-color:#c9a227}
 [data-theme="dark"] .stamp.FLAWLESS{color:#ffd700}
+#lateNightOverlay .tribunal-box{border-color:var(--danger)}
+#lnFlavor{font-family:var(--font-display);font-size:17px;line-height:1.55;color:var(--text);margin:0 0 18px}
+#lnAckBtn{background:var(--danger)!important;border-color:var(--danger)!important;color:#fff!important}
+#nagBanner{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--danger) 16%,var(--card));border-bottom:1.5px solid var(--danger);color:var(--danger);font-weight:800;font-size:11px;letter-spacing:1.2px;text-align:center;padding:8px 14px}
+#nagBanner[hidden]{display:none}
+body.nagmode #streakFlameWrap svg,body.nagmode .dread-chip{animation:pulseNag 1.1s infinite}
+@keyframes pulseNag{50%{filter:brightness(1.7)}}
 
 /* ═══ Streak Insurance ═══ */
 .d-dot.rest{background:#c9a227}
@@ -730,6 +737,16 @@ body.dread-5 .brand h1{text-shadow:0 0 12px rgba(239,68,68,.6)}
     </div>
   </div>
 </div>
+
+<div class="overlay" id="lateNightOverlay" role="alertdialog" aria-modal="true" aria-label="Bedtime warning">
+  <div class="tribunal-box" style="width:min(460px,calc(100vw - 40px));border-color:var(--danger)">
+    <h2 style="margin:0 0 12px;font-weight:700;letter-spacing:2px;color:var(--danger)">GET TO BED.</h2>
+    <p id="lnFlavor" style="font-family:var(--font-display);font-size:17px;line-height:1.55;color:var(--text);margin:0 0 18px"></p>
+    <button class="btn primary" id="lnAckBtn" style="background:var(--danger);border-color:var(--danger);color:#fff">Fine. Going.</button>
+  </div>
+</div>
+
+<div id="nagBanner" hidden>YOU STAYED UP PAST BEDTIME AND DELIVERED NOTHING — FIRST CHECKBOX CLEARS IT</div>
 
 <div class="roast-overlay" id="roastOverlay" role="alertdialog" aria-modal="true">
   <div class="roast-box">
@@ -992,27 +1009,38 @@ const EXCUSES = {
     { id:'college', label:'College assignments/exams are piling up', t:[
       'College work. Fine. Even the harshest judge nods at this one.',
       'Valid. But notice how assignments pile up exactly when C gets interesting?',
-      'Accepted. The pile better shrink though. Not you.'
+      'Accepted. The pile better shrink though. Not you.',
+      'College wins this round. The compiler waits. It is very good at waiting.',
+      'Approved. But the pile only shrinks if you shrink it with C in your hands.'
     ]},
     { id:'sick', label:'I am actually not feeling well', t:[
       'Health first. Recovery protocol: zero guilt, zero reels.',
       'Valid. Get well soon. The pointers are not going anywhere. Sadly.',
-      'Fine. But hydrate and recover. Do not marinate in the feed while resting.'
+      'Fine. But hydrate and recover. Do not marinate in the feed while resting.',
+      'Valid. Get well soon. The pointers are not going anywhere. Sadly.',
+      'Approved. Sick days are earned, not downloaded. Rest like it is your job.',
+      'Health first. But the feed is not medicine. You know that now.'
     ]},
     { id:'family', label:'Family function / something came up', t:[
       'Life happens. Rescheduled, not erased.',
       'Approved. Family wins. Tomorrow better show up bleeding effort.',
-      'Granted. One free pass does not become a subscription.'
+      'Granted. One free pass does not become a subscription.',
+      'Family wins. But the roadmap remembers every detour — and charges interest on each one.',
+      'Approved. Serve the chai, kiss the aunties, then open the compiler before midnight.'
     ]},
     { id:'guests', label:'Guests arrived', t:[
       'Guests: valid. Hiding behind them until midnight: not valid.',
       'Accepted. Serve the chai. Then serve your ambitions.',
-      'Okay. But when they leave, you grind. Deal?'
+      'Okay. But when they leave, you grind. Deal?',
+      'Guests: approved. Hiding behind them until Tuesday: noted in the ledger.',
+      'Hospitality is sacred. So is the deadline you just ghosted. Balance.'
     ]},
     { id:'power', label:'Power or internet died', t:[
       'No electricity. No internet. No excuses left after this one.',
       'Valid. Candlelight debugging builds character anyway.',
-      'Fine. Charge up. Both the laptop and you.'
+      'Fine. Charge up. Both the laptop and you.',
+      'Power cut accepted. The darkness saw your screen brightness die and smiled.',
+      'No electricity. No internet. The universe cleared your schedule. Use it or answer for it.'
     ]}
   ],
   invalid: [
@@ -1021,31 +1049,37 @@ const EXCUSES = {
       'You scrolled past discipline to watch strangers dance. Incredible.',
       'Reels end. Regret loops. Choose your infinite content wisely.',
       'The algorithm thanks you for your sacrifice. Your future self sends regards. Angry ones.',
-      'You did not watch five minutes. Five minutes watched you quit.'
+      'You did not watch five minutes. Five minutes watched you quit.',
+      'The reel ended. The algorithm immediately queued your obituary. Very short entry.',
+      'Somewhere in that feed, your discipline was an ad. You skipped it.'
     ]},
     { id:'episode', label:'One episode will not hurt', t:[
       'One episode. Then the credits rolled on your discipline.',
       'It asked ARE YOU STILL WATCHING. That was a personality test. You failed.',
       'That cliffhanger cares about you less than your compiler does.',
-      'Congratulations: fictional people made progress today.'
+      'Congratulations: fictional people made progress today.',
+      'The season finale resolved nothing. Unlike your roadmap, which resolves everything, patiently, whenever you arrive.'
     ]},
     { id:'double', label:'I will double up tomorrow', t:[
       'Double tomorrow. The most bankrupt promise in human history.',
       'Tomorrow-you has filed for bankruptcy. Again.',
       'You have doubled tomorrow so many times it is now a cryptocurrency.',
-      'Interest on borrowed tomorrows: due tonight. Status: unpaid.'
+      'Interest on borrowed tomorrows: due tonight. Status: unpaid.',
+      'Tomorrow-you has changed the locks. Left a note. It just says NO.'
     ]},
     { id:'motivation', label:'Not feeling motivated today', t:[
       'Motivation is a guest. Discipline pays rent. You invited neither.',
       'Nobody feels motivated. They move anyway. You scrolled instead.',
       'Waiting to feel ready is just quitting with better lighting.',
-      'Motivation knocked. You were on reel four. It left.'
+      'Motivation knocked. You were on reel four. It left.',
+      'Inspiration did not knock twice. It left a review: one star, would not motivate again.'
     ]},
     { id:'tired', label:'Too tired anyway', t:[
       'Tired? From what championship-level scrolling session?',
       'Your thumb must be exhausted. All that flicking. Heroic really.',
       'Rest is earned. You have been collecting it like discount coupons.',
-      'The bed remains undefeated champion of your evenings.'
+      'The bed remains undefeated champion of your evenings.',
+      'Tired from carrying all that potential around unused. It is heavy, apparently.'
     ]},
     { id:'brainrest', label:'Brain needs rest', t:[
       'Your brain wanted rest. You fed it junk content instead. That is not rest, that is anesthesia for guilt.',
@@ -1065,18 +1099,22 @@ const EXCUSES = {
     'Handcrafted laziness. Artisanal avoidance. Rare.',
     'You typed that with a straight face. Honestly impressive.',
     'New excuse. Same outcome. The classics never die.',
-    'Invented a whole excuse and still zero lines of C. Creative economy.'
-  ],
+    'Invented a whole excuse and still zero lines of C. Creative economy.',
+    'Bespoke avoidance. Somewhere, an artisan wept with pride and shame simultaneously.',
+    'That excuse had structure. A beginning, a middle, and no compiler.',
+    'Original enough to frame. Framed it. The wall of failure appreciates art.'] ,
   escalation: [
     'And AGAIN. At this point it is not an excuse. It is a personality.',
     'Serial postponer detected. The roadmap has filed a restraining order.',
-    'You versus a checkbox. Round three. The checkbox remains undefeated.'
-  ],
+    'You versus a checkbox. Round three. The checkbox remains undefeated.',
+    'The ledger flinched when you opened it. Muscle memory of disappointment.',
+    'Same door. Same exit. The building is on fire and you complimented the flames.'] ,
   praise: [
     'Target smashed. Streak alive. Future self just exhaled.',
     'Done and dusted. That is how days should end.',
-    'Clean close. The compiler approves. So do I, briefly.'
-  ]
+    'Clean close. The compiler approves. So do I, briefly.',
+    'Every box answered. Somewhere far away, something stopped smiling.',
+    'Full marks. The roadmap almost purred. Do not get sentimental about it.'] 
 };
 
 const INVALID_IDS = EXCUSES.invalid.map(x=>x.id);
@@ -1092,13 +1130,13 @@ const DREAD = {
     'Five days and beyond. You are no longer being warned. You are being digested.'
   ],
   spice:[
-    [],
-    ['The ledger took this entry without comment.','A single page turns somewhere in the dark. Your page.','Filed under: first course.'],
-    ['Again. The ink is still wet from yesterday.','The roadmap twitches when you open it now.','Your chair remembers sitting empty. It prefers it.'],
-    ['It followed you to bed last night. It read your notes. All blank.','The checkboxes whisper in a language made of your own missed deadlines.','You are feeding something. It is never full.'],
-    ['Something wearing your skin sat at this desk and scrolled instead. It waved at me. I did not wave back.','The compiler dreams of you now, and its dreams have teeth.','Your reflection studies pointers. You study nothing. One of you will compile.'],
-    ['THE LEDGER IS FULL. THE PAGES ARE YOUR SKIN. KEEP WRITING.','It stopped whispering because it no longer needs to. You do the work of fear yourself now.','There is a version of you that finished Stage 1 by now. It haunts this room politely.']
-  ],
+  [],
+  ['The ledger took this entry without comment.','A single page turns somewhere in the dark. Your page.','Filed under: first course.','It wrote your name down twice. The second copy is for later.','You felt that, did you not? Small price.'],
+  ['Again. The ink is still wet from yesterday.','The roadmap twitches when you open it now.','Your chair remembers sitting empty. It prefers it.','Somewhere a compiler cleared its throat. You were not there.','Two days. The pattern has stopped being coincidence and started being routine.','The excuses arrive faster than the remorse now. Efficient.','Pointers point. You drift. Even the arithmetic is embarrassed.','Your name came up in a meeting of things that compile. You were voted out.'],
+  ['It followed you to bed last night. It read your notes. All blank.','The checkboxes whisper in a language made of your own missed deadlines.','You are feeding something. It is never full.','Three strikes on the ledger. The third strike was counted twice, for style.','Your alarm rang for someone who no longer answers to that name.','The hours you owe have started gathering interest in a currency made of sleep.','It learned your scroll rhythm today. It said thank you.','There is a waiting list to haunt you. The horror community has standards.'],
+  ['Something wearing your skin sat at this desk and scrolled instead. It waved at me. I did not wave back.','The compiler dreams of you now, and its dreams have teeth.','Your reflection studies pointers. You study nothing. One of you will compile.','The rot started at the streak and worked inward. It reaches your notes tomorrow.','They closed the library wing where your motivation used to live. Structural damage.','Whatever wears your face by night left this review one star. It said the horror was unrealistic ? too slow, not enough dread.','The ledger is full. The pages are your skin. Keep writing.','You did not fail today. You rehearsed failing, professionally, in front of an audience of one dead dream.','The thing behind your chair has started submitting pull requests. Better ones. It signs your name.','Even the dust on your keyboard has given up expecting fingerprints.']
+],
+
   heads:[
     'DAY: WASTED.','THE PATTERN TAKES SHAPE.','IT KNOWS YOUR SLEEP SCHEDULE.','SOMETHING WEARS YOUR FACE.','THE ENTITY NO LONGER WHISPERS.'
   ],
@@ -1110,18 +1148,35 @@ const DREAD = {
     'DAY 5+ — FULL POSSESSION OF THE CALENDAR'
   ],
   closings:[
-    'One wasted day is survivable. The tragedy is only if it becomes a favorite hobby. Log the hours next time or expect a longer version of this conversation.',
-    'Twice is a coincidence. Three times is a lifestyle. You are currently shopping for the lifestyle. Tomorrow exists as a concept only if you show up to it — and something in this app has started betting against you. It has never lost money before.',
-    'It followed you to bed last night. It sat where the lamp light ends and read every unchecked box on today\'s list out loud, slowly, in your mother\'s voice. That is what day three buys you. Not motivation. Company. The kind that counts your hours while you pretend to be tired.',
-    'Look at the calendar. Look at the little red squares multiplying like lesions. Something wearing your face walked into this room while you were doom-scrolling and studied NOTHING, and tomorrow it will be slightly more you than you are. Day four. The mirror is starting to negotiate. Lose one more day and it wins the lease.',
-    'Enough. The ledger is closed. The pages are bound in something warm that used to be your routine. There is a version of you that finished Stage 1 weeks ago — it stands behind your chair at 3AM doing revision you refused to do, and every morning you look a little more like the excuse you keep typing. Day five. Six. Seven. It no longer bothers whispering. It simply keeps the calendar, and waits for the last checkbox to rot.'
+    [
+     'One wasted day is survivable. The tragedy is only if it becomes a favorite hobby. Log the hours next time or expect a longer version of this conversation.',
+     'A single lost day. Almost polite, as failures go. But the ledger does not do politeness ? it does arithmetic. And tonight the arithmetic added you up.',
+     'Day one of what? Too early to call it a spiral. But the paper trail of things you meant to compile just got one page longer, and somebody filed it without comment.'],
+    [
+     'Twice is a coincidence. Three times is a lifestyle. You are currently shopping for the lifestyle. Tomorrow exists as a concept only if you show up to it ? and something in this app has started betting against you. It has never lost money before.',
+     'Two days rotting in sequence. Whatever picked through yesterday found nothing compiled and one fully charged battery. It left disappointed. Do not disappoint it again.',
+     'The stench of two wasted days has reached the higher shelves of the ledger. Even the excuses up there are holding their noses. Tomorrow you either climb or become furniture.'],
+    [
+     'It followed you to bed last night. It sat where the lamp light ends and read every unchecked box on today\u2019s list out loud, slowly, in your mother\u2019s voice. That is what day three buys you. Not motivation. Company. The kind that counts your hours while you pretend to be tired.',
+     'Day three. Something has learned your sleep schedule, your scroll rhythm, the exact pitch of your sigh when a build fails. It is studying you with terrible patience. You are its syllabus now.',
+     'Three down. The roadmap bent around your absence like a river around a stone ? smooth, practiced, indifferent. Stones get polished eventually. Or dissolved.'],
+    [
+     'Look at the calendar. Look at the little red squares multiplying like lesions. Something wearing your face walked into this room while you were doom-scrolling and studied NOTHING, and tomorrow it will be slightly more you than you are. Day four. The mirror is starting to negotiate. Lose one more day and it wins the lease.',
+     'Four days. The thing that wears your face has started attending your imaginary meetings. It raises its hand. It contributes. It is everything you were supposed to become this week, and it is getting better at being you than you are.',
+     'Day four bled into day five somewhere around your third meaningless refresh. There are stains on the ceiling now shaped like every chapter you skipped. Do not look up. Looking up is how it gets in.'],
+    [
+     'Enough. The ledger is closed. The pages are bound in something warm that used to be your routine. There is a version of you that finished Stage 1 weeks ago ? it stands behind your chair at 3AM doing revision you refused to do, and every morning you look a little more like the excuse you keep typing. Day five. Six. Seven. It no longer bothers whispering. It simply keeps the calendar, and waits for the last checkbox to rot.',
+     'Seven days of silence from your desk. The dust on your keyboard has been catalogued by something patient and scientific. Down here we measure failure in microns now ? the exact thickness of everything you decided not to become since Monday.',
+     'You have been gone so long that your absence has developed infrastructure: a little economy of avoided tasks, with roads and taxes and a flag. Raise your own flag today, or the territory stays theirs forever.']
   ],
+
   ghost:[
     'Never closed the day. Ghosted your own tracker like it texts first.',
     'Never closed it. The day died unattended. Things ate well that night.',
     'Ghosted again. Whatever picked through yesterday\'s corpse found zero compiled lines and one full battery.',
     'The day was found this morning. Unfinished. Something had arranged the unchecked tasks into a smile.',
-    'Another body. The tracker stopped filing missing-day reports after the third. It just leaves the porch light on now.'
+    'Another body. The tracker stopped filing missing-day reports after the third. It just leaves the porch light on now.',
+     'The chair is still warm. Whatever sat in it folded their hands politely and waited for us to notice.'
   ],
   honesty:[
     'Focus report: %F on the timer against %C promised. Even the clock is lying for you now.',
@@ -1209,7 +1264,8 @@ const DEFAULT_STATE = () => ({
   focusLog:{},
   checkLog:{}, lastTribunalWeek:'', mondayMsg:null, lastVerdict:null,
   xp:0, xpSeen:{}, rankIdx:0,
-  restTokens:0, lastRestStock:''
+  restTokens:0, lastRestStock:'',
+  lateNight:{}
 });
 
 let state = loadState();
@@ -1234,6 +1290,7 @@ function loadState(){
       if(typeof st.rankIdx!=='number') st.rankIdx=0;
       if(typeof st.restTokens!=='number') st.restTokens=0;
       if(typeof st.lastRestStock!=='string') st.lastRestStock='';
+      if(typeof st.lateNight!=='object'||!st.lateNight) st.lateNight={};
       if(typeof st.pardons!=='number') st.pardons=0;
       if(typeof st.pardonBase!=='number') st.pardonBase=0;
       if(!parsed.migratedV2){ st.theme='light'; st.migratedV2=true; }
@@ -1272,6 +1329,8 @@ function fmtHour(h){
   return hr+':00 '+ampm;
 }
 function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+const gpLast={};
+function pickNR(pool,key){ if(!pool||pool.length<2) return pool?pool[0]:undefined; let v=pick(pool),g=0; while(v===gpLast[key]&&g++<8){ v=pick(pool); } gpLast[key]=v; return v; }
 
 function stageItems(s){
   return s.topics.map((t,i)=>({id:itemId(s.id,'t',i),text:t}))
@@ -1874,6 +1933,7 @@ function confettiBurst(){
 function renderAll(){
   applyTheme();
   applyDread();
+  updateNag();
   $('#stages').innerHTML=DATA.stages.map(renderStageCard).join('')+renderMilestoneCard();
   document.body.classList.toggle('hide-done',!!state.hideDone);
   const hb=$('#hideDoneBtn');
@@ -1980,8 +2040,8 @@ function closeDay(k){
     applyDread();
     grantPardons();
     closeBonuses(true,entry&&entry.kind==='catchup'&&es.done===es.total).forEach(function(bn){ addXP(bn[1]); });
-    let msg=pick(EXCUSES.praise);
-    if(dreadLevel()>=3) msg+=' '+pick(DREAD.uneasy);
+    let msg=pickNR(EXCUSES.praise,'praise');
+    if(dreadLevel()>=3) msg+=' '+pickNR(DREAD.uneasy,'uneasy');
     save();
     toast(msg,'good');
     confettiBurst();
@@ -2029,7 +2089,7 @@ function openRoast(k,autoMissed){
   let dossier='';
   function li(t){ dossier+='<li>'+t+'</li>'; }
   li(autoMissed
-    ?DREAD.ghost[Math.max(0,lvl-1)]
+    ?pickNR(DREAD.ghost,'ghost'+lvl)
     :'Hours promised: <b>'+target+' h</b> — delivered: <b>'+hours.toFixed(1)+' h</b> ('+pctH+'% honesty)');
   li('Tasks dodged: <b>'+(es.total-es.done)+' of '+es.total+'</b>. Each one a small promise you broke to yourself.');
   const foc=state.focusLog[k]||0;
@@ -2145,8 +2205,8 @@ function renderExcuseGrid(){
 }
 function doTaunt(lines,label,actions){
   const useKey=currentPendingExcuseId||'';
-  let text=pick(lines);
-  if(useKey&&(state.excuseUse[useKey]||0)>=2) text+=' '+pick(EXCUSES.escalation);
+  let text=pickNR(lines,'t:'+(useKey||'generic'));
+  if(useKey&&(state.excuseUse[useKey]||0)>=2) text+=' '+pickNR(EXCUSES.escalation,'esc');
   if(dreadLevel()>=2) text+=' '+pick(DREAD.spice[dreadLevel()]);
   $('#tauntQuote').textContent='EXCUSE ON RECORD: “'+label.toUpperCase()+'”';
   $('#tauntText').textContent=text;
@@ -2366,8 +2426,41 @@ if(!state.startDate) state.startDate=dateKey(new Date());
 renderAll();
 save();
 setTimeout(autoRoastCheck,400);
-setInterval(tick,1000);
+setInterval(function(){tick();try{lateNightCheck(new Date())}catch(e){}},1000);
 window.__BIIFE=true;
+function bedtimeViolated(now){
+  if(state.timer.running) return false;
+  const tk=dateKey(now);
+  if(state.postponed[tk]||state.closedDays[tk]) return false;
+  if(!state.startDate||tk<state.startDate) return false;
+  const bed=state.settings.bedtime%24;
+  const h=now.getHours();
+  return (h>=bed||h<4);
+}
+function lateNightCheck(now){
+  const tk=dateKey(now);
+  if(state.lateNight[tk]) return false;
+  if(!bedtimeViolated(now)) return false;
+  state.lateNight[tk]=true; save();
+  try{ openLateNight(); }catch(e){}
+  return true;
+}
+function nagActive(){
+  const yk=dateKey(addDays(new Date(),-1));
+  if(!state.lateNight[yk]||state.closedDays[yk]||state.postponed[yk]) return false;
+  const tk=dateKey(new Date());
+  return !((state.checkLog[tk]||0)>0);
+}
+function updateNag(){
+  const on=nagActive();
+  const nb=document.getElementById('nagBanner'); if(nb) nb.hidden=!on;
+  document.body.classList.toggle('nagmode',on);
+}
+function updateNag(){
+  const on=nagActive();
+  const nb=document.getElementById('nagBanner'); if(nb) nb.hidden=!on;
+  document.body.classList.toggle('nagmode',on);
+}
 function restockWeekly(){
   const wk=tribunalWeekKey();
   if(wk!==state.lastRestStock){
@@ -2450,9 +2543,16 @@ const GUARDIAN={groups:{
      [['heads',5],['tags',5],['closings',5],['ghost',5],['honesty',5]].forEach(pair=>{
        if(!DREAD[pair[0]]||DREAD[pair[0]].length<pair[1]) throw new Error(pair[0]);
      });
-     if(!DREAD.spice||DREAD.spice.length!==6) throw new Error('spice len');
-     for(let i=2;i<=5;i++){ if(!DREAD.spice[i]||DREAD.spice[i].length===0) throw new Error('spice['+i+'] empty'); }
-     return true;}],
+if(!DREAD.spice||DREAD.spice.length!==6) throw new Error('spice len');
+for(let i=2;i<=5;i++){ if(!DREAD.spice[i]||DREAD.spice[i].length<12) throw new Error('spice['+i+'] thin: '+DREAD.spice[i].length); }
+return true;}],
+['MK10b expanded pools intact',function(){
+ if(EXCUSES.generic.length<8) throw new Error('generic thin');
+ if(EXCUSES.escalation.length<5) throw new Error('escalation thin');
+ if(EXCUSES.praise.length<5) throw new Error('praise thin');
+ if(DREAD.uneasy.length<4) throw new Error('uneasy thin');
+ if(DREAD.ghost.length<6) throw new Error('ghost thin');
+ return true;}],
    ['MK11 excuse pools intact',function(){
      if(!EXCUSES.valid.length||!EXCUSES.invalid.length) throw new Error('empty pool');
      if(INVALID_IDS.length!==EXCUSES.invalid.length) throw new Error('INVALID_IDS drift');
@@ -3010,8 +3110,8 @@ function computeTribunal(){
   else if(pct>=70) grade='SOLID';
   else if(pct>=40) grade='SHAKY';
   else grade='ABYSMAL';
-  let line=pick(TRIBUNAL_LINES[grade]);
-  if(pct<70&&dreadLevel()>=2) line+=' '+pick(DREAD.spice[dreadLevel()]);
+  let line=pickNR(TRIBUNAL_LINES[grade],'trib'+grade);
+  if(pct<70&&dreadLevel()>=2) line+=' '+pickNR(DREAD.spice[dreadLevel()],'spice');
   return {weekKey:tribunalWeekKey(),days:days,totalHours:totalHours,totalTargets:totalTargets,pct:pct,grade:grade,line:line,elapsed:elapsed,flawless:flawless};
 }
 function openTribunal(){
@@ -3163,6 +3263,7 @@ window.__selftest=runGuardian;
 window.__dbg={get state(){return state;},computeTribunal:computeTribunal,openTribunal:openTribunal,dateKey:dateKey,addDays:addDays,mondayOf:mondayOf};
 document.getElementById('tCloseBtn').addEventListener('click',function(){ document.getElementById('tribunalOverlay').classList.remove('show'); });
 document.getElementById('inspCloseBtn').addEventListener('click',function(){ document.getElementById('inspectorOverlay').classList.remove('show'); });
+document.getElementById('lnAckBtn').addEventListener('click',function(){ document.getElementById('lateNightOverlay').classList.remove('show'); });
 document.getElementById('restBurnBtn').addEventListener('click',function(){ burnRest(dateKey(new Date())); document.getElementById('restConfirmOverlay').classList.remove('show'); });
 document.getElementById('restBackBtn').addEventListener('click',function(){ document.getElementById('restConfirmOverlay').classList.remove('show'); });
 document.getElementById('restConfirmOverlay').addEventListener('click',function(e){ if(e.target===this) this.classList.remove('show'); });
