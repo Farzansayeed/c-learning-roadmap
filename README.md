@@ -2,11 +2,7 @@
 
 A single-file, zero-dependency learning tracker for a C programming + Data Structures & Algorithms journey — with a personality that fights back.
 
-**Live app:** open `index.html` in any modern browser — or hit **Live URL** below. No install, no server, works offline.
-
-## Live
-
-🔗 **https://c-learning-roadmap-farzan4.vercel.app**
+**Live:** https://c-learning-roadmap-farzan4.vercel.app
 
 Every `git push` auto-redeploys via Vercel.
 
@@ -18,6 +14,7 @@ Every `git push` auto-redeploys via Vercel.
 - **Debt-aware scheduling** — missed tasks stack onto tomorrow; two consecutive skipped days auto-insert a Catch-Up day
 - **Streaks & heatmap** — 10-week activity grid with pass/fail/postponed/ghost states
 - **Day Inspector** — click any past day to see exactly what was scheduled vs done
+- **Finish-line Projection** — dual-date hero tile (actual pace vs planned pace)
 
 ### Accountability systems
 - **Dread Engine** — an escalating presence (CLEAN → ELDRITCH) that reacts to missed days: roasts get meaner, visuals corrupt
@@ -26,9 +23,10 @@ Every `git push` auto-redeploys via Vercel.
 - **Focus Timer** — wall-clock study sessions with strict mode (timer-only XP honesty)
 
 ### Mercy systems
-- **Rest Days** — weekly tokens to protect streaks from one bad day
+- **Streak Insurance** 💤 — weekly rest tokens to protect streaks from one bad day
 - **Catch-up days** — automatic debt-clearing slots after consecutive misses
 - **Revert / Resume** — postpones can be taken back; today can be reopened (yesterday stays lost)
+- **Bedtime Lockout** 🌙 — miss your set bedtime → pulsing nag banner until first checkbox ticks next morning
 
 ## Tech
 
@@ -37,7 +35,8 @@ Every `git push` auto-redeploys via Vercel.
 | Runtime | Single HTML file · zero dependencies · works offline via `file://` |
 | Persistence | `localStorage` (per-browser) + manual JSON export/import |
 | Fonts | Fraunces (falls back to Georgia offline) |
-| Self-tests | Built-in — open with `?selftest=1` or ⚙ → Self-test (~65 checks) |
+| Themes | Sepia-dim (light) + Charcoal (dark) — WCAG AA contrast on all pairs |
+| Self-tests | Built-in Guardian suite — open with `?selftest=1` or ⚙ → Self-test (~80 checks) |
 
 ## Usage
 
