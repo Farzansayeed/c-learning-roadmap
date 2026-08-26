@@ -1197,6 +1197,7 @@ const DREAD = {
     'Clean close… though the entity checked the logs twice.',
     'Target met. Something exhaled, and it was not relief.',
     'A good day. It hates good days. Good days starve it.',
+    'Flawless arithmetic. It suspects a second ledger exists somewhere.',
     'Flawless arithmetic. It suspects a second ledger exists somewhere.'
   ]
 };
@@ -2581,7 +2582,7 @@ const GUARDIAN={groups:{
      [['heads',5],['tags',5],['closings',5],['ghost',5],['honesty',5]].forEach(pair=>{
        if(!DREAD[pair[0]]||DREAD[pair[0]].length<pair[1]) throw new Error(pair[0]);
      });
-if(!DREAD.spice||DREAD.spice.length!==6) throw new Error('spice len');
+if(!DREAD.spice||DREAD.spice.length!==6) throw new Error('spice len: '+DREAD.spice.length);
 for(let i=2;i<=5;i++){ if(!DREAD.spice[i]||DREAD.spice[i].length<12) throw new Error('spice['+i+'] thin: '+DREAD.spice[i].length); }
 return true;}],
 ['MK10b expanded pools intact',function(){
@@ -3263,12 +3264,14 @@ function runGuardian(){ window.__GRAN=(window.__GRAN||0)+1; try{
     gpOrigToast=toast;
     toast=function(m){gpSink.push(String(m));};
     Object.keys(GUARDIAN.groups).forEach(function(g){
-      // Reset shared state slices between groups
-      state.closedDays={}; state.badLog={}; state.postponed={};
-      state.hours={}; state.checked={}; state.lateNight={};
-      state.dread=null;
-      SCHEDULE=[];
-      GUARDIAN.groups[g].tests.forEach(function(entry){ t(g,entry[0],entry[1]); });
+      const gsnap=JSON.stringify(state), gsched=SCHEDULE;
+      GUARDIAN.groups[g].tests.forEach(function(entry){
+        state.closedDays={}; state.badLog={}; state.postponed={};
+        state.hours={}; state.checked={}; state.lateNight={};
+        state.restTokens=0; state.lastRestStock=''; state.dread=null;
+        t(g,entry[0],entry[1]);
+      });
+      state=JSON.parse(gsnap); SCHEDULE=gsched;
     });
   }catch(f){ fatal=String(f&&(f.message||f)); }
   try{
