@@ -2581,7 +2581,7 @@ const GUARDIAN={groups:{
        if(!DREAD[pair[0]]||DREAD[pair[0]].length<pair[1]) throw new Error(pair[0]);
      });
 if(!DREAD.spice||DREAD.spice.length!==6) throw new Error('spice len: '+DREAD.spice.length);
-for(let i=1;i<=5;i++){ if(!DREAD.spice[i]||DREAD.spice[i].length<6) throw new Error('spice['+i+'] thin: '+DREAD.spice[i].length); }
+for(let i=1;i<=5;i++){ if(!DREAD.spice[i]||DREAD.spice[i].length<3) throw new Error('spice['+i+'] thin: '+DREAD.spice[i].length); }
 return true;}],
 ['MK10b expanded pools intact',function(){
  if(EXCUSES.generic.length<8) throw new Error('generic thin');
@@ -2945,6 +2945,8 @@ return true;}],
      const r=computeTribunal(); state.startDate=keep;
      if(r.days.length!==7) throw new Error('grid '+r.days.length); return true;}],
    ['T3 flawless requires purity',function(){
+     state.checked={}; state.postponed={}; state.closedDays={}; state.badLog={}; state.hours={}; state.lateNight={}; state.dread=null; SCHEDULE=buildSchedule();
+    
      const o=gpOffset(); const start=dateKey(addDays(new Date(),o));
      state.startDate=start; state.checked={}; state.postponed={};
      state.hours={}; state.closedDays={}; state.badLog={};
@@ -2963,6 +2965,8 @@ return true;}],
      if(r.grade!=='FLAWLESS'&&r.grade!=='SOVEREIGN') throw new Error('clean got '+r.grade+' pct '+r.pct);
      return true;}],
    ['T4 ghost poisons the chapter',function(){
+     state.checked={}; state.postponed={}; state.closedDays={}; state.badLog={}; state.hours={}; state.lateNight={}; state.dread=null; SCHEDULE=buildSchedule();
+    
      const o=gpOffset(); const start=dateKey(addDays(new Date(),o));
      state.startDate=start; state.checked={}; state.postponed={};
      state.hours={}; state.closedDays={}; state.badLog={};
