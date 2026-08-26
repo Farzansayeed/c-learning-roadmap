@@ -2616,7 +2616,8 @@ return true;}],
    ['D2 ghost adds to chain',function(){
      state.startDate=gpRelDay(-60); const p=n=>gpRelDay(-n);
      [0,1,2].forEach(function(n){ state.closedDays[p(n)]=true; state.badLog[p(n)]={verdict:'fail'}; });
-     if(consecutiveBadDays()!==3) throw new Error('got '+consecutiveBadDays()); return true;}],'D3 pass day shields',function(){
+     if(consecutiveBadDays()!==3) throw new Error('got '+consecutiveBadDays()); return true;}],
+   ['D3 pass day shields',function(){
      state.startDate=gpRelDay(-60);
 
      const p=n=>gpRelDay(-n);
