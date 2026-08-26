@@ -2697,6 +2697,7 @@ return true;}],
  ]},
  'core-schedule':{updated:'2026-08-24',tests:[
    ['B0 honest history -> no catchup',function(){
+     state.closedDays={}; state.badLog={}; state.hours={};
      const o=gpOffset(); const start=dateKey(addDays(new Date(),o));
      state.startDate=start; state.checked={}; state.postponed={};
      let S=buildSchedule();
@@ -2762,6 +2763,7 @@ return true;}],
      if(!nxt.items.some(id=>!seen.has(id)&&!carried.has(id))) throw new Error('no fresh heads after debt cleared');
      return true;}],
    ['B4 single ghost + postpone today -> no shift',function(){
+     state.closedDays={}; state.badLog={}; state.hours={};
      const o=gpOffset(); const start=dateKey(addDays(new Date(),o));
      state.startDate=start; state.checked={}; state.postponed={};
      let S=buildSchedule();
