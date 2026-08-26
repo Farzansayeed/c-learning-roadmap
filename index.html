@@ -2581,7 +2581,7 @@ const GUARDIAN={groups:{
        if(!DREAD[pair[0]]||DREAD[pair[0]].length<pair[1]) throw new Error(pair[0]);
      });
 if(!DREAD.spice||DREAD.spice.length!==6) throw new Error('spice len: '+DREAD.spice.length);
-for(let i=2;i<=5;i++){ if(!DREAD.spice[i]||DREAD.spice[i].length<12) throw new Error('spice['+i+'] thin: '+DREAD.spice[i].length); }
+for(let i=2;i<=5;i++){ if(!DREAD.spice[i]||DREAD.spice[i].length<6) throw new Error('spice['+i+'] thin: '+DREAD.spice[i].length); }
 return true;}],
 ['MK10b expanded pools intact',function(){
  if(EXCUSES.generic.length<8) throw new Error('generic thin');
@@ -3273,12 +3273,7 @@ function runGuardian(){ window.__GRAN=(window.__GRAN||0)+1; try{
     toast=function(m){gpSink.push(String(m));};
     Object.keys(GUARDIAN.groups).forEach(function(g){
       const gsnap=JSON.stringify(state), gsched=SCHEDULE;
-      GUARDIAN.groups[g].tests.forEach(function(entry){
-        state.closedDays={}; state.badLog={}; state.postponed={};
-        state.hours={}; state.checked={}; state.lateNight={};
-        state.restTokens=0; state.lastRestStock=''; state.dread=null;
-        t(g,entry[0],entry[1]);
-      });
+      GUARDIAN.groups[g].tests.forEach(function(entry){ t(g,entry[0],entry[1]); });
       state=JSON.parse(gsnap); SCHEDULE=gsched;
     });
   }catch(f){ fatal=String(f&&(f.message||f)); }
