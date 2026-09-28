@@ -6,6 +6,7 @@
  * - migration hook point (v2 importer arrives in Phase 8; unknown versions rejected)
  */
 import { AppData, STORAGE_KEY, defaultData, isValidAppData } from './schema';
+import { migrate } from './migrate';
 
 const DEBOUNCE_MS = 150;
 
@@ -52,6 +53,12 @@ export function loadData(): AppData {
     if (!raw) return persistDefault();
     const parsed: unknown = JSON.parse(raw);
     if (isValidAppData(parsed)) return parsed;
+    // older-but-compatible schema: migrate in place, persist, serve
+    const up = migrate(parsed);
+    if (up && isValidAppData(up)) {
+      writeNow(up);
+      return up;
+    }
     return persistDefault();
   } catch {
     return persistDefault();

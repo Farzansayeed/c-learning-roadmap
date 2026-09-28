@@ -1,10 +1,10 @@
 /**
- * The Forge — persisted state schema (DESIGN.md §3.3).
+ * The Forge — persisted state schema (DESIGN.md §3.3, schema v4).
  * Pure types + validation. No I/O here (see lib/storage.ts).
  */
 
 export const STORAGE_KEY = 'cdr-v3';
-export const SCHEMA_VERSION = 3;
+export const SCHEMA_VERSION = 4;
 
 export type ThemeName = 'terminal' | 'blueprint';
 export type RoastIntensity = 'mild' | 'spicy' | 'nuclear';
@@ -35,6 +35,18 @@ export interface FocusSession {
   strict: boolean;
 }
 
+/** SM-2-lite card: interval ladder 1→3→7→16→35→n×ease (DESIGN.md §4). */
+export interface ReviewCard {
+  /** quiz item id the card resurfaces */
+  itemId: string;
+  /** ladder step (index into REVIEW_INTERVALS) */
+  step: number;
+  ease: number; // 1.3..2.5
+  due: string; // 'YYYY-MM-DD'
+  lapses: number;
+  lastAt: string; // ISO
+}
+
 export interface AppData {
   version: typeof SCHEMA_VERSION;
   startDate: string; // 'YYYY-MM-DD'
@@ -49,6 +61,8 @@ export interface AppData {
   insurance: number;
   quizResults: Record<string, { best: number; attempts: number; lastAt: string }>;
   focusSessions: FocusSession[];
+  /** spaced-review queue (v4) */
+  review: Record<string, ReviewCard>;
 }
 
 export function defaultData(): AppData {
@@ -72,6 +86,7 @@ export function defaultData(): AppData {
     insurance: 1,
     quizResults: {},
     focusSessions: [],
+    review: {},
   };
 }
 
@@ -104,7 +119,7 @@ export function isValidAppData(v: unknown): v is AppData {
     return false;
   if (!['mild', 'spicy', 'nuclear'].includes(s.roastIntensity as string)) return false;
   if (!['terminal', 'blueprint'].includes(s.theme as string)) return false;
-  for (const k of ['checked', 'notes', 'days', 'postponed', 'quizResults'] as const) {
+  for (const k of ['checked', 'notes', 'days', 'postponed', 'quizResults', 'review'] as const) {
     if (!isRecord(v[k])) return false;
   }
   if (!Array.isArray(v.customExcuses)) return false;

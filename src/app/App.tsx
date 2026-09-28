@@ -6,6 +6,7 @@ import { useLenis } from './useLenis';
 import { Modal } from '../components/ui/Modal';
 import { RoadmapPage } from '../features/roadmap/RoadmapPage';
 import { TodayPage } from '../features/today/TodayPage';
+import { ArenaPage } from '../features/arena/ArenaPage';
 import { useState } from 'react';
 
 const pageMotion = {
@@ -126,7 +127,11 @@ export default function App() {
               />
               <Route
                 path="/arena"
-                element={<Stub title="Arena" note="Torture tests land in Phase 4." />}
+                element={
+                  <motion.div {...pageMotion}>
+                    <ArenaPage />
+                  </motion.div>
+                }
               />
               <Route path="/viz" element={<Stub title="Viz Lab" note="Lands in Phase 7." />} />
               <Route path="/stats" element={<Stub title="Stats" note="Lands in Phase 7." />} />
