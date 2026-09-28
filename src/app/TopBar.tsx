@@ -1,5 +1,4 @@
 import { NavLink } from 'react-router-dom';
-import { AnvilMark } from './AnvilMark';
 import { useSettings } from '../stores/settings';
 
 const NAV = [
@@ -41,21 +40,16 @@ export function TopBar() {
           gap: 12,
         }}
       >
-        <div
+        <img
+          src="/logo-64.png"
+          alt="The Forge logo"
+          width={34}
+          height={34}
           style={{
-            width: 34,
-            height: 34,
-            borderRadius: 10,
-            display: 'grid',
-            placeItems: 'center',
             flex: 'none',
-            background: 'var(--panel2)',
-            border: '1px solid var(--border)',
-            color: 'var(--p1)',
+            borderRadius: 8,
           }}
-        >
-          <AnvilMark size={20} />
-        </div>
+        />
 
         <div style={{ minWidth: 0 }}>
           <div
