@@ -3,7 +3,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { TopBar } from './TopBar';
 import { ErrorBoundary } from './ErrorBoundary';
 import { useLenis } from './useLenis';
-import { useSettings } from '../stores/settings';
 import { Modal } from '../components/ui/Modal';
 import { useState } from 'react';
 
