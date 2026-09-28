@@ -39,8 +39,14 @@ export function flushSave(): void {
   if (pending) writeNow(pending);
 }
 
-/** Validated load. Anything wrong -> fresh default (persisted back). */
+/**
+ * Validated load. Anything wrong -> fresh default (persisted back).
+ * Serves the in-flight debounced state when present — it is newer than disk,
+ * and reading disk mid-debounce silently reverts the last mutation (the
+ * close-day-right-after-postpone class of races).
+ */
 export function loadData(): AppData {
+  if (pending) return pending;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return persistDefault();

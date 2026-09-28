@@ -146,7 +146,12 @@ function StageNode({
 
 export function RoadmapPage() {
   const checkedIds = useProgress((s) => s.checkedIds);
-  const [openStage, setOpenStage] = useState<string | null>(null);
+  // Deep links (Today's task rows) may target a stage — expand it on arrival (U13).
+  const [openStage, setOpenStage] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    const s = new URLSearchParams(window.location.search).get('stage');
+    return s && stageById(s) ? s : null;
+  });
   const g = globalProgress(checkedIds);
 
   return (

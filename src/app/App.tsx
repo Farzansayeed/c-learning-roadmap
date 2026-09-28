@@ -5,6 +5,7 @@ import { ErrorBoundary } from './ErrorBoundary';
 import { useLenis } from './useLenis';
 import { Modal } from '../components/ui/Modal';
 import { RoadmapPage } from '../features/roadmap/RoadmapPage';
+import { TodayPage } from '../features/today/TodayPage';
 import { useState } from 'react';
 
 const pageMotion = {
@@ -109,7 +110,11 @@ export default function App() {
             <Routes location={location} key={location.pathname}>
               <Route
                 path="/"
-                element={<Stub title="Today" note="The daily contract lands in Phase 3." />}
+                element={
+                  <motion.div {...pageMotion}>
+                    <TodayPage />
+                  </motion.div>
+                }
               />
               <Route
                 path="/roadmap"

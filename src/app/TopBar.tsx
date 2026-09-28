@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useSettings } from '../stores/settings';
+import { useStreak } from '../features/today/useStreak';
 
 const NAV = [
   { to: '/', label: 'Today' },
@@ -13,11 +14,12 @@ const NAV = [
 
 /**
  * App shell topbar. U4: 56px on mobile, brand truncates, one row.
- * Streak slot is a placeholder until Phase 3 wires the live counter.
+ * Streak chip is live as of Phase 3 (reads dread + progress stores).
  */
 export function TopBar() {
   const theme = useSettings((s) => s.theme);
   const toggleTheme = useSettings((s) => s.toggleTheme);
+  const streak = useStreak();
 
   return (
     <header
@@ -91,17 +93,28 @@ export function TopBar() {
         >
           <div
             className="mono"
-            title="Streak — live in Phase 3"
+            title={
+              streak.bad > 0
+                ? `${streak.bad} bad day${streak.bad > 1 ? 's' : ''} in a row — close a day well to break it`
+                : `${streak.value} day${streak.value === 1 ? '' : 's'} of consecutive progress`
+            }
             style={{
               fontSize: 12,
-              fontWeight: 600,
-              color: 'var(--muted)',
-              border: '1px solid var(--border)',
+              fontWeight: 700,
+              color: streak.dead
+                ? 'var(--danger)'
+                : streak.hot
+                  ? 'var(--good)'
+                  : streak.bad > 0
+                    ? 'var(--warn)'
+                    : 'var(--muted)',
+              border: `1px solid ${streak.dead ? 'var(--danger)' : streak.hot ? 'var(--good)' : 'var(--border)'}`,
               borderRadius: 99,
               padding: '4px 12px',
+              whiteSpace: 'nowrap',
             }}
           >
-            🔥 —
+            {streak.bad > 0 && !streak.hot ? `☠ ${streak.bad}` : `🔥 ${streak.value}`}
           </div>
           <button
             type="button"

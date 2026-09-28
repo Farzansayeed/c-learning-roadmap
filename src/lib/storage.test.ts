@@ -38,12 +38,17 @@ describe('storage layer', () => {
     spy.mockRestore();
   });
 
-  it('flushSave writes pending state immediately', () => {
+  it('flushSave writes pending state immediately; loadData never reverts mid-debounce', () => {
     const d = defaultData();
     d.xp = 42;
     saveData(d);
-    expect(loadData().xp).toBe(0); // not yet written
+    // disk still holds the old value, but loadData serves the newer pending state —
+    // a read-save-read sequence must not silently roll back the last mutation
+    const diskXp = () => JSON.parse(window.localStorage.getItem('cdr-v3') ?? '{"xp":null}').xp;
+    expect(diskXp()).toBeNull(); // debounce has not fired yet
+    expect(loadData().xp).toBe(42); // in-flight state wins
     flushSave();
+    expect(diskXp()).toBe(42);
     expect(loadData().xp).toBe(42);
   });
 
