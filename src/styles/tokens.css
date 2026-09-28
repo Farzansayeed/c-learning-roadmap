@@ -1,0 +1,168 @@
+@import 'tailwindcss';
+
+/* ═══════════════════════════════════════════════════════════════
+   THE FORGE — design tokens (DESIGN.md §6)
+   Terminal (dark) is default. Blueprint (light) is the alternate.
+   Phase accents p0..p5; dread levels compose via [data-dread].
+   U10: dark theme tuned dark-first — panels clearly separated.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root,
+[data-theme='terminal'] {
+  color-scheme: dark;
+
+  /* surfaces — U10 */
+  --bg: #0b0e14;
+  --panel: #11151d;
+  --panel2: #161b26;
+  --border: #232936;
+  --border-strong: #2e3646;
+
+  /* ink */
+  --text: #e6e1d5;
+  --muted: #8b93a3;
+  --faint: #5c6473;
+
+  /* semantic */
+  --good: #6fbf9a;
+  --good-dim: rgba(111, 191, 154, 0.14);
+  --danger: #e0685e;
+  --danger-dim: rgba(224, 104, 94, 0.14);
+  --warn: #c4a96b;
+  --warn-dim: rgba(196, 169, 107, 0.14);
+  --info: #7c9cc4;
+  --info-dim: rgba(124, 156, 196, 0.14);
+
+  /* phase accents */
+  --p0: #7c9cc4; /* Launchpad   — steel blue */
+  --p1: #6fbf9a; /* C Fluency   — phosphor green */
+  --p2: #c4a96b; /* Systems C   — amber */
+  --p3: #a48fd8; /* Data Structures — violet */
+  --p4: #e08a6b; /* Algorithms  — coral */
+  --p5: #d8b45a; /* Endgame     — gold */
+
+  /* elevation */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-2: 0 4px 16px rgba(0, 0, 0, 0.45);
+  --shadow-3: 0 12px 40px rgba(0, 0, 0, 0.55);
+
+  /* focus */
+  --focus: #7c9cc4;
+
+  /* dread corruption (composed via [data-dread]) */
+  --dread-mix: 0;
+  --dread-grain: 0;
+}
+
+[data-theme='blueprint'] {
+  color-scheme: light;
+
+  --bg: #eef1f6;
+  --panel: #ffffff;
+  --panel2: #f7f9fc;
+  --border: #d5dbe6;
+  --border-strong: #b9c2d2;
+
+  --text: #1a2233;
+  --muted: #5a6478;
+  --faint: #8b94a8;
+
+  --good: #2e7d5b;
+  --good-dim: rgba(46, 125, 91, 0.1);
+  --danger: #b34038;
+  --danger-dim: rgba(179, 64, 56, 0.1);
+  --warn: #8a6d2f;
+  --warn-dim: rgba(138, 109, 47, 0.12);
+  --info: #3e6390;
+  --info-dim: rgba(62, 99, 144, 0.1);
+
+  --p0: #3e6390;
+  --p1: #2e7d5b;
+  --p2: #8a6d2f;
+  --p3: #6b55a8;
+  --p4: #b35a3a;
+  --p5: #9a7d1f;
+
+  --shadow-1: 0 1px 2px rgba(26, 34, 51, 0.06), 0 2px 8px rgba(26, 34, 51, 0.05);
+  --shadow-2: 0 4px 16px rgba(26, 34, 51, 0.1);
+  --shadow-3: 0 12px 40px rgba(26, 34, 51, 0.16);
+
+  --focus: #3e6390;
+
+  --dread-mix: 0;
+  --dread-grain: 0;
+}
+
+/* ── Dread corruption: accents bleed toward danger, grain rises ── */
+[data-dread='1'] { --dread-mix: 0.08; --dread-grain: 0.015; }
+[data-dread='2'] { --dread-mix: 0.18; --dread-grain: 0.03; }
+[data-dread='3'] { --dread-mix: 0.32; --dread-grain: 0.05; }
+[data-dread='4'] { --dread-mix: 0.5; --dread-grain: 0.075; }
+[data-dread='5'] { --dread-mix: 0.7; --dread-grain: 0.1; }
+
+/* ── Base ── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  /* Lenis drives scrolling; native smooth would fight it */
+  scroll-behavior: auto;
+}
+
+body {
+  font-family: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+code,
+pre,
+kbd,
+.mono {
+  font-family: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+}
+
+::selection {
+  background: var(--info-dim);
+  color: var(--text);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 99px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Reduced motion: U9 — kill transitions globally; JS gates Lenis/motion too */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

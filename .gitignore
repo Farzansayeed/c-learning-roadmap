@@ -1,5 +1,5 @@
-*.exe
-*.user
-.vercel
-.env*
-.vercel-cli-token
+node_modules
+dist
+*.local
+.DS_Store
+.freebuff/

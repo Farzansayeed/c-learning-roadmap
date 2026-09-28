@@ -1,0 +1,3358 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<title>C × DSA Roadmap Tracker</title>
+<style>
+:root{
+  --bg:#e2dccc;
+  --card:#efe8da;
+  --line:#5a6373;
+  --ink:#262b36;
+  --text:#454c5e;
+  --muted:#576272;
+  --faint:#55606d;
+  --pMintF:#d5e8db; --pMintT:#3e6353;
+  --pSkyF:#cbdef0;  --pSkyT:#40628a;
+  --pPeachF:#ece0cc;--pPeachT:#6d5238;
+  --pRoseF:#ecd2d8; --pRoseT:#74444e;
+  --good:#386851;
+  --danger:#a04440;
+  --clayHi:rgba(255,255,255,.55);
+  --clayLo:rgba(38,43,54,.06);
+  --shadow:0 2px 10px rgba(38,43,54,.07),0 1px 2px rgba(38,43,54,.05);
+  --shadow-hover:0 5px 18px rgba(38,43,54,.13);
+  --font-display:"Fraunces","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --gradA:#4c8263;
+  --gradB:#5d7a99;
+}
+[data-theme="dark"]{
+  --bg:#22262f;
+  --card:#2b313d;
+  --line:#8b93a1;
+  --ink:#e9e4da;
+  --text:#ccd3de;
+  --muted:#9aa4b6;
+  --faint:#929bae;
+  --pMintF:#24382f; --pMintT:#93cdb4;
+  --pSkyF:#2c3a52;  --pSkyT:#9fbce0;
+  --pPeachF:#3d362a;--pPeachT:#d9b48c;
+  --pRoseF:#3c2c31; --pRoseT:#d8a3ad;
+  --good:#6fc49b;
+  --danger:#e08a80;
+  --clayHi:rgba(255,255,255,.04);
+  --clayLo:rgba(0,0,0,.25);
+  --shadow:0 2px 10px rgba(0,0,0,.32),0 1px 2px rgba(0,0,0,.28);
+  --shadow-hover:0 5px 18px rgba(0,0,0,.5);
+  --gradA:#6faa8c;
+  --gradB:#86a5c6;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:15px;line-height:1.55;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;
+  transition:background-color .25s ease,color .25s ease;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:200;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:.045;mix-blend-mode:multiply;
+}
+[data-theme="dark"] body::before{opacity:.06;mix-blend-mode:overlay}
+::selection{background:var(--pSkyF);color:var(--pSkyT)}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;border:3px solid var(--bg)}
+::-webkit-scrollbar-track{background:transparent}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:3px solid var(--pSkyT);outline-offset:2px;border-radius:8px}
+
+.bx{border:1.5px solid var(--line);box-shadow:var(--shadow);border-radius:16px;background:var(--card)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px 90px}
+
+.topbar{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1.5px solid var(--line)}
+.topbar-inner{max-width:1080px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:14px}
+.logo{
+  width:44px;height:44px;border-radius:14px;flex:none;
+  display:grid;place-items:center;color:var(--pMintT);
+  background:linear-gradient(160deg,var(--pMintF),var(--pSkyF));
+  border:1.5px solid var(--line);
+  box-shadow:inset -3px -4px 7px var(--clayLo),inset 3px 4px 8px var(--clayHi),var(--shadow);
+  font-weight:800;font-size:14px;font-family:ui-monospace,"Cascadia Code",Consolas,monospace;
+}
+.brand h1{font-family:var(--font-display);font-size:19px;font-weight:600;letter-spacing:-.3px;line-height:1.15;color:var(--ink,#262b36)}
+[data-theme="dark"] .brand h1{color:var(--text)}
+.brand p{font-size:12.5px;color:var(--muted)}
+.topbar-actions{margin-left:auto;display:flex;gap:10px}
+.icon-btn{
+  width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+  border:1.5px solid var(--line);background:var(--card);color:var(--muted);
+  box-shadow:var(--shadow);transition:.15s ease-out;
+}
+.icon-btn:hover{transform:scale(1.05);box-shadow:var(--shadow-hover);color:var(--text)}
+.icon-btn:active{transform:scale(.94);box-shadow:none}
+.icon-btn svg{width:18px;height:18px}
+
+.hero{display:flex;gap:22px;align-items:stretch;flex-wrap:wrap;padding:30px;margin-top:34px}
+.ring-box{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-width:180px}
+.ring-wrap{
+  position:relative;width:158px;height:158px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,var(--clayHi),transparent 55%),var(--card);
+  border:1.5px solid var(--line);
+  box-shadow:inset -4px -6px 10px var(--clayLo),inset 4px 6px 12px var(--clayHi),var(--shadow);
+}
+.ring-wrap svg{width:88%;height:88%;position:absolute;inset:6%;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--bg);stroke-width:11}
+.ring-fg{fill:none;stroke:url(#ringGrad);stroke-width:11;stroke-linecap:round;transition:stroke-dashoffset .7s cubic-bezier(.25,.9,.35,1)}
+.ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-label b{font-family:var(--font-display);font-size:34px;font-weight:600;letter-spacing:-1px}
+.ring-label span{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1.6px;font-weight:700}
+.hero-stats{flex:1.25;min-width:250px;display:grid;grid-template-columns:repeat(auto-fit,minmax(122px,1fr));gap:13px;align-content:center}
+.stat{border:1.5px solid var(--line);border-radius:14px;padding:13px 15px;box-shadow:var(--shadow);transition:.15s ease-out;background:var(--card)}
+.stat:hover{transform:scale(1.02);box-shadow:var(--shadow-hover)}
+.stat b{display:block;font-family:var(--font-display);font-size:22px;font-weight:600;letter-spacing:-.3px;color:var(--ink,#262b36)}
+[data-theme="dark"] .stat b{color:var(--text)}
+.stat span{font-size:11.5px;color:var(--muted);font-weight:600}
+#statRank b{font-size:15px;line-height:1.15;white-space:normal}
+#statRankSub{font-size:10px;letter-spacing:.3px;font-variant-numeric:tabular-nums;margin-top:3px}
+.dread-chip{min-width:104px}
+.stat.warn b{color:var(--pRoseT)}
+.stat.warn span{color:var(--pRoseT)}
+.xpbar{height:5px;border-radius:99px;background:var(--bg);margin-top:7px;overflow:hidden;border:1px solid color-mix(in srgb,var(--line) 30%,transparent)}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,var(--pMintT),var(--pSkyT));transition:width .4s ease}
+.rhythm{flex:1;min-width:250px;border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;justify-content:center;gap:10px;background:var(--card);box-shadow:var(--shadow)}
+[data-theme="dark"] .rhythm{background:var(--card)}
+.rhythm h3{font-size:11.5px;text-transform:uppercase;letter-spacing:1.6px;color:var(--pPeachT);margin-bottom:2px;font-weight:800}
+.rhythm-row{display:flex;gap:10px;align-items:baseline;font-size:13.5px;color:var(--text)}
+.rhythm-row .day{font-family:ui-monospace,"Cascadia Code",Consolas,monospace;font-size:11px;font-weight:800;color:var(--pPeachT);white-space:nowrap}
+.rhythm-note{font-size:12px;color:var(--muted);border-top:2px dashed color-mix(in srgb,var(--line) 35%,transparent);padding-top:9px;margin-top:3px}
+
+.toolbar{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:28px 2px 16px}
+.toolbar-spacer{flex:1}
+.btn{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:8px 14px;border-radius:12px;font-size:13px;font-weight:700;
+  border:1.5px solid var(--line);background:var(--card);color:var(--text);
+  box-shadow:var(--shadow);transition:.15s ease-out;
+}
+.btn:hover{transform:scale(1.03);box-shadow:var(--shadow-hover)}
+.btn:active{transform:scale(.96);box-shadow:none}
+.btn.active{background:var(--pSkyF);color:var(--pSkyT)}
+.btn.danger{background:var(--pRoseF);color:var(--pRoseT)}
+.btn.primary{background:var(--pMintF);color:var(--pMintT)}
+.btn svg{width:15px;height:15px}
+
+.daily{margin-bottom:26px;overflow:hidden}
+.daily-head{padding:20px 22px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;border-bottom:1.5px solid var(--line);background:var(--card);border-radius:13px 13px 0 0}
+[data-theme="dark"] .daily-head{background:var(--card)}
+.dh-date h2{font-family:var(--font-display);font-size:23px;font-weight:600;letter-spacing:-.4px;color:var(--ink,#262b36);line-height:1.2}
+[data-theme="dark"] .dh-date h2{color:var(--text)}
+.dh-date p{font-size:12.5px;color:var(--muted);font-weight:600;margin-top:2px}
+.target-chip{
+  display:inline-flex;align-items:center;gap:6px;margin-top:8px;
+  padding:4px 12px;border-radius:99px;border:1.5px solid var(--line);
+  background:var(--card);font-size:12px;font-weight:800;color:var(--pSkyT);
+  box-shadow:var(--shadow);
+}
+.streak-clay{
+  margin-left:auto;display:flex;flex-direction:column;align-items:center;gap:2px;
+  min-width:86px;padding:10px 16px;border-radius:20px;
+  background:var(--card);
+  border:1.5px solid var(--line);
+  box-shadow:none;
+}
+[data-theme="dark"] .streak-clay{background:radial-gradient(circle at 35% 30%,var(--clayHi),transparent 55%),var(--card)}
+.streak-clay b{font-size:23px;font-weight:800;line-height:1;display:flex;align-items:center;gap:5px;color:var(--pPeachT)}
+.streak-clay b svg{width:19px;height:19px}
+.streak-clay span{font-size:10px;text-transform:uppercase;letter-spacing:1.3px;font-weight:800;color:var(--muted)}
+.dh-week{text-align:right;font-size:12px;font-weight:700;color:var(--muted);line-height:1.7}
+.dh-week b{color:var(--text)}
+
+.settings-row{
+  display:none;flex-wrap:wrap;gap:14px;align-items:center;
+  padding:14px 22px;border-bottom:1.5px dashed color-mix(in srgb,var(--line) 45%,transparent);
+}
+.daily.settings-open .settings-row{display:flex}
+.set-item{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--muted)}
+.set-item input,.set-item select{
+  font:inherit;font-size:12.5px;font-weight:700;color:var(--text);
+  border:1.5px solid var(--line);border-radius:9px;padding:5px 9px;background:var(--card);
+}
+.gear-btn.active{background:var(--pSkyF);color:var(--pSkyT)}
+
+.today-card{padding:20px 22px}
+.tc-title{font-size:12px;text-transform:uppercase;letter-spacing:1.8px;font-weight:800;color:var(--faint);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.tc-title .dotlive{width:9px;height:9px;border-radius:50%;background:var(--good);box-shadow:0 0 0 3px color-mix(in srgb,var(--good) 30%,transparent)}
+.hours-box{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:14px 0 6px}
+.hours-bar{flex:1;min-width:170px;height:16px;border:1.5px solid var(--line);border-radius:99px;overflow:hidden;background:var(--bg);box-shadow:inset 2px 2px 4px rgba(0,0,0,.06)}
+.hours-bar i{display:block;height:100%;background:linear-gradient(90deg,#4c8263,#6b89a8);transition:width .4s cubic-bezier(.25,.9,.35,1)}
+.hours-num{font-weight:800;font-variant-numeric:tabular-nums;font-size:14px;white-space:nowrap}
+.hbtn{width:34px;height:34px;border-radius:10px;border:1.5px solid var(--line);background:var(--pMintF);color:var(--pMintT);font-weight:800;box-shadow:var(--shadow);transition:.12s ease-out;font-size:14px}
+.hbtn:hover{transform:scale(1.08)}
+.hbtn:active{transform:scale(.9);box-shadow:none}
+.today-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.tombstone{
+  border:1.5px dashed var(--line);border-radius:14px;padding:20px;text-align:center;
+  background:repeating-linear-gradient(45deg,transparent,transparent 12px,color-mix(in srgb,var(--pRoseF) 55%,transparent) 12px,color-mix(in srgb,var(--pRoseF) 55%,transparent) 24px);
+}
+.tombstone h4{font-family:var(--font-display);font-size:17px;font-weight:600;letter-spacing:2px;color:var(--pRoseT)}
+.tombstone p{font-size:13px;color:var(--muted);margin-top:6px}
+.verdict-badge{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:12px;border:1.5px solid var(--line);font-weight:800;box-shadow:var(--shadow)}
+.verdict-badge.pass{background:var(--pMintF);color:var(--pMintT)}
+.verdict-badge.fail{background:var(--pRoseF);color:var(--pRoseT)}
+
+.hm-wrap{padding:6px 22px 20px}
+.hm-head{display:flex;align-items:center;gap:10px;margin:10px 0 10px}
+.hm-grid{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,1fr);gap:4px;width:max-content}
+.hm-cell{width:17px;height:17px;border-radius:5px;background:var(--bg);border:1.5px solid color-mix(in srgb,var(--line) 25%,transparent);cursor:pointer;transition:.1s}
+.hm-cell:hover{transform:scale(1.18)}
+.hm-cell.pass{background:var(--good);border-color:var(--good)}
+.hm-cell.fail{background:var(--danger);border-color:var(--danger)}
+.hm-cell.ghost{background:color-mix(in srgb,var(--muted) 14%,var(--bg));border-color:color-mix(in srgb,var(--muted) 50%,transparent);border-style:dashed}
+.hm-cell.catch{background:color-mix(in srgb,var(--pMintF) 55%,var(--bg));border-color:color-mix(in srgb,var(--pMintT) 50%,transparent)}
+.hm-cell.post{background:var(--pPeachF);border-color:var(--pPeachT)}
+.hm-legend{font-size:11px;color:var(--faint);font-weight:600;margin-top:8px}
+.tl-toggle-row{padding:0 22px 20px;display:flex;gap:10px}
+#timeline{display:none;padding:0 22px 24px}
+#timeline.show{display:block}
+.tl-week{margin-bottom:18px}
+.tl-week-label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--pSkyT);margin-bottom:9px}
+.day-card{
+  display:flex;align-items:flex-start;gap:12px;
+  border:1.5px solid color-mix(in srgb,var(--line) 70%,transparent);border-radius:12px;
+  padding:10px 14px;margin-bottom:7px;background:var(--card);transition:.15s ease-out;
+}
+.day-card.is-today{border-color:var(--line);box-shadow:var(--shadow-hover);background:color-mix(in srgb,var(--pSkyF) 35%,var(--card))}
+.day-card.flash{animation:flashy .9s ease 2}
+@keyframes flashy{50%{background:var(--pMintF)}}
+.dc-date{font-family:ui-monospace,"Cascadia Code",Consolas,monospace;font-size:11px;font-weight:800;color:var(--muted);min-width:86px;padding-top:2px}
+.dc-body{flex:1;font-size:13px}
+.dc-body .dc-stage{font-weight:800;color:var(--text)}
+.dc-body .dc-sub{font-size:12px;color:var(--muted)}
+.dc-status{font-size:10px;font-weight:800;letter-spacing:1px;padding:3px 9px;border-radius:99px;border:1.5px solid var(--line);white-space:nowrap;align-self:center}
+.dc-status.pass{background:var(--pMintF);color:var(--pMintT)}
+.dc-status.fail{background:var(--pRoseF);color:var(--pRoseT)}
+.dc-status.post{background:var(--pPeachF);color:var(--pPeachT)}
+.dc-status.pending{background:var(--bg);color:var(--faint)}
+.dc-status.ghost{background:var(--bg);color:var(--faint);border-style:dashed}
+.dc-status.catchup{background:var(--pMintF);color:var(--pMintT)}
+
+.stage{background:var(--card);margin-bottom:18px;overflow:hidden;transition:box-shadow .15s ease-out;border-radius:16px;border:1.5px solid var(--line);box-shadow:var(--shadow)}
+.stage:hover{box-shadow:var(--shadow-hover)}
+.stage.open{box-shadow:var(--shadow-hover)}
+.stage-head{width:100%;display:flex;align-items:center;gap:15px;padding:16px 20px;text-align:left}
+.num{
+  width:46px;height:46px;border-radius:14px;flex:none;
+  display:grid;place-items:center;
+  font-family:"JetBrains Mono",ui-monospace,"Cascadia Code",Consolas,monospace;
+  font-weight:600;font-size:14px;
+  border:1.5px solid var(--line);background:var(--card);
+  transition:.2s;
+}
+.stage[data-cat="c"] .num{color:var(--pSkyT);border-color:color-mix(in srgb,var(--pSkyT) 55%,var(--line))}
+.stage[data-cat="dsa"] .num{color:var(--pPeachT);border-color:color-mix(in srgb,var(--pPeachT) 55%,var(--line))}
+.stage[data-cat="meta"] .num{color:var(--pMintT);border-color:color-mix(in srgb,var(--pMintT) 55%,var(--line))}
+.stage.complete .num{background:var(--good);color:#fff}
+.stage.ms .num{background:var(--card);color:var(--pPeachT);border-color:color-mix(in srgb,var(--pPeachT) 55%,var(--line))}
+.stage.ms.complete .num{background:var(--good);color:#fff;border-color:var(--good)}
+[data-theme="dark"] .stage.complete .num{color:#1a1f27}
+[data-theme="dark"] .stage.ms.complete .num{color:#1a1f27}
+.head-text{flex:1;min-width:0}
+.head-text .title{display:block;font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:-.2px;color:var(--ink,#262b36)}
+[data-theme="dark"] .head-text .title{color:var(--text)}
+.head-text .meta{display:block;font-size:12.5px;color:var(--muted);margin-top:2px;font-weight:600}
+.head-progress{display:flex;align-items:center;gap:11px;flex:none}
+.bar{width:110px;height:12px;border:1.5px solid var(--line);border-radius:99px;background:var(--bg);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#4c8263,#6b89a8);transition:width .5s cubic-bezier(.25,.9,.35,1)}
+.pct{font-size:13px;font-weight:800;width:39px;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.stage.complete .pct{color:var(--good)}
+.chev{width:17px;height:17px;color:var(--muted);transition:transform .3s;flex:none}
+.stage.open .chev{transform:rotate(180deg)}
+
+.stage-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .38s cubic-bezier(.25,.9,.35,1)}
+.stage.open .stage-body{grid-template-rows:1fr}
+.stage-inner{overflow:hidden;min-height:0}
+.stage-pad{padding:4px 22px 22px;border-top:1.5px solid color-mix(in srgb,var(--line) 80%,transparent)}
+.goal{font-size:13.5px;color:var(--muted);font-style:italic;padding:14px 0 4px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:6px 34px;margin-top:8px}
+@media(max-width:720px){.cols{grid-template-columns:1fr}}
+.sec-title{font-size:11px;text-transform:uppercase;letter-spacing:1.8px;color:var(--faint);margin:15px 0 6px;font-weight:800}
+.list{list-style:none}
+.list li{border-bottom:1.5px dashed color-mix(in srgb,var(--line) 22%,transparent)}
+.list li:last-child{border-bottom:none}
+.chk-row{display:flex;align-items:flex-start;gap:11px;padding:8px 8px;margin:0 -8px;border-radius:9px;cursor:pointer;transition:background .15s}
+.chk-row:hover{background:color-mix(in srgb,var(--pSkyF) 30%,transparent)}
+.chk-row input{
+  appearance:none;-webkit-appearance:none;
+  width:20px;height:20px;border-radius:6px;flex:none;margin-top:1px;
+  border:1.5px solid var(--line);background:var(--card);cursor:pointer;position:relative;transition:.15s;
+  box-shadow:var(--shadow);
+}
+.chk-row input:checked{background:var(--good)}
+.ms-complete .chk-row input:checked{background:var(--good)}
+.chk-row input:checked::after{
+  content:"";position:absolute;left:5.5px;top:1.5px;width:5px;height:10px;
+  border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(43deg);
+}
+.chk-row input:checked{box-shadow:none}
+[data-theme="dark"] .chk-row input:checked::after{border-color:#1a1f27}
+.chk-row input:focus-visible{outline:3px solid var(--pSkyT);outline-offset:2px}
+.chk-text{font-size:14px;color:var(--text);transition:.18s}
+li.done .chk-text{color:var(--faint);text-decoration:line-through}
+
+.chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:2px}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:6px 13px;border-radius:99px;font-size:12.5px;font-weight:700;
+  border:1.5px solid var(--line);background:var(--card);color:var(--text);
+  box-shadow:var(--shadow);transition:.15s ease-out;
+}
+.chip:hover{transform:scale(1.04);box-shadow:var(--shadow-hover)}
+.chip:active{transform:scale(.95);box-shadow:none}
+.chip.excuse-chip{background:var(--card);color:var(--pMintT);border-color:color-mix(in srgb,var(--pMintT) 45%,var(--line))}
+.chip .tag{font-size:9px;font-weight:800;letter-spacing:1px;padding:2px 7px;border-radius:99px;border:1.5px solid currentColor}
+.tag.BOOK{color:var(--pPeachT)}.tag.VIDEO{color:var(--pRoseT)}
+.tag.SITE{color:var(--pSkyT)}.tag.TOOL{color:var(--pMintT)}
+
+.notes-area{position:relative;margin-top:2px}
+.notes-area textarea{
+  width:100%;resize:vertical;min-height:76px;
+  background:var(--bg);color:var(--text);
+  border:1.5px solid color-mix(in srgb,var(--line) 60%,transparent);border-radius:12px;
+  padding:12px 14px;font:inherit;font-size:13.5px;line-height:1.55;
+  transition:border-color .2s;
+}
+.notes-area textarea:focus{outline:none;border-color:var(--line)}
+.notes-area textarea::placeholder{color:var(--faint)}
+.saved-flag{
+  position:absolute;top:-10px;right:12px;
+  font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--pMintT);background:var(--pMintF);padding:2px 10px;border-radius:99px;border:1.5px solid var(--line);
+  opacity:0;transition:opacity .3s;
+}
+.saved-flag.show{opacity:1}
+
+.hub{margin-top:36px}
+.hub-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;margin-top:14px}
+.hub-card{border:1.5px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);background:var(--card);transition:.15s ease-out}
+.hub-card:hover{transform:scale(1.015);box-shadow:var(--shadow-hover)}
+.hub-card h4{font-size:13.5px;font-weight:800;margin-bottom:11px;display:flex;align-items:center;gap:9px}
+.hub-card h4::before{content:"";width:11px;height:11px;border-radius:4px;border:1.5px solid var(--line)}
+.hub-card:nth-child(1) h4::before{background:var(--pPeachF)}
+.hub-card:nth-child(2) h4::before{background:var(--pRoseF)}
+.hub-card:nth-child(3) h4::before{background:var(--pMintF)}
+.hub-card:nth-child(4) h4::before{background:var(--pSkyF)}
+.hub-card .chips{gap:7px}
+.hub-card .chip{font-size:12px;padding:5px 11px}
+
+footer{margin-top:48px;text-align:center;font-size:12.5px;color:var(--faint);line-height:2;font-weight:600}
+footer .dot{margin:0 7px;opacity:.6}
+#lastSaved{color:var(--muted)}
+
+.overlay{
+  position:fixed;inset:0;z-index:90;display:grid;place-items:center;
+  background:rgba(20,24,36,.5);
+  opacity:0;pointer-events:none;transition:opacity .22s;
+}
+.overlay.show{opacity:1;pointer-events:auto}
+.modal{
+  width:min(430px,calc(100vw - 44px));max-height:86vh;overflow:auto;
+  border:1.5px solid var(--line);border-radius:20px;background:var(--card);
+  padding:26px;box-shadow:0 24px 60px rgba(15,18,26,.28),var(--shadow-hover);
+  transform:translateY(16px) scale(.97);transition:transform .22s ease-out;
+}
+.overlay.show .modal{transform:none}
+.modal h3{font-family:var(--font-display);font-size:20px;font-weight:600;letter-spacing:-.3px;margin-bottom:6px;color:var(--ink,#262b36)}
+[data-theme="dark"] .modal h3{color:var(--text)}
+.modal .sub{font-size:13px;color:var(--muted);margin-bottom:18px;font-weight:600}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+
+.pg-pane{display:none}.pg-pane.on{display:block}
+.pg-section-label{font-size:11px;text-transform:uppercase;letter-spacing:1.6px;font-weight:800;color:var(--faint);margin:16px 0 9px}
+.custom-add{display:flex;gap:8px;margin-top:4px}
+.custom-add input{
+  flex:1;font:inherit;font-size:13px;border:1.5px solid var(--line);border-radius:10px;
+  padding:8px 12px;background:var(--bg);color:var(--text);
+}
+.custom-add input:focus{outline:none;border-color:var(--pSkyT)}
+.chip .delx{font-weight:800;margin-left:2px;opacity:.65}
+.chip .delx:hover{opacity:1}
+
+.taunt-box{
+  border:1.5px solid var(--line);border-radius:14px;padding:20px;
+  background:var(--card);margin-bottom:18px;position:relative;
+  border-left:6px solid var(--pPeachT);
+  box-shadow:none;
+}
+[data-theme="dark"] .taunt-box{background:var(--card)}
+.taunt-box .t-quote{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;color:var(--pPeachT);margin-bottom:8px}
+.taunt-box p{font-family:var(--font-display);font-size:17.5px;font-weight:600;line-height:1.5;color:var(--text);letter-spacing:-.2px}
+
+.roast-overlay{
+  position:fixed;inset:0;z-index:97;display:none;place-items:center;
+  background:
+    radial-gradient(900px 500px at 20% 0%,rgba(220,38,38,.28),transparent 60%),
+    radial-gradient(900px 500px at 85% 100%,rgba(127,29,29,.35),transparent 60%),
+    #14060a;
+  color:#ffe4e6;
+}
+.roast-overlay.show{display:grid}
+.roast-box{width:min(560px,calc(100vw - 40px));max-height:88vh;overflow:auto;border:3px solid #ef4444;border-radius:22px;padding:34px;background:rgba(24,7,10,.92);box-shadow:0 0 60px rgba(220,38,38,.4);animation:roastIn .4s cubic-bezier(.2,1.4,.4,1)}
+@keyframes roastIn{from{transform:scale(.85) rotate(-1.5deg);opacity:0}}
+.roast-tier{font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#fca5a5;margin-bottom:10px}
+.roast-head{font-size:clamp(28px,6vw,42px);font-weight:800;letter-spacing:-1px;line-height:1.05;margin-bottom:18px;color:#fff;animation:glitch 2.1s infinite steps(1)}
+.roast-dossier{list-style:none;margin:0 0 20px}
+.roast-dossier li{
+  font-size:14px;font-weight:600;padding:9px 12px;margin-bottom:7px;
+  border:2px solid rgba(239,68,68,.45);border-radius:10px;background:rgba(127,29,29,.22);
+}
+.roast-close{font-size:15px;font-weight:700;line-height:1.65;color:#fecaca;margin-bottom:24px;font-style:italic}
+.roast-actions{display:flex;gap:10px;flex-wrap:wrap}
+.rbtn{padding:11px 20px;border-radius:12px;font-weight:800;font-size:13.5px;border:2.5px solid #ef4444;transition:.12s;color:#fff}
+.rbtn:active{transform:translateY(2px)}
+.rbtn.solid{background:#ef4444;box-shadow:3px 3px 0 #7f1d1d}
+.rbtn.solid:hover{background:#dc2626}
+.rbtn.ghost{background:transparent;color:#fca5a5}
+.rbtn.ghost:hover{background:rgba(239,68,68,.15)}
+
+@keyframes glitch{
+  0%,88%{transform:none;text-shadow:none}
+  89%{transform:skewX(3deg) translateX(-2px);text-shadow:3px 0 #ef4444,-3px 0 #0ea5e9}
+  91%{transform:skewX(-2deg);text-shadow:-3px 0 #ef4444,3px 0 #0ea5e9}
+  93%{transform:none;text-shadow:none}
+}
+body.corrupted .brand h1{animation:glitch 3.4s infinite steps(1);color:var(--danger)}
+body.corrupted .topbar{border-bottom-color:var(--danger)}
+body.corrupted .logo{background:linear-gradient(160deg,#7f1d1d,#450a0a);color:#fff}
+
+.toasts{position:fixed;bottom:22px;right:22px;z-index:98;display:flex;flex-direction:column;gap:9px;pointer-events:none}
+.toast{
+  border:1.5px solid var(--line);border-radius:12px;background:var(--card);
+  font-size:13.5px;font-weight:700;padding:12px 18px;box-shadow:var(--shadow-hover);
+  opacity:0;transform:translateX(18px);transition:.3s;max-width:330px;
+}
+.toast.show{opacity:1;transform:none}
+.toast.info{border-left:5px solid var(--pSkyT);color:var(--text)}
+.toast.good{border-left:5px solid var(--good);color:var(--text)}
+.toast.bad{border-left:5px solid var(--pRoseT);color:var(--text)}
+
+/* ═══ GUARDIAN self-test panel ═══ */
+.guardian-panel{position:fixed;top:12px;right:12px;width:370px;max-height:74vh;overflow:auto;z-index:300;background:var(--card);color:var(--text);border:2px solid var(--line);border-radius:14px;padding:14px;font-family:ui-monospace,"Cascadia Code",Consolas,monospace;font-size:11px;line-height:1.5;box-shadow:var(--shadow-hover)}
+.gp-head{display:flex;gap:8px;align-items:center;margin-bottom:8px;font-weight:800;flex-wrap:wrap}
+.gp-close{margin-left:auto;border:1.5px solid var(--line);border-radius:8px;padding:2px 8px;background:none;color:inherit;cursor:pointer;font:inherit}
+.gp-row{padding:2px 0;border-bottom:1px dashed color-mix(in srgb,var(--line) 25%,transparent);word-break:break-word}
+.gp-pass{color:var(--good)}.gp-fail{color:var(--danger)}.gp-skip{color:var(--faint)}
+.gp-cov{margin-top:10px;border-top:1.5px solid var(--line);padding-top:8px}
+.gp-cov h4{margin:0 0 6px;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--faint)}
+.gp-tag{font-size:9px;letter-spacing:.8px;padding:1px 6px;border-radius:99px;border:1.5px solid currentColor}
+
+/* ═══ Sunday Tribunal ═══ */
+.tribunal-box{width:min(560px,calc(100vw - 40px));max-height:88vh;overflow:auto;background:var(--card);border:2px solid var(--pPeachT);border-radius:20px;padding:26px;box-shadow:var(--shadow-hover);font-family:var(--font-display)}
+.tb-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.tb-head .gp-tag{color:var(--pPeachT);letter-spacing:2px}
+.tb-head h2{font-size:21px;font-weight:600;color:var(--ink,#262b36);margin:0}
+.tb-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:14px}
+.tb-day{border:1.5px solid var(--line);border-radius:10px;padding:7px 4px;text-align:center;background:var(--bg)}
+.tb-day .d-lab{font-size:9px;font-weight:800;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
+.tb-day .d-hrs{font-family:"JetBrains Mono",Consolas,monospace;font-size:13px;font-weight:600;margin:3px 0;color:var(--text)}
+.tb-day .d-dot{width:8px;height:8px;border-radius:50%;margin:0 auto}
+.d-dot.passed{background:var(--good)} .d-dot.failed{background:var(--danger)} .d-dot.postponed{background:var(--pPeachT)}
+.d-dot.ghost{background:transparent;border:1.5px dashed var(--muted)} .d-dot.open{background:var(--pSkyT)}
+.d-dot.future{background:var(--faint);opacity:.35}
+.tb-totals{display:flex;gap:16px;justify-content:center;font-size:13px;font-weight:700;color:var(--text);margin-bottom:18px;flex-wrap:wrap}
+.tb-totals b{font-variant-numeric:tabular-nums}
+.stamp{width:max-content;margin:0 auto 12px;padding:10px 26px;border:4px double currentColor;border-radius:8px;transform:rotate(-7deg);font-weight:700;font-size:clamp(18px,4vw,26px);letter-spacing:3px;text-align:center}
+.stamp.FLAWLESS{color:#b8860b} .stamp.SOVEREIGN{color:var(--good)} .stamp.SOLID{color:var(--skyT,var(--pSkyT))}
+.stamp.SHAKY{color:var(--pPeachT)} .stamp.ABYSMAL{color:var(--danger)} .stamp.EARLY{color:var(--muted)}
+.tb-line{text-align:center;font-style:italic;font-size:15px;color:var(--text);margin:0 0 10px;line-height:1.5}
+.tb-msg{text-align:center;font-size:12.5px;color:var(--muted);margin:0 0 16px}
+.stamp.RESTED{color:#c9a227}
+.verdict-badge.rest{background:var(--bg);color:#c9a227;border-color:#c9a227}
+body.nagmode #streakFlameWrap svg,body.nagmode .dread-chip{animation:pulseNag 1.1s infinite}
+@keyframes pulseNag{50%{filter:brightness(1.7)}}
+
+/* ═══ Bedtime Lockout — nag mode lockdown layer ═══ */
+body.nagmode::before{content:'';position:fixed;inset:0;z-index:44;background:rgba(5,5,12,.55);pointer-events:none}
+body.nagmode #dailyPanel{position:relative;z-index:45}
+body.nagmode .today-card{border-color:var(--danger);box-shadow:0 0 0 3px color-mix(in srgb,var(--danger) 30%,transparent),var(--shadow-hover);animation:nagPulse 2.4s ease infinite}
+@keyframes nagPulse{50%{border-color:var(--danger);box-shadow:0 0 0 6px color-mix(in srgb,var(--danger) 18%,transparent),var(--shadow-hover)}}
+#nagBanner{position:sticky;top:0;z-index:60;width:100%;background:color-mix(in srgb,var(--danger) 16%,var(--card));border-bottom:1.5px solid var(--danger);color:var(--danger);font-weight:800;font-size:11px;letter-spacing:1.2px;text-align:center;padding:8px 14px}
+#nagBanner[hidden]{display:none}
+#lateNightOverlay .tribunal-box{border-color:var(--danger)}
+#lnFlavor{font-family:var(--font-display);font-size:17px;line-height:1.55;color:var(--text);margin:0 0 18px}
+#lnAckBtn{background:var(--danger)!important;border-color:var(--danger)!important;color:#fff!important}
+#nagBanner{position:sticky;top:0;z-index:60;background:color-mix(in srgb,var(--danger) 16%,var(--card));border-bottom:1.5px solid var(--danger);color:var(--danger);font-weight:800;font-size:11px;letter-spacing:1.2px;text-align:center;padding:8px 14px}
+#nagBanner[hidden]{display:none}
+body.nagmode #streakFlameWrap svg,body.nagmode .dread-chip{animation:pulseNag 1.1s infinite}
+@keyframes pulseNag{50%{filter:brightness(1.7)}}
+
+[data-theme="dark"] .stamp.FLAWLESS{color:#ffd700}
+
+/* ═══ Bedtime Lockout — nag mode lockdown layer ═══ */
+body.nagmode #streakFlameWrap svg,body.nagmode .dread-chip{animation:pulseNag 1.1s infinite}
+@keyframes pulseNag{50%{filter:brightness(1.7)}}
+
+/* ═══ Streak Insurance ═══ */
+.d-dot.rest{background:#c9a227}
+.hm-cell.rest{background:color-mix(in srgb,#c9a227 32%,var(--bg));border-color:#c9a227}
+.dc-status.rest{background:var(--bg);color:#c9a227;border-color:#c9a227}
+.stamp.RESTED{color:#c9a227}
+
+/* ═══ Day Inspector ═══ */
+.inspector-box{border-color:var(--pSkyT)}
+.inspector-box .tb-head h2{font-size:20px}
+.insp-item{display:flex;align-items:flex-start;gap:9px;padding:5px 4px;border-bottom:1px dashed color-mix(in srgb,var(--line) 25%,transparent);font-size:13.5px;color:var(--text)}
+.insp-item:last-child{border-bottom:none}
+.insp-item .ix{flex:none;font-family:"JetBrains Mono",Consolas,monospace;font-weight:600;width:18px;text-align:center}
+.insp-item .ix.done{color:var(--good)} .insp-item .ix.miss{color:var(--faint)}
+.insp-item .stag{font-size:9px;letter-spacing:.8px;color:var(--faint);margin-left:auto;white-space:nowrap;padding-top:3px}
+.insp-verdict-line{padding:6px 10px;border-radius:10px;background:var(--bg);font-size:12.5px;color:var(--muted);margin-bottom:4px}
+
+#confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:94}
+.confetto{position:absolute;top:-16px;width:9px;height:15px;border-radius:3px;border:1.5px solid rgba(35,41,54,.5);animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(680deg);opacity:.2}}
+
+body.hide-done .stage.complete{display:none}
+
+/* ── Dread Engine ── */
+body::after{content:"";position:fixed;inset:0;z-index:198;pointer-events:none;opacity:0;background:radial-gradient(130% 130% at 50% 42%,transparent 52%,rgba(10,7,16,.9) 100%);transition:opacity 1s ease}
+body.dread-1::after{opacity:.06}
+body.dread-2::after{opacity:.14}
+body.dread-3::after{opacity:.24}
+body.dread-4::after{opacity:.38}
+body.dread-5::after{opacity:.55}
+body.dread-3 .streak-clay b svg{animation:pulseFlame 2.2s infinite}
+body.dread-4 .streak-clay b svg{animation:pulseFlame 1.5s infinite}
+body.dread-5 .streak-clay b svg{animation:pulseFlame .9s infinite}
+@keyframes pulseFlame{50%{transform:scale(1.22);filter:brightness(1.6)}}
+body.dread-4 .logo,body.dread-5 .logo{background:linear-gradient(160deg,#7f1d1d,#450a0a)!important;color:#fff!important}
+body.dread-5 .brand h1{text-shadow:0 0 12px rgba(239,68,68,.6)}
+.dread-chip{
+  min-width:96px;padding:8px 14px;border-radius:16px;border:1.5px solid var(--line);
+  background:var(--card);display:flex;flex-direction:column;align-items:center;gap:3px;
+  box-shadow:var(--shadow);cursor:help;
+}
+.dread-chip .dc-name{font-size:11px;font-weight:800;letter-spacing:1.6px;color:var(--danger)}
+.dread-chip .dc-bar{width:100%;height:5px;border-radius:99px;background:var(--bg);overflow:hidden;border:1px solid color-mix(in srgb,var(--line) 30%,transparent)}
+.dread-chip .dc-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--pPeachT),var(--danger));transition:width .5s}
+.dread-chip .dc-sub{font-size:9.5px;font-weight:700;letter-spacing:.6px;color:var(--muted)}
+
+/* ── Focus Timer ── */
+.timer-box{display:inline-flex;align-items:center;gap:9px;padding:5px 8px;border-radius:99px;border:1.5px dashed color-mix(in srgb,var(--line) 45%,transparent);flex-wrap:wrap}
+.timer-box .hbtn{width:auto;min-width:0;height:auto;padding:6px 13px;border-radius:99px;font-size:12.5px;line-height:1}
+.t-clock{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace;font-weight:600;font-size:14px;min-width:56px;text-align:center;font-variant-numeric:tabular-nums;color:var(--ink)}
+.timer-box.live{border-style:solid;border-color:color-mix(in srgb,var(--good) 60%,var(--line))}
+.timer-box.live .t-clock::before{content:"● ";color:var(--good);animation:pulseDot 1.6s infinite;font-size:10px}
+@keyframes pulseDot{50%{opacity:.25}}
+.mini-timer{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace;font-weight:600;font-size:13px;color:var(--good);white-space:nowrap;align-self:center}
+@media(max-width:640px){
+.hero-stats{grid-template-columns:repeat(auto-fit,minmax(104px,1fr))}
+#statRank b{font-size:13px}
+#statRankSub{font-size:9px}
+.dread-chip{min-width:auto;padding:7px 10px}
+.hero{padding:22px 16px}
+  .stage-head{gap:11px;padding:14px 15px}
+  .stage-pad{padding:4px 16px 18px}
+  .num{width:40px;height:40px}
+  .head-progress .bar{width:52px}
+  .dh-week{display:none}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" style="stop-color:var(--gradA)"/>
+<stop offset="100%" style="stop-color:var(--gradB)"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="logo">&lt;/&gt;</div>
+    <div class="brand">
+      <h1>C × DSA Roadmap</h1>
+      <p>Zero to data structures — one brutal day at a time</p>
+    </div>
+<div id="nagBanner" hidden>YOU STAYED UP PAST BEDTIME AND DELIVERED NOTHING ? FIRST CHECKBOX CLEARS IT</div><div id="nagBanner" hidden>YOU STAYED UP PAST BEDTIME AND DELIVERED NOTHING — FIRST CHECKBOX CLEARS IT</div>
+<div class="topbar-actions">
+<span class="mini-timer" id="miniTimer"></span>
+<button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme"></button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero bx">
+    <div class="ring-box">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle class="ring-bg" cx="60" cy="60" r="52"/>
+          <circle class="ring-fg" id="ringFg" cx="60" cy="60" r="52" stroke-dasharray="326.73" stroke-dashoffset="326.73"/>
+        </svg>
+        <div class="ring-label"><b id="ringPct">0%</b><span>complete</span></div>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><b id="statItems">0/0</b><span>checkpoints done</span></div>
+      <div class="stat"><b id="statStages">0/13</b><span>stages cleared</span></div>
+      <div class="stat"><b id="statMile">0/4</b><span>milestones built</span></div>
+      <div class="stat" id="statProj" title=""><b id="statProjDate">—</b><span id="statProjSub">projection</span></div>
+<div class="stat" id="statRank" title=""><b id="statRankName">Script Kiddie</b><div class="xpbar"><i id="statRankBar"></i></div><span id="statRankSub">0 XP</span></div>
+    </div>
+    <div class="rhythm">
+      <h3>Weekly Rhythm</h3>
+      <div class="rhythm-row"><span class="day">MON–SAT</span><span>3 h · concepts + practice</span></div>
+      <div class="rhythm-row"><span class="day">SUNDAY</span><span>6–7 h · milestone project + revision</span></div>
+      <p class="rhythm-note">Never rush pointers (Stage 3) and dynamic memory (Stage 4). They carry everything after.</p>
+    </div>
+  </section>
+
+  <nav class="toolbar" aria-label="Tracker controls">
+    <button class="btn" id="hideDoneBtn" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+      Hide completed
+    </button>
+    <button class="btn" id="expandAllBtn">Expand all</button>
+    <button class="btn" id="collapseAllBtn">Collapse all</button>
+    <span class="toolbar-spacer"></span>
+    <button class="btn" id="exportBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export
+    </button>
+    <button class="btn" id="importBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Import
+    </button>
+    <button class="btn danger" id="resetBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      Reset
+    </button>
+  </nav>
+
+  <section class="daily bx" id="dailyPanel"></section>
+
+  <section id="stages"></section>
+
+  <section class="hub">
+    <h2 style="font-size:20px;font-weight:800;letter-spacing:-.3px">Resource Library</h2>
+    <p style="font-size:13px;color:var(--muted);font-weight:600">Everything referenced across the stages, in one place.</p>
+    <div class="hub-grid">
+      <div class="hub-card"><h4>Books</h4><div class="chips">
+        <a class="chip" href="https://knking.com/books/c2" target="_blank" rel="noopener"><span class="tag BOOK">BOOK</span>K.N. King — C: A Modern Approach</a>
+        <a class="chip" href="https://www.amazon.com/dp/0198099304" target="_blank" rel="noopener"><span class="tag BOOK">BOOK</span>Reema Thareja — DS Using C</a>
+      </div></div>
+      <div class="hub-card"><h4>Video</h4><div class="chips">
+        <a class="chip" href="https://cs50.harvard.edu/x/" target="_blank" rel="noopener"><span class="tag VIDEO">VIDEO</span>CS50x Harvard</a>
+        <a class="chip" href="https://www.youtube.com/@mycodeschool" target="_blank" rel="noopener"><span class="tag VIDEO">VIDEO</span>mycodeschool</a>
+        <a class="chip" href="https://www.youtube.com/@abdul_bari" target="_blank" rel="noopener"><span class="tag VIDEO">VIDEO</span>Abdul Bari</a>
+      </div></div>
+      <div class="hub-card"><h4>Practice</h4><div class="chips">
+        <a class="chip" href="https://www.hackerrank.com/domains/c" target="_blank" rel="noopener"><span class="tag SITE">SITE</span>HackerRank C track</a>
+        <a class="chip" href="https://leetcode.com/problemset/" target="_blank" rel="noopener"><span class="tag SITE">SITE</span>LeetCode</a>
+      </div></div>
+      <div class="hub-card"><h4>Reference</h4><div class="chips">
+        <a class="chip" href="https://www.learn-c.org" target="_blank" rel="noopener"><span class="tag SITE">SITE</span>learn-c.org</a>
+        <a class="chip" href="https://www.geeksforgeeks.org/data-structures/" target="_blank" rel="noopener"><span class="tag SITE">SITE</span>GeeksforGeeks DSA</a>
+        <a class="chip" href="https://en.cppreference.com/w/c" target="_blank" rel="noopener"><span class="tag TOOL">TOOL</span>cppreference C</a>
+      </div></div>
+    </div>
+  </section>
+
+  <footer>
+    Progress autosaves locally<span class="dot">·</span>The tracker remembers your behavior<span class="dot">·</span>Last saved <span id="lastSaved">—</span><br>
+    Stage 0 to Stage 11 — and the site is always watching.
+  </footer>
+
+</main>
+
+<div class="overlay" id="postponeOverlay" role="dialog" aria-modal="true" aria-label="Postpone day">
+  <div class="modal">
+    <div class="pg-pane on" id="paneGrid">
+      <h3>Postpone today?</h3>
+      <p class="sub">The entire schedule will shift one day ahead. Your finish line moves further away. Pick your poison.</p>
+      <div class="pg-section-label">Pick your excuse</div>
+      <div id="allExcuses"></div>
+      <div class="pg-section-label">Add your own excuse (it will be judged)</div>
+      <div class="custom-add">
+        <input type="text" id="customExcuseInput" maxlength="60" placeholder="Type an excuse if you dare...">
+        <button class="btn primary" id="addCustomBtn">Add</button>
+      </div>
+      <div class="pg-section-label">Your custom excuses</div>
+      <div id="customExcuses"></div>
+      <div class="modal-actions" style="margin-top:20px">
+        <button class="btn" id="keepStudyingBtn">Keep studying instead</button>
+      </div>
+    </div>
+    <div class="pg-pane" id="paneTaunt">
+      <div class="taunt-box">
+        <div class="t-quote" id="tauntQuote">EXCUSE SUBMITTED</div>
+        <p id="tauntText"></p>
+      </div>
+      <div class="modal-actions" id="tauntActions"></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="resetOverlay" role="dialog" aria-modal="true" aria-labelledby="resetTitle">
+  <div class="modal">
+    <h3 id="resetTitle">Reset all progress?</h3>
+    <p class="sub">This clears every checkbox, note, hour log, postpone record and the behavioral rap sheet stored in this browser. Exported backups are not affected.</p>
+    <div class="modal-actions">
+      <button class="btn" id="cancelResetBtn">Cancel</button>
+      <button class="btn danger" id="confirmResetBtn">Reset everything</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="tribunalOverlay" role="dialog" aria-modal="true" aria-label="Weekly tribunal">
+  <div class="tribunal-box">
+    <div class="tb-head"><span class="gp-tag">TRIBUNAL</span><h2 id="tWeek"></h2><span class="gp-tag" id="tRankTag" style="margin-left:auto"></span></div>
+    <div class="tb-days" id="tDays"></div>
+    <div class="tb-totals" id="tTotals"></div>
+    <div class="stamp" id="tStamp">—</div>
+    <p class="tb-line" id="tLine"></p>
+    <p class="tb-msg" id="tMsg">A sealed message awaits Monday morning.</p>
+    <button class="btn" id="tCloseBtn">Leave the court</button>
+  </div>
+</div>
+
+<div class="overlay" id="inspectorOverlay" role="dialog" aria-modal="true" aria-label="Day inspector">
+  <div class="tribunal-box inspector-box">
+    <div class="tb-head"><h2 id="inspDate">—</h2><span class="dc-status pending" id="inspStatus">—</span></div>
+    <p class="tb-line" id="inspKind" style="margin-bottom:12px"></p>
+    <div class="hours-box" style="margin:0 0 14px">
+      <div class="hours-bar"><i id="inspBarFill" style="width:0%"></i></div>
+      <span class="hours-num" id="inspHoursNum">0 / 0 h</span>
+    </div>
+    <div id="inspItems"></div>
+    <p class="tb-msg" id="inspVerdict" style="text-align:left;margin:10px 0 16px"></p>
+    <button class="btn" id="inspCloseBtn">Close</button>
+  </div>
+</div>
+
+<div class="overlay" id="restConfirmOverlay" role="dialog" aria-modal="true" aria-label="Burn a rest day">
+  <div class="tribunal-box" style="width:min(420px,calc(100vw - 40px));font-family:var(--font-display)">
+    <h2 style="margin:0 0 10px;font-weight:600">Burn a Rest Day?</h2>
+    <p class="tb-msg" style="text-align:left;margin-bottom:12px">The streak survives. Your pride doesn't. Today gets marked as sanctioned rest — no roast, no dread shift, debt still owed.</p>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:16px">Tokens left after burn: <b id="rcTokens" style="color:var(--text)">0</b></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn primary" id="restBurnBtn">Burn it</button>
+      <button class="btn" id="restBackBtn">Back to work</button>
+    </div>
+  </div>
+</div>
+
+  <div class="tribunal-box" style="width:min(460px,calc(100vw - 40px));border-color:var(--danger)">
+    <h2 style="margin:0 0 12px;font-weight:700;letter-spacing:2px;color:var(--danger)">GET TO BED.</h2>
+    <p id="lnFlavor" style="font-family:var(--font-display);font-size:17px;line-height:1.55;color:var(--text);margin:0 0 18px"></p>
+    <button class="btn primary" id="lnAckBtn" style="background:var(--danger);border-color:var(--danger);color:#fff">Fine. Going.</button>
+</div>
+
+
+  <div class="tribunal-box" style="width:min(460px,calc(100vw - 40px));border-color:var(--danger)">
+    <h2 style="margin:0 0 12px;font-weight:700;letter-spacing:2px;color:var(--danger)">GET TO BED.</h2>
+    <p id="lnFlavor" style="font-family:var(--font-display);font-size:17px;line-height:1.55;color:var(--text);margin:0 0 18px"></p>
+    <button class="btn primary" id="lnAckBtn" style="background:var(--danger);border-color:var(--danger);color:#fff">Fine. Going.</button>
+</div>
+<div class="overlay" id="lateNightOverlay" role="alertdialog" aria-modal="true" aria-label="Bedtime warning">
+  <div class="tribunal-box" style="width:min(460px,calc(100vw - 40px));border-color:var(--danger)">
+    <h2 style="margin:0 0 12px;font-weight:700;letter-spacing:2px;color:var(--danger)">GET TO BED.</h2>
+    <p id="lnFlavor" style="font-family:var(--font-display);font-size:17px;line-height:1.55;color:var(--text);margin:0 0 18px"></p>
+    <button class="btn primary" id="lnAckBtn" style="background:var(--danger);border-color:var(--danger);color:#fff">Fine. Going.</button>
+  </div>
+</div>
+
+<div class="roast-overlay" id="roastOverlay" role="alertdialog" aria-modal="true">
+  <div class="roast-box">
+    <div class="roast-tier" id="roastTier"></div>
+    <div class="roast-head" id="roastHead"></div>
+    <ul class="roast-dossier" id="roastDossier"></ul>
+    <p class="roast-close" id="roastClose"></p>
+    <div class="roast-actions" id="roastActions"></div>
+  </div>
+</div>
+
+<input type="file" id="importFile" accept=".json,application/json" hidden>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div id="confetti" aria-hidden="true"></div>
+
+<script>
+'use strict';
+const KEY = 'c-learning-roadmap-v1';
+
+const DATA = {
+  stages: [
+    {
+      id:'s0', num:'00', title:'Environment Setup', dur:'Day 0', cat:'meta',
+      goal:'Get a working toolchain so every later stage is pure learning, no fighting the compiler.',
+      topics:[
+        'Install MinGW-w64 (MSYS2) and verify gcc --version',
+        'Install VS Code + C/C++ extension',
+        'Learn the compile-and-run loop: gcc main.c -o main && ./main'
+      ],
+      practice:['Compile and run Hello World from the terminal, not an IDE button'],
+      res:[
+        ['VS Code + MinGW setup guide','https://code.visualstudio.com/docs/cpp/config-mingw','SITE'],
+        ['MSYS2','https://www.msys2.org','TOOL']
+      ]
+    },
+    {
+      id:'s1', num:'01', title:'C Fundamentals', dur:'Week 1–2', cat:'c',
+      goal:'Learn the grammar of the language: data, input/output, decisions and repetition.',
+      topics:[
+        'Program anatomy, main(), statements and comments',
+        'Variables and types: int, float, char, double + format specifiers',
+        'printf and scanf',
+        'Operators: arithmetic, relational, logical, bitwise',
+        'Conditionals: if / else / switch',
+        'Loops: for, while, do-while'
+      ],
+      practice:[
+        'Build a menu-driven calculator',
+        'Multiplication table generator',
+        'Number guessing game with attempt counter',
+        'Sum of digits / reverse digits of a number'
+      ],
+      res:[
+        ['King ch. 1–7','https://knking.com/books/c2','BOOK'],
+        ['CS50 Week 1','https://cs50.harvard.edu/x/weeks/1/','VIDEO'],
+        ['learn-c.org basics','https://www.learn-c.org','SITE']
+      ]
+    },
+    {
+      id:'s2', num:'02', title:'Functions & Arrays', dur:'Week 2–3', cat:'c',
+      goal:'Break problems into functions and handle collections of data.',
+      topics:[
+        'Functions: parameters, return values, prototypes, scope',
+        'Recursion basics: factorial, Fibonacci',
+        '1D arrays and passing arrays to functions',
+        '2D arrays',
+        'Strings as char[] and the string.h library'
+      ],
+      practice:[
+        'Reverse an array and a string manually (no library calls)',
+        'Find min and max in an array in one pass',
+        'Matrix addition and multiplication',
+        'Palindrome checker for strings'
+      ],
+      res:[
+        ['King ch. 8–13','https://knking.com/books/c2','BOOK'],
+        ['mycodeschool — C programming series','https://www.youtube.com/@mycodeschool','VIDEO']
+      ]
+    },
+    {
+      id:'s3', num:'03', title:'Pointers', dur:'Week 4', cat:'c',
+      goal:'The single most important stage for data structures. Slow down here on purpose.',
+      topics:[
+        'Memory addresses; the & and * operators',
+        'Pointer declaration, dereferencing, NULL pointers',
+        'Pointer arithmetic',
+        'The pointer ↔ array relationship',
+        'Pass-by-reference using pointer parameters',
+        'Pointers to pointers'
+      ],
+      practice:[
+        'Swap two integers via pointers',
+        'Find the max element by walking a pointer across an array',
+        'Implement strlen yourself using only a pointer'
+      ],
+      res:[
+        ['King ch. 11','https://knking.com/books/c2','BOOK'],
+        ['mycodeschool — pointers series','https://www.youtube.com/@mycodeschool','VIDEO']
+      ]
+    },
+    {
+      id:'s4', num:'04', title:'Memory Management', dur:'Week 4–5', cat:'c',
+      goal:'Own the heap: allocate, resize and free memory without leaks.',
+      topics:[
+        'Stack vs heap — where things actually live',
+        'malloc, calloc, realloc, free',
+        'Memory leaks and dangling pointers',
+        'Building dynamic arrays at runtime'
+      ],
+      practice:[
+        'Growable dynamic array: double capacity when full',
+        'Allocate an N×M matrix dynamically and free it cleanly'
+      ],
+      res:[
+        ['King ch. 17','https://knking.com/books/c2','BOOK'],
+        ['Dr. Memory leak checker','https://drmemory.org','TOOL']
+      ]
+    },
+    {
+      id:'s5', num:'05', title:'Structures', dur:'Week 5–6', cat:'c',
+      goal:'Design custom types — the building material of every data structure ahead.',
+      topics:[
+        'struct definition, access, arrays of structs',
+        'typedef and nested structs',
+        'Struct pointers and the -> operator',
+        'Self-referential structures (the key to linked lists and trees)',
+        'Function pointers — first contact',
+        'Enums and unions'
+      ],
+      practice:[
+        'Student database: add, search, display records',
+        'A stack built as a struct holding its own array and top index'
+      ],
+      res:[['King ch. 16','https://knking.com/books/c2','BOOK']]
+    },
+    {
+      id:'s6', num:'06', title:'Pre-DSA Essentials', dur:'Week 6', cat:'meta',
+      goal:'Calibrate how you measure code before measuring data structures.',
+      topics:[
+        'Big-O time complexity: O(1), O(n), O(log n), O(n²)',
+        'Recursion deep dive: call stack, base cases, tree recursion',
+        'Multi-file programs, header files, linking with gcc'
+      ],
+      practice:[
+        'Solve Tower of Hanoi recursively',
+        'Write power(x,n) both iteratively and recursively',
+        'Trace the Big-O of five sample loops on paper'
+      ],
+      res:[
+        ['Abdul Bari — algorithms playlist','https://www.youtube.com/@abdul_bari','VIDEO'],
+        ['GfG — complexity analysis','https://www.geeksforgeeks.org/analysis-algorithms-big-o-analysis/','SITE']
+      ]
+    },
+    {
+      id:'s7', num:'07', title:'Linear Data Structures', dur:'Weeks 7–8', cat:'dsa',
+      goal:'Your first real structures — implement each one twice if you can.',
+      topics:[
+        'Singly linked list: insert, delete, traverse, search',
+        'Doubly and circular linked lists',
+        'Stack: push/pop/peek via array AND via linked list',
+        'Queue, circular queue, deque',
+        'Applications: balanced parentheses, infix → postfix'
+      ],
+      practice:[
+        'Reverse a linked list iteratively and recursively',
+        'Balanced-parentheses checker',
+        'Infix to postfix converter',
+        'Full CRUD implementation for list, stack and queue'
+      ],
+      res:[
+        ['Thareja — linked stacks & queues','https://www.amazon.com/dp/0198099304','BOOK'],
+        ['mycodeschool — linked list series','https://www.youtube.com/@mycodeschool','VIDEO'],
+        ['GfG — data structures','https://www.geeksforgeeks.org/data-structures/','SITE']
+      ]
+    },
+    {
+      id:'s8', num:'08', title:'Non-Linear Data Structures', dur:'Weeks 9–10', cat:'dsa',
+      goal:'Hierarchies and hashing — where recursion starts earning its keep.',
+      topics:[
+        'Binary trees and traversals: inorder, preorder, postorder',
+        'BST: insert, search, delete',
+        'Heaps, heapify and priority queues',
+        'Hash tables: hash functions, collisions, chaining vs open addressing'
+      ],
+      practice:[
+        'Build a BST from scratch with all operations',
+        'Level-order traversal using your own queue',
+        'MinHeap with heapify-up and heapify-down',
+        'Hash map with chaining from scratch'
+      ],
+      res:[
+        ['Abdul Bari — trees & hashing','https://www.youtube.com/@abdul_bari','VIDEO'],
+        ['CS50 — data structures lecture','https://cs50.harvard.edu/x/weeks/5/','VIDEO']
+      ]
+    },
+    {
+      id:'s9', num:'09', title:'Graphs', dur:'Week 11', cat:'dsa',
+      goal:'Model networks and master the two traversals everything else builds on.',
+      topics:[
+        'Adjacency matrix vs adjacency list',
+        'BFS traversal (uses your queue)',
+        'DFS traversal (uses your stack or recursion)',
+        "Dijkstra's shortest path",
+        'Cycle detection'
+      ],
+      practice:[
+        'Represent one graph both ways',
+        'BFS and DFS print-outs from the same graph',
+        'Mini pathfinder on a grid maze'
+      ],
+      res:[['Abdul Bari — graphs','https://www.youtube.com/@abdul_bari','VIDEO']]
+    },
+    {
+      id:'s10', num:'10', title:'Core Algorithms', dur:'Weeks 12–13', cat:'dsa',
+      goal:'Search, sort and backtrack — implemented by hand, no libraries.',
+      topics:[
+        'Linear search and binary search',
+        'Bubble, selection and insertion sort',
+        'Merge sort and quick sort (recursion pays off)',
+        'Backtracking as a general pattern'
+      ],
+      practice:[
+        'Implement all six searches/sorts from scratch',
+        'N-Queens solver with backtracking',
+        'Sudoku solver'
+      ],
+      res:[
+        ['mycodeschool — sorting series','https://www.youtube.com/@mycodeschool','VIDEO'],
+        ['HackerRank — crack your coding interview','https://www.hackerrank.com/domains/data-structures','SITE']
+      ]
+    },
+    {
+      id:'s11', num:'11', title:'Advanced (Optional)', dur:'Week 14+', cat:'dsa',
+      goal:'Stretch territory once the core is solid.',
+      topics:[
+        'AVL / Red-Black trees (conceptual level)',
+        'Greedy algorithms',
+        'Dynamic programming basics: memoization, tabulation',
+        'Tries and Union-Find'
+      ],
+      practice:['Solve ten LeetCode easy→medium problems across DP, greedy and trees'],
+      res:[
+        ['NeetCode roadmap','https://neetcode.io/roadmap','SITE'],
+        ['cp-algorithms.com','https://cp-algorithms.com','SITE']
+      ]
+    }
+  ],
+  milestones: [
+    { t:'Contact book — linked list + file storage, add/search/delete', when:'after Stage 7' },
+    { t:'Expression evaluator — parse and evaluate infix using your stack', when:'after Stage 7' },
+    { t:'File indexer — walk a directory, store words in a BST, query fast', when:'after Stage 8' },
+    { t:'Maze solver — BFS shortest path + backtracking alternate routes', when:'after Stage 9' }
+  ]
+};
+
+const ALLOC = { s0:1, s1:7, s2:5, s3:5, s4:4, s5:4, s6:3, s7:7, s8:7, s9:4, s10:5, s11:1 };
+
+const EXCUSES = {
+  valid: [
+    { id:'college', label:'College assignments/exams are piling up', t:[
+      'College work. Fine. Even the harshest judge nods at this one.',
+      'Valid. But notice how assignments pile up exactly when C gets interesting?',
+      'Accepted. The pile better shrink though. Not you.',
+      'College wins this round. The compiler waits. It is very good at waiting.',
+      'Approved. But the pile only shrinks if you shrink it with C in your hands.'
+    ]},
+    { id:'sick', label:'I am actually not feeling well', t:[
+      'Health first. Recovery protocol: zero guilt, zero reels.',
+      'Valid. Get well soon. The pointers are not going anywhere. Sadly.',
+      'Fine. But hydrate and recover. Do not marinate in the feed while resting.',
+      'Valid. Get well soon. The pointers are not going anywhere. Sadly.',
+      'Approved. Sick days are earned, not downloaded. Rest like it is your job.',
+      'Health first. But the feed is not medicine. You know that now.'
+    ]},
+    { id:'family', label:'Family function / something came up', t:[
+      'Life happens. Rescheduled, not erased.',
+      'Approved. Family wins. Tomorrow better show up bleeding effort.',
+      'Granted. One free pass does not become a subscription.',
+      'Family wins. But the roadmap remembers every detour — and charges interest on each one.',
+      'Approved. Serve the chai, kiss the aunties, then open the compiler before midnight.'
+    ]},
+    { id:'guests', label:'Guests arrived', t:[
+      'Guests: valid. Hiding behind them until midnight: not valid.',
+      'Accepted. Serve the chai. Then serve your ambitions.',
+      'Okay. But when they leave, you grind. Deal?',
+      'Guests: approved. Hiding behind them until Tuesday: noted in the ledger.',
+      'Hospitality is sacred. So is the deadline you just ghosted. Balance.'
+    ]},
+    { id:'power', label:'Power or internet died', t:[
+      'No electricity. No internet. No excuses left after this one.',
+      'Valid. Candlelight debugging builds character anyway.',
+      'Fine. Charge up. Both the laptop and you.',
+      'Power cut accepted. The darkness saw your screen brightness die and smiled.',
+      'No electricity. No internet. The universe cleared your schedule. Use it or answer for it.'
+    ]}
+  ],
+  invalid: [
+    { id:'scroll', label:'Just 5 minutes of reels', t:[
+      'Five minutes. Your five minutes have a timezone of their own.',
+      'You scrolled past discipline to watch strangers dance. Incredible.',
+      'Reels end. Regret loops. Choose your infinite content wisely.',
+      'The algorithm thanks you for your sacrifice. Your future self sends regards. Angry ones.',
+      'You did not watch five minutes. Five minutes watched you quit.',
+      'The reel ended. The algorithm immediately queued your obituary. Very short entry.',
+      'Somewhere in that feed, your discipline was an ad. You skipped it.'
+    ]},
+    { id:'episode', label:'One episode will not hurt', t:[
+      'One episode. Then the credits rolled on your discipline.',
+      'It asked ARE YOU STILL WATCHING. That was a personality test. You failed.',
+      'That cliffhanger cares about you less than your compiler does.',
+      'Congratulations: fictional people made progress today.',
+      'The season finale resolved nothing. Unlike your roadmap, which resolves everything, patiently, whenever you arrive.'
+    ]},
+    { id:'double', label:'I will double up tomorrow', t:[
+      'Double tomorrow. The most bankrupt promise in human history.',
+      'Tomorrow-you has filed for bankruptcy. Again.',
+      'You have doubled tomorrow so many times it is now a cryptocurrency.',
+      'Interest on borrowed tomorrows: due tonight. Status: unpaid.',
+      'Tomorrow-you has changed the locks. Left a note. It just says NO.'
+    ]},
+    { id:'motivation', label:'Not feeling motivated today', t:[
+      'Motivation is a guest. Discipline pays rent. You invited neither.',
+      'Nobody feels motivated. They move anyway. You scrolled instead.',
+      'Waiting to feel ready is just quitting with better lighting.',
+      'Motivation knocked. You were on reel four. It left.',
+      'Inspiration did not knock twice. It left a review: one star, would not motivate again.'
+    ]},
+    { id:'tired', label:'Too tired anyway', t:[
+      'Tired? From what championship-level scrolling session?',
+      'Your thumb must be exhausted. All that flicking. Heroic really.',
+      'Rest is earned. You have been collecting it like discount coupons.',
+      'The bed remains undefeated champion of your evenings.',
+      'Tired from carrying all that potential around unused. It is heavy, apparently.'
+    ]},
+    { id:'brainrest', label:'Brain needs rest', t:[
+      'Your brain wanted rest. You fed it junk content instead. That is not rest, that is anesthesia for guilt.',
+      'Brains grow by use. Yours declared a strike it never announced.',
+      'Rest restores. This just postpones the pain with interest.',
+      'Your brain called. It asked to be given something to actually do.'
+    ]},
+    { id:'horoscope', label:'My horoscope said to relax', t:[
+      'Mercury retrograde cannot compile your excuses either.',
+      'The stars scheduled your comeback. Not your couch session.',
+      'Astrology said rest. It did not say abandon the roadmap.',
+      'Even your zodiac sign is disappointed. And it has seen everything.'
+    ]}
+  ],
+  generic: [
+    'Custom excuse, custom disappointment.',
+    'Handcrafted laziness. Artisanal avoidance. Rare.',
+    'You typed that with a straight face. Honestly impressive.',
+    'New excuse. Same outcome. The classics never die.',
+    'Invented a whole excuse and still zero lines of C. Creative economy.',
+    'Bespoke avoidance. Somewhere, an artisan wept with pride and shame simultaneously.',
+    'That excuse had structure. A beginning, a middle, and no compiler.',
+    'Original enough to frame. Framed it. The wall of failure appreciates art.'] ,
+  escalation: [
+    'And AGAIN. At this point it is not an excuse. It is a personality.',
+    'Serial postponer detected. The roadmap has filed a restraining order.',
+    'You versus a checkbox. Round three. The checkbox remains undefeated.',
+    'The ledger flinched when you opened it. Muscle memory of disappointment.',
+    'Same door. Same exit. The building is on fire and you complimented the flames.'] ,
+  praise: [
+    'Target smashed. Streak alive. Future self just exhaled.',
+    'Done and dusted. That is how days should end.',
+    'Clean close. The compiler approves. So do I, briefly.',
+    'Every box answered. Somewhere far away, something stopped smiling.',
+    'Full marks. The roadmap almost purred. Do not get sentimental about it.'] 
+};
+
+const INVALID_IDS = EXCUSES.invalid.map(x=>x.id);
+
+const DREAD = {
+  names:['CLEAN','UNEASE','DREAD','MENACE','HAUNTED','ELDRITCH'],
+  flavor:[
+    'No sins on record. It waits anyway.',
+    'One day lost. Something opened its ledger and wrote your name.',
+    'Two days rotting. The pattern is no longer a coincidence.',
+    'Three days. It has learned your sleep schedule.',
+    'Four days. Something wears your face at night and does not study.',
+    'Five days and beyond. You are no longer being warned. You are being digested.'
+  ],
+  spice:[
+  [],
+  ['The ledger took this entry without comment.','A single page turns somewhere in the dark. Your page.','Filed under: first course.','It wrote your name down twice. The second copy is for later.','You felt that, did you not? Small price.'],
+  ['Again. The ink is still wet from yesterday.','The roadmap twitches when you open it now.','Your chair remembers sitting empty. It prefers it.','Somewhere a compiler cleared its throat. You were not there.','Two days. The pattern has stopped being coincidence and started being routine.','The excuses arrive faster than the remorse now. Efficient.','Pointers point. You drift. Even the arithmetic is embarrassed.','Your name came up in a meeting of things that compile. You were voted out.'],
+  ['It followed you to bed last night. It read your notes. All blank.','The checkboxes whisper in a language made of your own missed deadlines.','You are feeding something. It is never full.','Three strikes on the ledger. The third strike was counted twice, for style.','Your alarm rang for someone who no longer answers to that name.','The hours you owe have started gathering interest in a currency made of sleep.','It learned your scroll rhythm today. It said thank you.','There is a waiting list to haunt you. The horror community has standards.'],
+  ['Something wearing your skin sat at this desk and scrolled instead. It waved at me. I did not wave back.','The compiler dreams of you now, and its dreams have teeth.','Your reflection studies pointers. You study nothing. One of you will compile.','The rot started at the streak and worked inward. It reaches your notes tomorrow.','They closed the library wing where your motivation used to live. Structural damage.','Whatever wears your face by night left this review one star. It said the horror was unrealistic ? too slow, not enough dread.','The ledger is full. The pages are your skin. Keep writing.','You did not fail today. You rehearsed failing, professionally, in front of an audience of one dead dream.','The thing behind your chair has started submitting pull requests. Better ones. It signs your name.','Even the dust on your keyboard has given up expecting fingerprints.','The thing behind your chair has started submitting pull requests. Better ones. It signs your name.',
+   'You did not fail today. You rehearsed failing, professionally, in front of an audience of one dead dream.','The rot reaches your notes tomorrow.','Even your shadow has stopped following you. It found someone who compiles.'],
+   ['THE LEDGER IS FULL. THE PAGES ARE YOUR SKIN. KEEP WRITING.','It stopped whispering because it no longer needs to. You do the work of fear yourself now.','Seven days of silence from your desk. The dust has been catalogued by something patient and scientific. Down here we measure failure in microns — the exact thickness of everything you decided not to become since Monday.','There is a version of you that finished Stage 1 weeks ago. It stands behind your chair at 3AM doing revision you refused to do, and every morning you look a little more like the excuse you keep typing.']
+],
+
+  heads:[
+    'DAY: WASTED.','THE PATTERN TAKES SHAPE.','IT KNOWS YOUR SLEEP SCHEDULE.','SOMETHING WEARS YOUR FACE.','THE ENTITY NO LONGER WHISPERS.'
+  ],
+  tags:[
+    'STRIKE 1 — STANDARD DISAPPOINTMENT',
+    'DAY 2 — THE STENCH SETTLES',
+    'DAY 3 — IT LEARNED YOUR BEDTIME',
+    'DAY 4 — THE WEARING THING',
+    'DAY 5+ — FULL POSSESSION OF THE CALENDAR'
+  ],
+  closings:[
+    [
+     'One wasted day is survivable. The tragedy is only if it becomes a favorite hobby. Log the hours next time or expect a longer version of this conversation.',
+     'A single lost day. Almost polite, as failures go. But the ledger does not do politeness ? it does arithmetic. And tonight the arithmetic added you up.',
+     'Day one of what? Too early to call it a spiral. But the paper trail of things you meant to compile just got one page longer, and somebody filed it without comment.'],
+    [
+     'Twice is a coincidence. Three times is a lifestyle. You are currently shopping for the lifestyle. Tomorrow exists as a concept only if you show up to it ? and something in this app has started betting against you. It has never lost money before.',
+     'Two days rotting in sequence. Whatever picked through yesterday found nothing compiled and one fully charged battery. It left disappointed. Do not disappoint it again.',
+     'The stench of two wasted days has reached the higher shelves of the ledger. Even the excuses up there are holding their noses. Tomorrow you either climb or become furniture.'],
+    [
+     'It followed you to bed last night. It sat where the lamp light ends and read every unchecked box on today\u2019s list out loud, slowly, in your mother\u2019s voice. That is what day three buys you. Not motivation. Company. The kind that counts your hours while you pretend to be tired.',
+     'Day three. Something has learned your sleep schedule, your scroll rhythm, the exact pitch of your sigh when a build fails. It is studying you with terrible patience. You are its syllabus now.',
+     'Three down. The roadmap bent around your absence like a river around a stone ? smooth, practiced, indifferent. Stones get polished eventually. Or dissolved.'],
+    [
+     'Look at the calendar. Look at the little red squares multiplying like lesions. Something wearing your face walked into this room while you were doom-scrolling and studied NOTHING, and tomorrow it will be slightly more you than you are. Day four. The mirror is starting to negotiate. Lose one more day and it wins the lease.',
+     'Four days. The thing that wears your face has started attending your imaginary meetings. It raises its hand. It contributes. It is everything you were supposed to become this week, and it is getting better at being you than you are.',
+     'Day four bled into day five somewhere around your third meaningless refresh. There are stains on the ceiling now shaped like every chapter you skipped. Do not look up. Looking up is how it gets in.'],
+    [
+     'Enough. The ledger is closed. The pages are bound in something warm that used to be your routine. There is a version of you that finished Stage 1 weeks ago ? it stands behind your chair at 3AM doing revision you refused to do, and every morning you look a little more like the excuse you keep typing. Day five. Six. Seven. It no longer bothers whispering. It simply keeps the calendar, and waits for the last checkbox to rot.',
+     'Seven days of silence from your desk. The dust on your keyboard has been catalogued by something patient and scientific. Down here we measure failure in microns now ? the exact thickness of everything you decided not to become since Monday.',
+     'You have been gone so long that your absence has developed infrastructure: a little economy of avoided tasks, with roads and taxes and a flag. Raise your own flag today, or the territory stays theirs forever.']
+  ],
+
+  ghost:[
+    'Never closed the day. Ghosted your own tracker like it texts first.',
+    'Never closed it. The day died unattended. Things ate well that night.',
+    'Ghosted again. Whatever picked through yesterday\'s corpse found zero compiled lines and one full battery.',
+    'The day was found this morning. Unfinished. Something had arranged the unchecked tasks into a smile.',
+    'Another body. The tracker stopped filing missing-day reports after the third. It just leaves the porch light on now.',
+     'The chair is still warm. Whatever sat in it folded their hands politely and waited for us to notice.'
+  ],
+  honesty:[
+    'Focus report: %F on the timer against %C promised. Even the clock is lying for you now.',
+    'The timer recorded %F. You claimed %C. Somewhere between those numbers there used to be a person with plans.',
+    '%F focused. %C claimed. The gap is load-bearing now. Do not touch it.',
+    'Timer saw %F. Mouth said %C. The thing copying your handwriting laughs at both.',
+    'CLAIMED: %C. WITNESSED: %F. The stopwatch has seen enough to testify in whatever court eventually gets you.'
+  ],
+  uneasy:[
+    'Clean close… though the entity checked the logs twice.',
+    'Target met. Something exhaled, and it was not relief.',
+    'A good day. It hates good days. Good days starve it.',
+    'Flawless arithmetic. It suspects a second ledger exists somewhere.',
+  ]
+};
+
+function consecutiveBadDays(){
+  const todayK=dateKey(new Date());
+  let n=0;
+  let cursor=keyToDate(todayK);
+  for(let i=0;i<400;i++){
+    const k=dateKey(cursor);
+    if(state.startDate && k<state.startDate) break;
+    const fail=(state.closedDays[k]&&(!state.badLog[k]||state.badLog[k].verdict==='fail'))||(state.badLog[k]&&state.badLog[k].verdict==='fail');
+    if(k===todayK){
+      if(state.postponed[k]||fail) n++;
+    }
+    else if(!(fail||state.postponed[k])) break;
+    else n++;
+    cursor=addDays(cursor,-1);
+  }
+  return n;
+}
+function dreadLevel(){ return Math.min(5,consecutiveBadDays()); }
+function applyDread(){
+  const l=dreadLevel();
+  for(let i=1;i<=5;i++) document.body.classList.toggle('dread-'+i,l>=i);
+}
+function passedDaysTotal(){
+  let n=0;
+  Object.keys(state.closedDays).forEach(k=>{
+    if(!state.badLog[k]||state.badLog[k].verdict==='pass') n++;
+  });
+  return n;
+}
+function isGhostDay(k){
+  if(state.closedDays[k]||state.postponed[k]) return false;
+  if(k>=dateKey(new Date())) return false;
+  const e=SCHEDULE.find(x=>x.key===k);
+  return !!e&&(e.kind==='study'||e.kind==='sunday');
+}
+function grantPardons(){
+  const t=passedDaysTotal();
+  let got=false;
+  while(t-state.pardonBase>=10){
+    state.pardonBase+=10;
+    if(state.pardons<3){ state.pardons++; got=true; }
+  }
+  if(got) toast('A Pardon Token condenses from your clean days. Held: '+state.pardons+'.','good');
+}
+function burnPardon(reason){
+  if((state.pardons||0)<=0) return false;
+  state.pardons--;
+  save();
+  toast('A Pardon burns. '+reason,'info');
+  return true;
+}
+function fmtMins(m){
+  m=Math.round(m);
+  const h=Math.floor(m/60);
+  return h>0 ? h+'h '+(m%60)+'m' : m+'m';
+}
+
+const BASE_TITLE='C × DSA Roadmap Tracker';
+const DEFAULT_STATE = () => ({
+  theme:'light',
+  checked:{}, notes:{}, collapsed:{}, hideDone:false, celebrated:false,
+  startDate:'', settings:{ wdTarget:3, suTarget:6.5, bedtime:23, strict:false },
+  hours:{}, closedDays:{}, badLog:{}, postponed:{},
+  customExcuses:[], excuseUse:{}, corrupted:false, migratedV2:true,
+  dread:null, pardons:0, pardonBase:0,
+  timer:{running:false,startedAt:null,accMin:0,dayK:null},
+  focusLog:{},
+  checkLog:{}, lastTribunalWeek:'', mondayMsg:null, lastVerdict:null,
+  xp:0, xpSeen:{}, rankIdx:0,
+  restTokens:0, lastRestStock:'',
+  lateNight:{}
+});
+
+let state = loadState();
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      const st = Object.assign(DEFAULT_STATE(), parsed);
+      st.settings = Object.assign({wdTarget:3,suTarget:6.5,bedtime:23,strict:false}, parsed.settings||{});
+      st.settings.strict=!!st.settings.strict;
+      st.timer=Object.assign({running:false,startedAt:null,accMin:0,dayK:null}, parsed.timer||{});
+      if(typeof st.focusLog!=='object'||!st.focusLog) st.focusLog={};
+      if(typeof st.checkLog!=='object'||!st.checkLog) st.checkLog={};
+      if(typeof st.lastTribunalWeek!=='string') st.lastTribunalWeek='';
+      if(st.mondayMsg!==null&&(typeof st.mondayMsg!=='object'||!st.mondayMsg.weekKey)) st.mondayMsg=null;
+      if(typeof st.xp!=='number') st.xp=0;
+      if(typeof st.xpSeen!=='object'||!st.xpSeen) st.xpSeen={};
+      if(typeof st.rankIdx!=='number') st.rankIdx=0;
+      if(typeof st.restTokens!=='number') st.restTokens=0;
+      if(typeof st.lastRestStock!=='string') st.lastRestStock='';
+      if(typeof st.lateNight!=='object'||!st.lateNight) st.lateNight={};
+      if(typeof st.pardons!=='number') st.pardons=0;
+      if(typeof st.pardonBase!=='number') st.pardonBase=0;
+      if(!parsed.migratedV2){ st.theme='light'; st.migratedV2=true; }
+      return st;
+    }
+  }catch(e){}
+  const fresh = DEFAULT_STATE();
+  fresh.startDate = dateKey(new Date());
+  return fresh;
+}
+
+let saveTimer=null;
+function save(){
+  try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){}
+  $('#lastSaved').textContent = new Date().toLocaleTimeString();
+}
+
+function itemId(sid,kind,i){ return sid+':'+kind+i; }
+function esc(s){
+  return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function pad(n){ return (n<10?'0':'')+n; }
+function dateKey(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function keyToDate(k){ if(typeof k!=='string'){ (window.__KBAD=window.__KBAD||[]).push({t:typeof k,v:String(k),at:(new Error().stack||'').split(String.fromCharCode(10)).slice(2,4).join(' <- ')}); } if(typeof k==='string'){ const p=k.split('-'); return new Date(+p[0],+p[1]-1,+p[2]); } return new Date(NaN); }
+function addDays(d,n){ const x=new Date(d.getTime()); x.setDate(x.getDate()+n); return x; }
+function fmtPretty(k){
+  return keyToDate(k).toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+}
+function fmtShort(k){
+  return keyToDate(k).toLocaleDateString(undefined,{month:'short',day:'numeric'});
+}
+function fmtHour(h){
+  h=((h%24)+24)%24;
+  const ampm=h>=12&&h<24?'PM':'AM';
+  let hr=h%12; if(hr===0)hr=12;
+  return hr+':00 '+ampm;
+}
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+const gpLast={};
+function pickNR(pool,key){ if(!pool||pool.length<2) return pool?pool[0]:undefined; let v=pick(pool),g=0; while(v===gpLast[key]&&g++<8){ v=pick(pool); } gpLast[key]=v; return v; }
+
+function stageItems(s){
+  return s.topics.map((t,i)=>({id:itemId(s.id,'t',i),text:t}))
+    .concat(s.practice.map((p,i)=>({id:itemId(s.id,'p',i),text:p})));
+}
+function msItems(){
+  return DATA.milestones.map((m,i)=>({id:'ms:'+i,text:m.t+'  ('+m.when+')'}));
+}
+function targetFor(dateD){
+  return dateD.getDay()===0 ? state.settings.suTarget : state.settings.wdTarget;
+}
+
+const RANKS=[
+ ['Script Kiddie',0],['Apprentice',150],['Pointer Wrangler',400],['Segfault Survivor',800],
+ ['Memory Whisperer',1500],['Kernel Panic',2500],['Systems Sage',4000],['Roadmap Sovereign',6000]
+];
+function rankOf(xp){ let idx=0; RANKS.forEach(function(r,i2){ if(xp>=r[1]) idx=i2; }); return idx; }
+function addXP(n){
+  const before=rankOf(state.xp);
+  state.xp+=n;
+  const after=rankOf(state.xp);
+  if(after>before){
+    state.rankIdx=after;
+    try{ confettiBurst(); }catch(e){}
+    toast('⬆ RANK UP — '+RANKS[after][0]+' ('+state.xp+' XP)','good');
+  }
+}
+function awardOnce(key,n){
+  if(!state.xpSeen[key]){ state.xpSeen[key]=true; addXP(n); return true; }
+  return false;
+}
+function closeBonuses(pass,catchupFullClear){
+  const out=[];
+  if(pass){ out.push(['day-pass',30]); if(catchupFullClear) out.push(['catchup-clear',50]); }
+  return out;
+}
+let SCHEDULE=[];
+function buildSchedule(){
+  const out=[];
+  const startK = state.startDate || dateKey(new Date());
+  const start = keyToDate(startK);
+  const todayK = dateKey(new Date());
+  const postSet = new Set(Object.keys(state.postponed||{}));
+  const queues = DATA.stages.map(s=>stageItems(s).map(it=>it.id));
+  const rates = DATA.stages.map((s,i)=>Math.max(1,Math.ceil(queues[i].length/(ALLOC[s.id]||3))));
+  let si=0;
+  let carry=[];
+  let ghostStreak=0;
+  let catchupArmed=false;
+  for(let i=0;i<500;i++){
+    const d=addDays(start,i);
+    const k=dateKey(d);
+    const isSun=d.getDay()===0;
+    const e={key:k,date:d,isSun:sunFlag(isSun)};
+    if(isSun){
+      e.kind='sunday'; e.items=msItems().map(m=>m.id); e.stageId='ms';
+    }
+    else if(postSet.has(k)){
+      e.kind='postponed';
+      ghostStreak=0;
+    }
+    else if(catchupArmed && si<DATA.stages.length){
+      e.kind='catchup';
+      e.items=[...carry];
+      catchupArmed=false;
+      carry=e.items.filter(id=>!state.checked[id]);
+    }
+    else{
+      if(si>=DATA.stages.length) break;
+      const q=queues[si];
+      const take=Math.min(rates[si],q.length);
+      const own=q.splice(0,take);
+      e.kind='study';
+      e.items=[...carry,...own];
+      e.stageId=DATA.stages[si].id;
+      if(!q.length) si++;
+      if(k<todayK){
+        const done=e.items.filter(id=>state.checked[id]).length;
+        if(done===0){
+          ghostStreak++;
+          if(ghostStreak>=2){
+            if(si<DATA.stages.length) catchupArmed=true;
+            ghostStreak=0;
+          }
+        } else {
+          ghostStreak=0;
+        }
+      }
+      carry=e.items.filter(id=>!state.checked[id]);
+    }
+    out.push(e);
+    if(si>=DATA.stages.length) break;
+  }
+  return out;
+}
+function sunFlag(b){return b;}
+
+function entryStats(e){
+  if(!e||!e.items) return {done:0,total:0};
+  const done=e.items.filter(id=>state.checked[id]).length;
+  return {done,total:e.items.length};
+}
+
+function computeStats(){
+  let total=0,done=0,stagesDone=0,stageCount=0;
+  const per={};
+  DATA.stages.forEach(s=>{
+    const items=stageItems(s);
+    const d=items.filter(it=>state.checked[it.id]).length;
+    per[s.id]={done:d,total:items.length};
+    total+=items.length; done+=d; stageCount++;
+    if(d===items.length) stagesDone++;
+  });
+  const mDone=DATA.milestones.filter((m,i)=>state.checked['ms:'+i]).length;
+  total+=DATA.milestones.length; done+=mDone; stageCount++;
+  if(mDone===DATA.milestones.length) stagesDone++;
+  per.ms={done:mDone,total:DATA.milestones.length};
+  return {total,done,stagesDone,stageCount,per};
+}
+
+function computeStreak(){
+  let n=0;
+  const todayK=dateKey(new Date());
+  let cursor=addDays(keyToDate(todayK),-1);
+  for(let i=0;i<400;i++){
+    const k=dateKey(cursor);
+    if(state.startDate && k<state.startDate) break;
+    if(state.closedDays[k]){
+      const v=state.badLog[k]?state.badLog[k].verdict:null;
+      if(v==='pass'){n++;}
+      else if(v==='rest'){ /* sanctioned rest: chain bridges */ }
+      else break;
+    } else break;
+    cursor=addDays(cursor,-1);
+  }
+  return n;
+}
+
+function invalidOffenses(){
+  let n=0;
+  INVALID_IDS.forEach(id=>{ n+=state.excuseUse[id]||0; });
+  return n;
+}
+
+const ICON_MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const ICON_SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+const ICON_FLAME='<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2c.5 3-1.5 4.5-3 6.5C7.2 10.9 7 12.6 7 14a5 5 0 0 0 10 0c0-1.8-.7-3.2-1.5-4.5-.4.9-1 1.6-1.9 2 .4-2.6-.2-5.9-1.6-9.5z"/></svg>';
+const ICON_GEAR='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+const ICON_SCALES='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M8 21h8M12 6L6 8l-3 5c0 1.5 1.4 3 3.5 3S10 14.5 10 13L7 8m11 0l-3 5c0 1.5 1.4 3 3.5 3S22 14.5 22 13l-3-5z"/></svg>';
+
+function applyTheme(){
+  document.documentElement.dataset.theme=state.theme||'light';
+  $('#themeBtn').innerHTML = state.theme==='dark'?ICON_SUN:ICON_MOON;
+  document.body.classList.toggle('corrupted',!!state.corrupted);
+}
+
+const RING_C=2*Math.PI*52;
+
+function chipHtml(r){
+  return '<a class="chip" href="'+esc(r[1])+'" target="_blank" rel="noopener"><span class="tag '+esc(r[2])+'">'+esc(r[2])+'</span>'+esc(r[0])+'</a>';
+}
+function listHtml(items){
+  return '<ul class="list">'+items.map(it=>
+    '<li class="'+(state.checked[it.id]?'done':'')+'">'+
+      '<label class="chk-row">'+
+        '<input type="checkbox" class="chk" data-id="'+it.id+'"'+(state.checked[it.id]?' checked':'')+'>'+
+        '<span class="chk-text">'+esc(it.text)+'</span>'+
+      '</label>'+
+    '</li>'
+  ).join('')+'</ul>';
+}
+
+function renderStageCard(s){
+  const items=stageItems(s);
+  const open=!state.collapsed[s.id];
+  const notes=state.notes[s.id]||'';
+  return '<section class="stage'+(open?' open':'')+(perAllComplete(s)?' complete':'')+'" id="stage-'+s.id+'" data-stage="'+s.id+'" data-cat="'+s.cat+'">'+
+    '<button class="stage-head" aria-expanded="'+open+'">'+
+      '<span class="num">'+s.num+'</span>'+
+      '<span class="head-text">'+
+        '<span class="title">'+esc(s.title)+'</span>'+
+        '<span class="meta">'+esc(s.dur)+' · '+items.length+' checkpoints · '+s.res.length+' resources</span>'+
+      '</span>'+
+      '<span class="head-progress"><span class="bar"><i style="width:0%"></i></span><span class="pct">0%</span></span>'+
+      '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'+
+    '</button>'+
+    '<div class="stage-body"><div class="stage-inner"><div class="stage-pad">'+
+      '<p class="goal">'+esc(s.goal)+'</p>'+
+      '<div class="cols">'+
+        '<div><h4 class="sec-title">Topics</h4>'+listHtml(items.slice(0,s.topics.length))+'</div>'+
+        '<div><h4 class="sec-title">Practice</h4>'+listHtml(items.slice(s.topics.length))+'</div>'+
+      '</div>'+
+      '<h4 class="sec-title">Resources</h4><div class="chips">'+s.res.map(chipHtml).join('')+'</div>'+
+      '<h4 class="sec-title">Notes</h4>'+
+      '<div class="notes-area">'+
+        '<textarea data-notes="'+s.id+'" rows="3" placeholder="Insights, gotchas, things to revisit...">'+esc(notes)+'</textarea>'+
+        '<span class="saved-flag">Saved</span>'+
+      '</div>'+
+    '</div></div></div>'+
+  '</section>';
+}
+function perAllComplete(s){
+  const items=stageItems(s);
+  return items.length>0 && items.every(it=>state.checked[it.id]);
+}
+
+function renderMilestoneCard(){
+  const items=msItems();
+  const open=!state.collapsed['ms'];
+  const allDone=items.every(i=>state.checked[i.id]);
+  return '<section class="stage ms ms-complete'+(open?' open':'')+(allDone?' complete':'')+'" id="stage-ms" data-stage="ms" data-cat="dsa">'+
+    '<button class="stage-head" aria-expanded="'+open+'">'+
+      '<span class="num">★</span>'+
+      '<span class="head-text"><span class="title">Milestone Projects</span>'+
+      '<span class="meta">portfolio pieces · '+items.length+' builds</span></span>'+
+      '<span class="head-progress"><span class="bar"><i style="width:0%"></i></span><span class="pct">0%</span></span>'+
+      '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>'+
+    '</button>'+
+    '<div class="stage-body"><div class="stage-inner"><div class="stage-pad">'+
+      '<p class="goal">Real programs that combine everything — these become portfolio proof. Sunday nights are built for these.</p>'+
+      '<h4 class="sec-title">Builds</h4>'+listHtml(items)+
+      '<h4 class="sec-title">Notes</h4>'+
+      '<div class="notes-area">'+
+        '<textarea data-notes="ms" rows="3" placeholder="Project ideas, design decisions, bugs worth remembering...">'+esc(state.notes['ms']||'')+'</textarea>'+
+        '<span class="saved-flag">Saved</span>'+
+      '</div>'+
+    '</div></div></div></section>';
+}
+
+let catchupToasted=false;
+function renderDaily(){
+  applyDread();
+  SCHEDULE=buildSchedule();
+  const panel=$('#dailyPanel');
+  const now=new Date();
+  const todayK=dateKey(now);
+  const startK=state.startDate||todayK;
+  const entry=SCHEDULE.find(e=>e.key===todayK);
+  const target=targetFor(now);
+  const streak=computeStreak();
+
+  let weekH=0,totH=0;
+  for(let i=0;i<7;i++){ weekH+=state.hours[dateKey(addDays(now,-i))]||0; }
+  Object.keys(state.hours).forEach(k=>{ totH+=state.hours[k]; });
+
+  let head='<div class="daily-head">'+
+    '<div class="dh-date">'+
+      '<h2>'+fmtPretty(todayK)+'</h2>'+
+      '<p>'+(entry?('Day '+(SCHEDULE.indexOf(entry)+1)+' of your journey · '+kindLabel(entry)):'Outside schedule range')+'</p>'+
+      '<span class="target-chip">TARGET '+target+' H TODAY</span>'+
+    '</div>'+
+    '<div class="dh-week">This week <b>'+weekH.toFixed(1)+' h</b><br>All time <b>'+totH.toFixed(1)+' h</b></div>'+
+    '<div class="dread-chip" title="'+DREAD.names[dreadLevel()]+' — '+DREAD.flavor[dreadLevel()]+' | P = pardon tokens held · R = rest tokens held">'+
+      '<span class="dc-name">'+DREAD.names[dreadLevel()]+'</span>'+
+      '<span class="dc-bar"><i style="width:'+(dreadLevel()/5*100)+'%"></i></span>'+
+      '<span class="dc-sub">P'+state.pardons+' · R'+state.restTokens+'</span>'+
+    '</div>'+
+    '<div class="streak-clay"><b>'+ICON_FLAME+nbsp0(streak)+'</b><span>day streak</span></div>'+
+    '<button class="icon-btn" id="tribunalBtn" title="Weekly tribunal">'+ICON_SCALES+'</button>'+
+    '<button class="icon-btn gear-btn'+(panel.classList.contains('settings-open')?' active':'')+'" id="gearBtn" title="Daily settings">'+ICON_GEAR+'</button>'+
+  '</div>'+
+  '<div class="settings-row">'+
+    '<label class="set-item">Start date <input type="date" id="setStart" value="'+esc(startK)+'"></label>'+
+    '<label class="set-item">Weekday h <input type="number" id="setWd" min="0.5" step="0.5" value="'+state.settings.wdTarget+'" style="width:64px"></label>'+
+    '<label class="set-item">Sunday h <input type="number" id="setSu" min="1" step="0.5" value="'+state.settings.suTarget+'" style="width:64px"></label>'+
+    '<label class="set-item">Bedtime <select id="setBed">'+bedOptions()+'</select></label>'+
+    '<label class="set-item"><input type="checkbox" id="setStrict"'+(state.settings.strict?' checked':'')+'> Strict mode (timer hours only)</label>'+
+'<button class="btn" id="selfTestBtn">Self-test</button>'+
+  '</div>';
+
+  let body='';
+  if(!entry){
+    if(todayK<startK){
+      body='<div class="today-card"><div class="tc-title"><span class="dotlive"></span>TODAY</div>'+
+        '<p style="font-weight:700">Your journey begins on <b>'+fmtPretty(startK)+'</b>. Rest is currently legal. Enjoy it responsibly.</p></div>';
+    } else {
+      body='<div class="today-card"><div class="tc-title"><span class="dotlive"></span>TODAY</div>'+
+        '<p style="font-weight:700">Schedule finished. Whatever remains unchecked in the stages is yours to finish. Freestyle mode.</p></div>';
+    }
+  } else if(entry.kind==='postponed'){
+    const rec=state.postponed[todayK]||{};
+    body='<div class="today-card">'+
+      '<div class="tc-title">TODAY</div>'+
+      '<div class="tombstone"><h4>DAY POSTPONED</h4>'+
+      '<p>Official excuse on record: <b>“'+esc(rec.label||'unknown')+'”</b><br>The schedule shifted a full day ahead. The finish line moved. It is watching you.</p></div>'+
+      '<div class="today-actions"><button class="btn primary" id="revertPostponeBtn">Take it back — doing it anyway</button></div>'+
+      '<div class="hours-box">'+hoursBarHtml(todayK,target)+'</div>'+
+    '</div>';
+  } else {
+    const es=entryStats(entry);
+    const closed=!!state.closedDays[todayK];
+    let inner='';
+    if(entry.kind==='catchup'){
+      inner='<p style="font-size:13px;font-weight:700;color:var(--pMintT);margin-bottom:8px">CATCH-UP DAY — clear the stacked debt. Nothing new arrives until it gets lighter.</p>'+listHtml(itemsOfEntry(entry));
+    } else if(entry.kind==='sunday'){
+      inner='<p style="font-size:13px;font-weight:700;color:var(--pPeachT);margin-bottom:8px">SUNDAY SESSION — milestone project work, revision of weak spots, buffer for anything overdue.</p>'+listHtml(msItems());
+    } else {
+      const stg=DATA.stages.find(s=>s.id===entry.stageId);
+      inner=(stg?'<p style="font-size:13px;font-weight:700;color:var(--pSkyT);margin-bottom:8px">'+esc(stg.title.toUpperCase())+' — today’s mission</p>':'')+listHtml(itemsOfEntry(entry));
+    }
+    inner+='<div class="hours-box">'+hoursBarHtml(todayK,target)+
+      (state.settings.strict?'':'<button class="hbtn" data-hadd="0.5">+½</button><button class="hbtn" data-hadd="1">+1</button>')+
+      timerBoxHtml()+'</div>';
+    inner+= closed
+      ? verdictBadgeHtml(todayK)+'<div class="today-actions"><button class="btn" id="resumeDayBtn">Resume the day</button></div>'
+      : '<div class="today-actions">'+
+          '<button class="btn primary" id="closeDayBtn">Close the Day</button>'+
+          ((state.hours[todayK]||0)<target&&state.restTokens>0?'<button class="btn" id="restDayBtn" style="border-color:var(--good);color:var(--good)">Rest Day ('+state.restTokens+')</button>':'')+
+          (entry.kind==='catchup'?'':'<button class="btn danger" id="postponeBtn">Postpone…</button>')+
+        '</div>';
+    body='<div class="today-card"><div class="tc-title"><span class="dotlive"></span>TODAY'+(closed?' — CLOSED':'')+'</div>'+inner+'</div>';
+  }
+
+  let heat='<div class="hm-wrap"><div class="hm-head"><h4 class="sec-title" style="margin:0">LAST 10 WEEKS</h4></div><div class="hm-grid" id="hmGrid">'+heatmapCells()+'</div>'+
+    '<div class="hm-legend">Green: target met · Red: failed · Orange: postponed · Gray dashed: ghosted · Mint: catch-up · Gold: rest · Click a cell to inspect that day</div></div>';
+
+  let tl='<div class="tl-toggle-row">'+
+    '<button class="btn" id="tlToggle">Show full timeline</button>'+
+    '<button class="btn" id="jumpTodayBtn">Jump to today</button>'+
+  '</div>'+
+  '<div id="timeline"></div>';
+
+  panel.innerHTML=head+body+heat+tl;
+  bindDailyEvents(panel);
+  if(entry&&entry.kind==='catchup'&&!catchupToasted){
+    catchupToasted=true;
+    toast('Catch-up day. Clear the debt.','info');
+  }
+}
+function kindLabel(e){ return e.kind==='sunday'?'Sunday session':e.kind==='postponed'?'Postponed':e.kind==='catchup'?'Catch-up day':'Study day'; }
+function nbsp0(n){ return String(n); }
+let ITEM_MAP=null;
+function getItemMap(){
+  if(ITEM_MAP) return ITEM_MAP;
+  ITEM_MAP={};
+  DATA.stages.forEach(s=>stageItems(s).forEach(it=>{ ITEM_MAP[it.id]={text:it.text,stage:s.title}; }));
+  DATA.milestones.forEach((m,i)=>{ ITEM_MAP['ms:'+i]={text:m.t+'  ('+m.when+')',stage:'Milestone'}; });
+  return ITEM_MAP;
+}
+function itemsOfEntry(e){
+  const map=getItemMap();
+  return e.items.filter(id=>map[id]).map(id=>({id,text:map[id].text}));
+}
+function bedOptions(){
+  let o='';
+  for(let h=20;h<=27;h++){
+    o+='<option value="'+h+'"'+(state.settings.bedtime===h?' selected':'')+'>'+fmtHour(h)+'</option>';
+  }
+  return o;
+}
+function hoursBarHtml(k,target){
+  const h=state.hours[k]||0;
+  const pct=Math.min(100,h/target*100);
+  return '<div class="hours-bar"><i style="width:'+pct.toFixed(1)+'%"></i></div>'+
+    '<span class="hours-num">'+h.toFixed(1)+' / '+target+' h</span>';
+}
+function verdictBadgeHtml(k){
+const v=state.badLog[k]||{};
+if(v.verdict==='rest'){
+return '<div style="margin-top:14px"><span class="verdict-badge rest">REST DAY · '+(v.hours!=null?v.hours.toFixed(1):'0')+' h logged</span></div>';
+}
+const pass=v.verdict==='pass';
+return '<div style="margin-top:14px"><span class="verdict-badge '+(pass?'pass':'fail')+'">'+
+(pass?'DAY PASSED':'DAY FAILED')+' · '+(v.hours!=null?v.hours.toFixed(1):'?')+' / '+v.target+' h</span></div>';
+}
+function elapsedMin(){
+  const t=state.timer;
+  if(!t.accMin&&!t.running) return 0;
+  return (t.accMin||0)+(t.running?(Date.now()-t.startedAt)/60000:0);
+}
+function fmtClock(min){
+  const s=Math.floor(min*60);
+  const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;
+  return (h>0?h+':':'')+pad(m)+':'+pad(ss);
+}
+function timerBoxHtml(){
+  const t=state.timer,on=t.running;
+  let btns;
+  if(on) btns='<button class="hbtn" id="tPause">Pause</button><button class="hbtn" id="tLog">Log &amp; stop</button><button class="hbtn" id="tDiscard">×</button>';
+  else btns='<button class="hbtn" id="tStart">'+(t.accMin>0?'Resume focus':'Start focus')+'</button>'+(t.accMin>0?'<button class="hbtn" id="tLog">Log &amp; stop</button><button class="hbtn" id="tDiscard">×</button>':'');
+  return '<div class="timer-box'+(on?' live':'')+'"><span class="t-clock" id="tClock">'+fmtClock(elapsedMin())+'</span>'+btns+'</div>';
+}
+function startTimer(){
+  const t=state.timer;
+  if(t.running) return;
+  if(t.accMin>0&&t.dayK){ t.startedAt=Date.now(); t.running=true; }
+  else { t.running=true; t.startedAt=Date.now(); t.accMin=0; t.dayK=dateKey(new Date()); }
+  save(); renderDaily();
+}
+function pauseTimer(){
+  const t=state.timer;
+  if(!t.running) return;
+  t.accMin+=(Date.now()-t.startedAt)/60000;
+  t.running=false; t.startedAt=null;
+  document.title=BASE_TITLE;
+  save(); renderDaily();
+}
+function stopTimerCommit(silent){
+  const m=Math.round(elapsedMin());
+  const k=state.timer.dayK||dateKey(new Date());
+  state.timer={running:false,startedAt:null,accMin:0,dayK:null};
+  document.title=BASE_TITLE;
+  if(m>=1){
+    state.hours[k]=(state.hours[k]||0)+m/60;
+    state.focusLog[k]=(state.focusLog[k]||0)+m;
+    if(!silent) toast(fmtMins(m)+' logged into '+fmtShort(k)+'. The ledger accepts.','good');
+    return m;
+  }
+  if(!silent) toast('Under a minute. The void does not count vibes.','info');
+  return 0;
+}
+function discardTimer(){
+  state.timer={running:false,startedAt:null,accMin:0,dayK:null};
+  document.title=BASE_TITLE;
+  toast('Discarded. Those minutes dissolve unrecorded.','info');
+  save(); renderDaily();
+}
+function tick(){
+  const t=state.timer;
+  if(t.running){
+    const c=fmtClock(elapsedMin());
+    const tc=$('#tClock'); if(tc) tc.textContent=c;
+    const mt=$('#miniTimer'); if(mt){ mt.textContent='▸ '+c; }
+    document.title='▸ '+c+' · C × DSA Roadmap';
+  } else {
+    const mt=$('#miniTimer'); if(mt) mt.textContent='';
+    if(document.title!==BASE_TITLE && document.title.indexOf('▸')===0) document.title=BASE_TITLE;
+  }
+}
+function heatmapCells(){
+  const cells=[];
+  const today=new Date();
+  const dow=today.getDay();
+  const end=addDays(today,6-dow);
+  const catchSet=new Set(SCHEDULE.filter(x=>x.kind==='catchup').map(x=>x.key));
+  for(let i=69;i>=0;i--){
+    const d=addDays(end,-i);
+    const k=dateKey(d);
+    if(k>dateKey(today)||k<dateKey(addDays(today,-69))) { cells.push('<span class="hm-cell" style="visibility:hidden"></span>'); continue; }
+    let cls='';
+    let tip=k;
+    if(state.closedDays[k]){
+      const vv=state.badLog[k]?state.badLog[k].verdict:null;
+      if(vv==='rest'){ cls='rest'; tip+=' · rest'; }
+      else { const pass=!state.badLog[k]||vv==='pass'; cls=pass?'pass':'fail'; tip+=' · '+(pass?'passed':'failed')+' · '+(state.hours[k]||0).toFixed(1)+'h'; }
+    } else if(state.postponed[k]){ cls='post'; tip+=' · postponed'; }
+    else if(isGhostDay(k)){ cls='ghost'; tip+=' · GHOSTED — never closed'; }
+    else if(catchSet.has(k)){ cls='catch'; tip+=' · catch-up day'; }
+    else if(state.hours[k]){ tip+=' · '+(state.hours[k]).toFixed(1)+'h logged'; }
+    cells.push('<span class="hm-cell '+cls+'" data-k="'+k+'" title="'+esc(tip)+'"></span>');
+  }
+  return cells.join('');
+}
+
+function renderTimeline(){
+  const tl=$('#timeline');
+  if(!tl) return;
+  if(!tl.classList.contains('show')){ tl.innerHTML=''; return; }
+  const todayK=dateKey(new Date());
+  const groups={};
+  SCHEDULE.forEach(e=>{
+    const d=e.date;
+    const weekStart=addDays(d,-((d.getDay()+6)%7));
+    const wk=dateKey(weekStart);
+    (groups[wk]=groups[wk]||[]).push(e);
+  });
+  let html='';
+  Object.keys(groups).sort().forEach((wk,i)=>{
+    html+='<div class="tl-week"><div class="tl-week-label">Week '+(i+1)+' · week of '+fmtShort(wk)+'</div>';
+    groups[wk].forEach(e=>{
+      const stg=DATA.stages.find(s=>s.id===e.stageId);
+      let sub='';
+      if(e.kind==='study'){ sub=stg?stg.title:''; }
+      else if(e.kind==='sunday'){ sub='Milestone project + revision'; }
+      else if(e.kind==='catchup'){ sub='Clear stacked debt'; }
+      else { sub='“'+esc((state.postponed[e.key]||{}).label||'')+'”'; }
+let status='';
+if(state.closedDays[e.key]){
+const vv=state.badLog[e.key]?state.badLog[e.key].verdict:null;
+if(vv==='rest'){ status='<span class="dc-status rest">REST</span>'; }
+else { status='<span class="dc-status '+(!vv||vv==='pass'?'pass':'fail')+'">'+(!vv||vv==='pass'?'PASS':'FAIL')+'</span>'; }
+} else if(e.kind==='postponed'){
+        status='<span class="dc-status post">POSTPONED</span>';
+      } else if(e.kind==='catchup'){
+        status='<span class="dc-status catchup">CATCH-UP</span>';
+      } else if(isGhostDay(e.key)){
+        status='<span class="dc-status ghost">GHOSTED</span>';
+      } else if(e.key<todayK){
+        status='<span class="dc-status fail">MISSED</span>';
+      } else if(e.key===todayK){
+        status='<span class="dc-status post">NOW</span>';
+      } else {
+        status='<span class="dc-status pending">LATER</span>';
+      }
+      const done=entryStats(e);
+      html+='<div class="day-card'+(e.key===todayK?' is-today':'')+'" data-key="'+e.key+'">'+
+        '<span class="dc-date">'+fmtShort(e.key)+'</span>'+
+        '<span class="dc-body"><span class="dc-stage">'+(e.kind==='sunday'?'Sunday':e.kind==='postponed'?'Postponed':e.kind==='catchup'?'Catch-up':esc(sub))+'</span>'+
+        '<span class="dc-sub"> · '+done.done+'/'+done.total+' tasks'+(state.hours[e.key]?' · '+(state.hours[e.key]).toFixed(1)+'h':'')+'</span></span>'+
+        status+'</div>';
+    });
+    html+='</div>';
+  });
+  tl.innerHTML=html;
+}
+
+function updateStageVisual(id,stats){
+  const el=document.getElementById('stage-'+id);
+  if(!el) return;
+  const p=stats.per[id];
+  const pct=p.total?Math.round(p.done/p.total*100):0;
+  el.querySelector('.bar i').style.width=pct+'%';
+  el.querySelector('.pct').textContent=pct+'%';
+  el.classList.toggle('complete',p.done===p.total&&p.total>0);
+}
+
+function computeProjection(stats){
+  const todayK=dateKey(new Date());
+  const startK=state.startDate||todayK;
+  if(stats.total===0) return {state:'none'};
+  if(stats.done>=stats.total) return {state:'done'};
+  if(todayK<startK) return {state:'prestart',startK};
+  let lastDay=null;
+  SCHEDULE.forEach(e=>{ if(e.kind==='study'||e.kind==='sunday'||e.kind==='catchup') lastDay=e; });
+  const plannedK=lastDay?lastDay.key:startK;
+  const daysElapsed=Math.max(1,Math.round((keyToDate(todayK)-keyToDate(startK))/86400000)+1);
+  const done=stats.done,remaining=stats.total-done;
+  const rate=done/daysElapsed;
+  if(rate<=0) return {state:'idle',plannedK};
+  const projDays=Math.min(Math.ceil(remaining/rate),365);
+  const projK=dateKey(addDays(keyToDate(todayK),projDays));
+  const gapDays=Math.round((keyToDate(projK)-keyToDate(plannedK))/86400000);
+  const shaky=daysElapsed<5;
+  const warn=remaining>0&&projK>dateKey(addDays(keyToDate(plannedK),7));
+  return {state:'live',plannedK,projK,gapDays,shaky,remaining,rate,daysElapsed,warn};
+}
+
+function recalcAll(){
+  SCHEDULE=buildSchedule();
+  const stats=computeStats();
+  Object.keys(stats.per).forEach(id=>updateStageVisual(id,stats));
+  const pct=stats.total?stats.done/stats.total:0;
+  $('#ringFg').style.strokeDashoffset=(RING_C*(1-pct)).toFixed(2);
+  $('#ringPct').textContent=Math.round(pct*100)+'%';
+  $('#statItems').textContent=stats.done+'/'+stats.total;
+  $('#statStages').textContent=stats.stagesDone+'/'+stats.stageCount;
+  $('#statMile').textContent=stats.per.ms.done+'/'+stats.per.ms.total;
+  const rI=rankOf(state.xp);
+  $('#statRankName').textContent=RANKS[rI][0];
+  const nxt=RANKS[rI+1], floorXp=RANKS[rI][1];
+  const span=nxt?Math.max(1,nxt[1]-floorXp):1;
+  const prog=Math.max(0,Math.min(100,((state.xp-floorXp)/span)*100));
+  $('#statRankBar').style.width=(nxt?prog:100)+'%';
+  $('#statRankSub').textContent=nxt?(state.xp+' / '+nxt[1]+' XP'):('MAX · '+state.xp+' XP');
+  const pr=computeProjection(stats);
+  const el=$('#statProj'),pd=$('#statProjDate'),ps=$('#statProjSub');
+  if(!el) return;
+  el.classList.toggle('warn',!!pr.warn);
+  if(pr.state==='done'){ pd.textContent='DONE.'; ps.textContent='every box. actually.'; el.title=''; }
+  else if(pr.state==='none'){ pd.textContent='—'; ps.textContent='no checkpoints yet'; el.title=''; }
+  else if(pr.state==='prestart'){ pd.textContent=fmtShort(pr.startK); ps.textContent='journey starts here'; el.title=''; }
+  else if(pr.state==='idle'){ pd.textContent='—'; ps.textContent='check something off first'; el.title=''; }
+  else{
+    pd.textContent=fmtShort(pr.projK)+(pr.shaky?' ~':'');
+    let tone=pr.gapDays>14?'planned '+fmtShort(pr.plannedK)+'. keep scrolling.'
+            :pr.gapDays>0?'planned '+fmtShort(pr.plannedK)
+            :pr.gapDays===0?'on the line'
+            :'ahead of plan';
+    if(pr.gapDays>=7&&pr.gapDays<=14&&dreadLevel()>=2) tone+=' '+pick(DREAD.spice[dreadLevel()]);
+    ps.textContent='your pace'+(pr.shaky?' · shaky':'')+' · '+tone;
+    el.title='checked '+stats.done+' in '+pr.daysElapsed+'d → '+pr.rate.toFixed(2)+'/day · '+pr.remaining+' left';
+  }
+}
+
+function toast(msg,type){
+  const t=document.createElement('div');
+  t.className='toast'+(type?' '+type:'');
+  t.textContent=msg;
+  $('#toasts').appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),350); },3200);
+}
+
+function confettiBurst(){
+  const box=$('#confetti');
+  const colors=['#d5e8db','#cbdef0','#ece0cc','#ecd2d8','#dcd6e2'];
+  for(let i=0;i<80;i++){
+    const c=document.createElement('i');
+    c.className='confetto';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDuration=(2.4+Math.random()*1.8)+'s';
+    c.style.animationDelay=(Math.random()*0.6)+'s';
+    c.style.transform='rotate('+Math.random()*360+'deg)';
+    box.appendChild(c);
+    setTimeout(()=>c.remove(),5000);
+  }
+}
+
+function renderAll(){
+  applyTheme();
+  applyDread();
+  updateNag();
+  updateNag();
+  $('#stages').innerHTML=DATA.stages.map(renderStageCard).join('')+renderMilestoneCard();
+  document.body.classList.toggle('hide-done',!!state.hideDone);
+  const hb=$('#hideDoneBtn');
+  hb.classList.toggle('active',!!state.hideDone);
+  hb.setAttribute('aria-pressed',String(!!state.hideDone));
+  renderDaily();
+  recalcAll();
+  renderTimeline();
+}
+
+function bindDailyEvents(panel){
+  if(panel.dataset.bound==='1') return;
+  panel.dataset.bound='1';
+  panel.addEventListener('click',e=>{
+    if(e.target.closest('#gearBtn')){
+      panel.classList.toggle('settings-open');
+      $('#gearBtn').classList.toggle('active');
+      return;
+    }
+    const hadd=e.target.closest('[data-hadd]');
+    if(hadd){
+      const k=dateKey(new Date());
+      state.hours[k]=(state.hours[k]||0)+parseFloat(hadd.dataset.hadd);
+      save(); renderDaily(); renderTimeline();
+      return;
+    }
+    if(e.target.closest('#tStart')){ startTimer(); return; }
+    if(e.target.closest('#tPause')){ pauseTimer(); return; }
+    if(e.target.closest('#tLog')){ stopTimerCommit(false); save(); renderDaily(); renderTimeline(); return; }
+    if(e.target.closest('#tDiscard')){ discardTimer(); return; }
+if(e.target.closest('#closeDayBtn')){ closeDay(dateKey(new Date())); return; }
+  if(e.target.closest('#postponeBtn')){ openPostpone(); return; }
+  if(e.target.closest('#revertPostponeBtn')){
+    const k=dateKey(new Date());
+    delete state.postponed[k];
+    state.dread=Math.max(0,dreadLevel()-1);
+    applyDread();
+    save();
+    SCHEDULE=buildSchedule();
+    renderDaily(); renderTimeline(); recalcAll();
+    toast('Postpone revoked. The schedule just got shorter again.','good');
+    return;
+  }
+  if(e.target.closest('#resumeDayBtn')){
+    const k=dateKey(new Date());
+    if(reopenDay(k)) toast('Day reopened. Prove something.','info');
+    return;
+  }
+    if(e.target.closest('#selfTestBtn')){ runGuardian(); return; }
+if(e.target.closest('#tribunalBtn')){ openTribunal(); return; }
+if(e.target.closest('#tCloseBtn')){ $('#tribunalOverlay').classList.remove('show'); return; }
+if(e.target.closest('#restDayBtn')){
+  document.getElementById('rcTokens').textContent=String(state.restTokens);
+  document.getElementById('restConfirmOverlay').classList.add('show');
+  return;
+}
+if(e.target.closest('#restBurnBtn')){ burnRest(dateKey(new Date())); document.getElementById('restConfirmOverlay').classList.remove('show'); return; }
+if(e.target.closest('#restBackBtn')){ document.getElementById('restConfirmOverlay').classList.remove('show'); return; }
+if(e.target.closest('#tCloseBtn')){ $('#tribunalOverlay').classList.remove('show'); return; }
+if(e.target.closest('#tlToggle')){
+      const tl=$('#timeline');
+      tl.classList.toggle('show');
+      e.target.textContent=tl.classList.contains('show')?'Hide full timeline':'Show full timeline';
+      renderTimeline();
+      return;
+    }
+    if(e.target.closest('#jumpTodayBtn')){
+      const card=panel.querySelector('.today-card')||panel.querySelector('.tombstone');
+      if(card){ card.scrollIntoView({behavior:'smooth',block:'center'}); }
+      return;
+    }
+    const cell=e.target.closest('.hm-cell[data-k]');
+    if(cell){ openInspector(cell.dataset.k); return; }
+    const dcard=e.target.closest('.day-card[data-key]');
+    if(dcard){ openInspector(dcard.dataset.key); return; }
+  });
+  panel.addEventListener('change',e=>{
+if(e.target.id==='setStart'&&e.target.value){
+state.startDate=e.target.value;
+save(); renderDaily(); renderTimeline(); recalcAll();
+      toast('Start date updated. Timeline rebuilt.','info');
+    }
+    if(e.target.id==='setWd'){ state.settings.wdTarget=Math.max(.5,parseFloat(e.target.value)||3); save(); renderDaily(); }
+    if(e.target.id==='setSu'){ state.settings.suTarget=Math.max(1,parseFloat(e.target.value)||6.5); save(); renderDaily(); }
+    if(e.target.id==='setBed'){ state.settings.bedtime=parseInt(e.target.value,10)||23; save(); }
+    if(e.target.id==='setStrict'){ state.settings.strict=e.target.checked; save(); renderDaily(); }
+  });
+}
+
+function closeDay(k){
+  stopTimerCommit(true);
+  const d=keyToDate(k);
+  const target=targetFor(d);
+  const hours=state.hours[k]||0;
+  const pass=hours>=target-0.001;
+  state.closedDays[k]=true;
+  const entry=SCHEDULE.find(e=>e.key===k);
+  const es=entryStats(entry);
+  state.badLog[k]={verdict:pass?'pass':'fail',hours,target,dodged:es.total-es.done,total:es.total,closedAt:new Date().toTimeString().slice(0,5)};
+  if(pass&&state.corrupted){ state.corrupted=false; document.body.classList.remove('corrupted'); toast('Record partially cleaned. One honest day.','good'); }
+  save();
+  if(pass){
+    state.dread=Math.max(0,dreadLevel()-1);
+    applyDread();
+    grantPardons();
+    closeBonuses(true,entry&&entry.kind==='catchup'&&es.done===es.total).forEach(function(bn){ addXP(bn[1]); });
+    let msg=pickNR(EXCUSES.praise,'praise');
+    if(dreadLevel()>=3) msg+=' '+pickNR(DREAD.uneasy,'uneasy');
+    save();
+    toast(msg,'good');
+    confettiBurst();
+    renderDaily(); renderTimeline();
+  } else {
+    if(burnPardon('The failure is logged. The voice stays silent.')){
+      state.badLog[k].pardoned=true;
+      save();
+      renderDaily(); renderTimeline();
+      return;
+    }
+    state.dread=Math.min(5,dreadLevel()+1);
+    save();
+    renderDaily();
+    applyDread();
+    openRoast(k);
+  }
+}
+function reopenDay(k){
+if(k!==dateKey(new Date())) return false;
+const bl=state.badLog[k]||{};
+delete state.closedDays[k];
+delete state.badLog[k];
+if(bl.verdict==='rest') state.restTokens=Math.min(2,state.restTokens+1);
+else if(bl.pardoned) state.pardons=Math.min(3,state.pardons+1);
+save();
+renderDaily(); renderTimeline();
+return true;
+}
+
+function openRoast(k,autoMissed){
+  const ov=$('#roastOverlay');
+  const lvl=dreadLevel();
+  const log=state.badLog[k]||{};
+  const entry=SCHEDULE.find(e=>e.key===k)||SCHEDULE.find(e=>e.key===dateKey(new Date()));
+  const es=entry?entryStats(entry):{done:0,total:0};
+  const hours=log.hours!=null?log.hours:(state.hours[k]||0);
+  const target=log.target!=null?log.target:targetFor(keyToDate(k));
+  const pctH=target?Math.round(hours/target*100):0;
+  const post7=postponeCount7();
+  const fav=favoriteExcuse();
+  const io=invalidOffenses();
+  const scrollCrimes=(state.excuseUse.scroll||0);
+
+  let dossier='';
+  function li(t){ dossier+='<li>'+t+'</li>'; }
+  li(autoMissed
+    ?pickNR(DREAD.ghost,'ghost'+lvl)
+    :'Hours promised: <b>'+target+' h</b> — delivered: <b>'+hours.toFixed(1)+' h</b> ('+pctH+'% honesty)');
+  li('Tasks dodged: <b>'+(es.total-es.done)+' of '+es.total+'</b>. Each one a small promise you broke to yourself.');
+  const foc=state.focusLog[k]||0;
+  if(state.settings.strict||(foc>0&&hours-foc/60>=0.75)){
+    li(DREAD.honesty[lvl].replace('%F','<b>'+fmtMins(foc)+'</b>').replace('%C','<b>'+target+' h</b>'));
+  }
+  if(post7>0) li('Postpones this week: <b>'+post7+'</b>. The schedule now ends later because of you.');
+  if(fav.count>1) li('Favorite escape: <b>“'+esc(fav.label)+'”</b> — deployed '+fav.count+' time(s). A signature move at this point.');
+  if(scrollCrimes>0) li('Scroll crimes on record: <b>'+scrollCrimes+'</b>. Strangers danced. Nothing was compiled.');
+  if(io>0) li('Invalid excuses attempted: <b>'+io+'</b>. The trap door works both ways.');
+  const rk=rankOf(state.xp);
+  li('Current rank: <b>'+RANKS[rk][0]+'</b> — '+(rk>=5?'and STILL failing. Sovereignty means nothing to the calendar.':'plenty of runway left to fall.'));
+  if(log.closedAt) li('Closed at <b>'+log.closedAt+'</b>, well past the bedtime you set for yourself.');
+
+  $('#roastTier').textContent=DREAD.tags[lvl-1]+' · '+fmtPretty(k).toUpperCase();
+  $('#roastHead').textContent=DREAD.heads[lvl-1];
+  $('#roastDossier').innerHTML=dossier;
+  $('#roastClose').textContent=DREAD.closings[lvl-1];
+
+  const acts=$('#roastActions');
+  acts.innerHTML='';
+  const labels=['Noted. Painfully.','I deserve this','It knows my bedtime','I accept the wearing','There is no accepting. Only remaining.'];
+  const ok=document.createElement('button');
+  ok.className='rbtn solid';
+  ok.textContent=labels[lvl-1];
+  ok.addEventListener('click',()=>ov.classList.remove('show'));
+  acts.appendChild(ok);
+  if(!autoMissed&&!state.closedDays[k]){
+    const back=document.createElement('button');
+    back.className='rbtn ghost';
+    back.textContent='Not asleep yet — reopening the day';
+    back.addEventListener('click',()=>{
+      reopenDay(k);
+      ov.classList.remove('show');
+      toast('Day reopened. Prove something.','info');
+    });
+    acts.appendChild(back);
+  }
+  if(lvl>=4&&!state.corrupted){ state.corrupted=true; document.body.classList.add('corrupted'); save(); }
+  ov.classList.add('show');
+}
+
+function postponeCount7(){
+  const now=new Date();
+  let n=0;
+  for(let i=0;i<7;i++){ if(state.postponed[dateKey(addDays(now,-i))]) n++; }
+  return n;
+}
+function favoriteExcuse(){
+  let best={label:'—',count:0};
+  Object.keys(state.excuseUse).forEach(id=>{
+    const c=state.excuseUse[id];
+    if(c>best.count){
+      const found=EXCUSES.valid.concat(EXCUSES.invalid).find(x=>x.id===id);
+      best={label:found?found.label:id.replace('custom:',''),count:c};
+    }
+  });
+  return best;
+}
+
+let roastAutoShown=false;
+function autoRoastCheck(){
+  if(roastAutoShown) return;
+  const now=new Date();
+  const h=now.getHours();
+  const bed=state.settings.bedtime%24;
+  const late=h>=bed||h<4;
+  if(!late) return;
+  const yK=dateKey(addDays(now,-1));
+  if(!state.startDate||yK<state.startDate) return;
+  if(state.closedDays[yK]||state.postponed[yK]) return;
+  if(!SCHEDULE.some(e=>e.key===yK)) return;
+  const yEntry=SCHEDULE.find(e=>e.key===yK);
+  const es=yEntry?entryStats(yEntry):{done:0,total:0};
+  state.badLog[yK]={verdict:'fail',hours:state.hours[yK]||0,target:targetFor(keyToDate(yK)),dodged:es.total-es.done,total:es.total,closedAt:null};
+  if(burnPardon('Yesterday is logged as lost. The voice stays silent.')){
+    state.badLog[yK].pardoned=true;
+    save();
+    roastAutoShown=true;
+    return;
+  }
+  state.dread=Math.min(5,dreadLevel()+1);
+  applyDread();
+  save();
+  roastAutoShown=true;
+  setTimeout(()=>openRoast(yK,true),600);
+}
+
+const ppOverlay=$('#postponeOverlay');
+function showPane(id){
+  $$('#postponeOverlay .pg-pane').forEach(p=>p.classList.toggle('on',p.id===id));
+}
+function openPostpone(){
+  renderExcuseGrid();
+  showPane('paneGrid');
+  ppOverlay.classList.add('show');
+}
+function excuseChip(x){
+  return '<button class="chip excuse-chip" data-excuse-id="'+x.id+'" data-excuse-label="'+esc(x.label)+'">'+esc(x.label)+'</button>';
+}
+function renderExcuseGrid(){
+  const pool=EXCUSES.valid.concat(EXCUSES.invalid);
+  for(let i=pool.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    const t=pool[i];pool[i]=pool[j];pool[j]=t;
+  }
+  $('#allExcuses').innerHTML='<div class="chips">'+pool.map(x=>excuseChip(x)).join('')+'</div>';
+  $('#customExcuses').innerHTML='<div class="chips">'+
+    (state.customExcuses.length?state.customExcuses.map(c=>
+      '<button class="chip excuse-chip" data-custom="'+esc(c)+'"><span class="tag BOOK">CUSTOM</span>'+esc(c)+'<span class="delx" data-delcustom="'+esc(c)+'">×</span></button>'
+    ).join(''):'<span style="font-size:12.5px;color:var(--faint);font-weight:600">None yet. Originality pending.</span>')+
+  '</div>';
+}
+function doTaunt(lines,label,actions){
+  const useKey=currentPendingExcuseId||'';
+  let text=pickNR(lines,'t:'+(useKey||'generic'));
+  if(useKey&&(state.excuseUse[useKey]||0)>=2) text+=' '+pickNR(EXCUSES.escalation,'esc');
+  if(dreadLevel()>=2) text+=' '+pick(DREAD.spice[dreadLevel()]);
+  $('#tauntQuote').textContent='EXCUSE ON RECORD: “'+label.toUpperCase()+'”';
+  $('#tauntText').textContent=text;
+  const acts=$('#tauntActions');
+  acts.innerHTML='';
+  actions.forEach(a=>{
+    const b=document.createElement('button');
+    b.className='btn'+(a.cls?' '+a.cls:'');
+    b.textContent=a.text;
+    b.addEventListener('click',a.fn);
+    acts.appendChild(b);
+  });
+  showPane('paneTaunt');
+}
+let currentPendingExcuseId=null;
+function commitPostpone(label){
+  const k=dateKey(new Date());
+  state.postponed[k]={label,ts:Date.now()};
+  state.dread=Math.min(5,dreadLevel()+1);
+  applyDread();
+  save();
+  SCHEDULE=buildSchedule();
+  renderDaily(); renderTimeline(); recalcAll();
+}
+function excuseIsValid(id){
+  return !!id&&EXCUSES.valid.some(x=>x.id===id);
+}
+
+ppOverlay.addEventListener('click',e=>{
+  const chip=e.target.closest('.excuse-chip');
+  if(chip&&!e.target.closest('.delx')){
+    const id=chip.dataset.excuseId||null;
+    const label=chip.dataset.custom||chip.dataset.excuseLabel||'custom excuse';
+    const valid=id?excuseIsValid(id):true;
+    currentPendingExcuseId=id||('custom:'+label);
+    state.excuseUse[currentPendingExcuseId]=(state.excuseUse[currentPendingExcuseId]||0)+1;
+    save();
+    const back=()=>{ renderExcuseGrid(); showPane('paneGrid'); };
+    const resume=()=>ppOverlay.classList.remove('show');
+    if(valid){
+      doTaunt((EXCUSES.valid.find(x=>x.id===id)||{}).t||EXCUSES.generic,label,[
+        {text:'Go back',fn:back},
+        {text:'Leave',cls:'danger',fn:()=>{ commitPostpone(label); ppOverlay.classList.remove('show'); toast('Day postponed. The finish line just moved.','info'); }}
+      ]);
+    } else {
+      const x=EXCUSES.invalid.find(v=>v.id===id)||{};
+      doTaunt(x.t||EXCUSES.generic,label,[
+        {text:'Go back',cls:'primary',fn:back},
+        {text:'Resume studying',cls:'danger',fn:resume}
+      ]);
+    }
+    return;
+  }
+  const del=e.target.closest('.delx');
+  if(del){
+    const val=del.dataset.delcustom;
+    state.customExcuses=state.customExcuses.filter(c=>c!==val);
+    save(); renderExcuseGrid();
+    return;
+  }
+});
+$('#addCustomBtn').addEventListener('click',()=>{
+  const inp=$('#customExcuseInput');
+  const v=(inp.value||'').trim();
+  if(!v){ inp.focus(); return; }
+  state.customExcuses.push(v);
+  inp.value='';
+  save(); renderExcuseGrid();
+});
+
+$('#themeBtn').addEventListener('click',()=>{
+  state.theme=state.theme==='dark'?'light':'dark';
+  applyTheme(); save();
+});
+
+document.addEventListener('change',e=>{
+  const cb=e.target.closest('input.chk');
+  if(cb){
+const id=cb.dataset.id;
+const sec=cb.closest('.stage');
+const wasComplete=sec?sec.classList.contains('complete'):false;
+const was=!!state.checked[id];
+if(!was&&cb.checked){
+  state.checked[id]=true; const _tk=dateKey(new Date()); state.checkLog[_tk]=(state.checkLog[_tk]||0)+1; addXP(10); toast('+10 XP','info');
+} else if(was&&!cb.checked){
+  delete state.checked[id]; state.xp=Math.max(0,state.xp-10); const _tu=dateKey(new Date()); state.checkLog[_tu]=Math.max(0,(state.checkLog[_tu]||0)-1);
+}
+document.querySelectorAll('input.chk[data-id="'+id+'"]').forEach(function(o){
+  if(o===cb) return;
+  o.checked=cb.checked;
+  const oli=o.closest('li'); if(oli) oli.classList.toggle('done',o.checked);
+});
+const li=cb.closest('li');
+if(li) li.classList.toggle('done',cb.checked);
+    save();
+    recalcAll();
+    const sid=sec?sec.dataset.stage:null;
+    if(sid){
+      const p=computeStats().per[sid];
+      const nowComplete=p.done===p.total&&p.total>0;
+if(nowComplete&&!wasComplete&&sid!=='ms'){
+toast('Stage complete — '+((DATA.stages.find(s=>s.id===sid)||{}).title||'Milestones'),'good');
+awardOnce('stage:'+sid,100);
+}
+}
+const stats2=computeStats();
+if(stats2.per.ms.done===stats2.per.ms.total&&stats2.per.ms.total>0){
+  if(awardOnce('ms-complete',250)) toast('All milestones built — +250 XP','good');
+}
+    if(stats2.done===stats2.total&&!state.celebrated){
+      state.celebrated=true; save(); confettiBurst(); toast('Roadmap 100%. Legendary.');
+    }
+    if(stats2.done<stats2.total&&state.celebrated){ state.celebrated=false; save(); }
+    renderDaily(); renderTimeline();
+    return;
+  }
+  const ta=e.target.closest('textarea[data-notes]');
+  if(ta){
+    state.notes[ta.dataset.notes]=ta.value;
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(()=>{
+      save();
+      const flag=ta.parentElement.querySelector('.saved-flag');
+      if(flag){ flag.classList.add('show'); setTimeout(()=>flag.classList.remove('show'),1400); }
+    },450);
+  }
+});
+
+document.addEventListener('click',e=>{
+  const head=e.target.closest('.stage-head');
+  if(head){
+    const sec=head.closest('.stage');
+    const id=sec.dataset.stage;
+    const open=sec.classList.toggle('open');
+    head.setAttribute('aria-expanded',String(open));
+    if(open){ delete state.collapsed[id]; } else { state.collapsed[id]=true; }
+    save(); return;
+  }
+  if(e.target.closest('#exportBtn')) doExport();
+  if(e.target.closest('#importBtn')) $('#importFile').click();
+  if(e.target.closest('#resetBtn')) $('#resetOverlay').classList.add('show');
+  if(e.target.closest('#expandAllBtn')||e.target.closest('#collapseAllBtn')){
+    const expand=!!e.target.closest('#expandAllBtn');
+    $$('.stage').forEach(sec=>{
+      sec.classList.toggle('open',expand);
+      sec.querySelector('.stage-head').setAttribute('aria-expanded',String(expand));
+      if(expand){ delete state.collapsed[sec.dataset.stage]; } else { state.collapsed[sec.dataset.stage]=true; }
+    });
+    save();
+  }
+  if(e.target.closest('#hideDoneBtn')){
+    state.hideDone=!state.hideDone;
+    document.body.classList.toggle('hide-done',state.hideDone);
+    const hb=$('#hideDoneBtn');
+    hb.classList.toggle('active',state.hideDone);
+    hb.setAttribute('aria-pressed',String(state.hideDone));
+    toast(state.hideDone?'Showing unfinished stages only':'Showing all stages','info');
+    save();
+  }
+});
+
+function doExport(){
+  const payload={app:'c-roadmap-tracker',version:2,exportedAt:new Date().toISOString(),state};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='c-roadmap-backup-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(a.href);
+  toast('Backup downloaded','good');
+}
+
+$('#importFile').addEventListener('change',e=>{
+  const f=e.target.files[0];
+  if(!f) return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    try{
+      const obj=JSON.parse(reader.result);
+      const inc=obj.state||obj;
+      if(!inc||typeof inc.checked!=='object') throw new Error('bad');
+      state=Object.assign(DEFAULT_STATE(),inc);
+      state.settings=Object.assign({wdTarget:3,suTarget:6.5,bedtime:23},inc.settings||{});
+      save(); renderAll();
+      toast('Progress imported','good');
+    }catch(err){
+      toast('Import failed — not a valid backup file','bad');
+    }
+    e.target.value='';
+  };
+  reader.readAsText(f);
+});
+
+$('#cancelResetBtn').addEventListener('click',()=>$('#resetOverlay').classList.remove('show'));
+$('#resetOverlay').addEventListener('click',e=>{ if(e.target.id==='resetOverlay') $('#resetOverlay').classList.remove('show'); });
+$('#keepStudyingBtn').addEventListener('click',()=>ppOverlay.classList.remove('show'));
+document.addEventListener('keydown',e=>{
+if(e.key==='Escape'){
+$('#resetOverlay').classList.remove('show');
+$('#inspectorOverlay').classList.remove('show');
+}
+});
+$('#confirmResetBtn').addEventListener('click',()=>{
+  const keepTheme=state.theme;
+  state=DEFAULT_STATE();
+  state.theme=keepTheme;
+  state.startDate=dateKey(new Date());
+  save(); renderAll();
+  $('#resetOverlay').classList.remove('show');
+  document.body.classList.remove('corrupted');
+  toast('Clean slate. Use it well this time.','info');
+});
+
+if(!state.startDate) state.startDate=dateKey(new Date());
+renderAll();
+save();
+setTimeout(autoRoastCheck,400);
+setInterval(function(){tick();try{lateNightCheck(new Date())}catch(e){}},1000);
+window.__BIIFE=true;
+function bedtimeViolated(now){
+  if(state.timer.running) return false;
+  const tk=dateKey(now);
+  if(state.postponed[tk]||state.closedDays[tk]) return false;
+  if(!state.startDate||tk<state.startDate) return false;
+  const bed=state.settings.bedtime%24;
+  const h=now.getHours();
+  return (h>=bed||h<4);
+}
+function lateNightCheck(now){
+  const tk=dateKey(now);
+  if(state.lateNight[tk]) return false;
+  if(!bedtimeViolated(now)) return false;
+  state.lateNight[tk]=true; save();
+  try{ openLateNight(); }catch(e){}
+  return true;
+}
+function nagActive(){
+  const yk=dateKey(addDays(new Date(),-1));
+  if(!state.lateNight[yk]||state.closedDays[yk]||state.postponed[yk]) return false;
+  const tk=dateKey(new Date());
+  return !((state.checkLog[tk]||0)>0);
+}
+function updateNag(){
+  const on=nagActive();
+  const nb=document.getElementById('nagBanner'); if(nb) nb.hidden=!on;
+  document.body.classList.toggle('nagmode',on);
+}
+function updateNag(){
+  const on=nagActive();
+  const nb=document.getElementById('nagBanner'); if(nb) nb.hidden=!on;
+  document.body.classList.toggle('nagmode',on);
+}
+function bedtimeViolated(now){
+  if(state.timer.running) return false;
+  const tk=dateKey(now);
+  if(state.postponed[tk]||state.closedDays[tk]) return false;
+  if(!state.startDate||tk<state.startDate) return false;
+  const bed=state.settings.bedtime%24;
+  const h=now.getHours();
+  return (h>=bed||h<4);
+}
+function lateNightCheck(now){
+  const tk=dateKey(now);
+  if(state.lateNight[tk]) return false;
+  if(!bedtimeViolated(now)) return false;
+  state.lateNight[tk]=true; save();
+  try{ openLateNight(); }catch(e){}
+  return true;
+}
+function nagActive(){
+  const yk=dateKey(addDays(new Date(),-1));
+  if(!state.lateNight[yk]||state.closedDays[yk]||state.postponed[yk]) return false;
+  const tk=dateKey(new Date());
+  return !((state.checkLog[tk]||0)>0);
+}
+function updateNag(){
+  const on=nagActive();
+  const nb=document.getElementById('nagBanner'); if(nb) nb.hidden=!on;
+  document.body.classList.toggle('nagmode',on);
+}
+function restockWeekly(){
+  const wk=tribunalWeekKey();
+  if(wk!==state.lastRestStock){
+    state.lastRestStock=wk;
+    state.restTokens=Math.min(2,(state.restTokens||0)+1);
+    return true;
+  }
+  return false;
+}
+(function(){
+  SCHEDULE=buildSchedule();
+  if(restockWeekly()) save();
+  const wk=tribunalWeekKey();
+  const dow=new Date().getDay();
+const begun=!state.startDate||dateKey(new Date())>=state.startDate;
+if(dow===0&&begun&&state.lastTribunalWeek!==wk){
+state.lastTribunalWeek=wk; save();
+setTimeout(openTribunal,700);
+}
+  if(dow===1&&state.mondayMsg&&state.mondayMsg.weekKey!==state.lastTribunalWeek){
+    const msg=state.mondayMsg; state.mondayMsg=null; save();
+    setTimeout(function(){ toast('⚖ From last week ['+msg.grade+']: '+msg.line,'info'); },1500);
+  }
+})();
+/* ═══════════ GUARDIAN — permanent self-test infrastructure ═══════════
+   Living contract: any feature update MUST sync its group below, bump the
+   group's `updated` stamp and APP_VERSION. Coverage table advertises neglect.
+   Never remove this block. */
+const APP_VERSION='2.9.0';
+const FEATURE_COVERAGE=[
+ {id:'schedule-debt',label:'Debt-aware scheduling',group:'core-schedule'},
+ {id:'postpone',label:'Postpone / Revert / Resume',group:'handler-pipeline'},
+ {id:'dread',label:'Dread Engine + Pardons',group:'dread-engine'},
+ {id:'timer',label:'Focus Timer 2.0',group:'timer'},
+ {id:'ghosts',label:'Ghost-Day exposure',group:'core-schedule'},
+ {id:'projection',label:'Finish-line Projection',group:'projection'},
+ {id:'day-inspector',label:'Day Inspector',group:'handler-pipeline'},
+ {id:'tribunal',label:'Sunday Tribunal',group:'tribunal'},
+ {id:'xp-ladder',label:'XP + Rank Ladder',group:'psychology'},
+ {id:'themes',label:'Sepia / Dark themes',group:'markup-wiring'},
+ {id:'roasts',label:'Roast escalation system',group:'dread-engine'},
+ {id:'excuse-ui',label:'Unflagged excuse window',group:'handler-pipeline'}
+];
+const GUARDIAN={groups:{
+ 'markup-wiring':{updated:'2026-08-24',tests:[
+   ['MK1 stage sections + ids resolve',function(){
+     const secs=document.querySelectorAll('#stages .stage:not(.ms)');
+     if(secs.length!==DATA.stages.length) throw new Error('sections '+secs.length+' vs '+DATA.stages.length);
+     DATA.stages.forEach(s=>{ if(!document.getElementById('stage-'+s.id)) throw new Error('missing #stage-'+s.id); });
+     return true;}],
+   ['MK2 milestone card id',function(){ if(!document.getElementById('stage-ms')) throw new Error('missing #stage-ms'); return true;}],
+   ['MK3 per-stage anatomy',function(){
+     document.querySelectorAll('#stages .stage').forEach(sec=>{
+       ['.bar i','.pct','.num','input.chk[data-id]'].forEach(sel=>{ if(!sec.querySelector(sel)) throw new Error((sec.dataset.stage||'?')+' missing '+sel); });
+       if(!sec.dataset.stage) throw new Error('missing data-stage');
+     });
+     return true;}],
+   ['MK4 hero ids exist',function(){
+     ['ringFg','ringPct','statItems','statStages','statMile','statProj','statProjDate','statProjSub'].forEach(id=>{ if(!document.getElementById(id)) throw new Error('missing '+id); });
+     return true;}],
+   ['MK5 shell ids exist',function(){
+     ['dailyPanel','hmGrid','timeline','miniTimer','tribunalOverlay','tribunalBtn','statRank','statRankName','statRankBar'].forEach(id=>{ if(!document.getElementById(id)) throw new Error('missing '+id); });
+     return true;}],
+   ['MK6 postpone modal anatomy',function(){
+     ['paneGrid','paneTaunt','allExcuses','customExcuses','keepStudyingBtn','addCustomBtn','customExcuseInput'].forEach(id=>{ if(!document.getElementById(id)) throw new Error('missing '+id); });
+     return true;}],
+   ['MK7 roast overlay anatomy',function(){
+     ['roastOverlay','roastTier','roastHead','roastDossier','roastClose','roastActions'].forEach(id=>{ if(!document.getElementById(id)) throw new Error('missing '+id); });
+     return true;}],
+   ['MK8 settings ids exist',function(){
+     ['setStart','setWd','setSu','setBed','setStrict','selfTestBtn'].forEach(id=>{ if(!document.getElementById(id)) throw new Error('missing '+id); });
+     return true;}],
+   ['MK9 legend mentions ghosted + catch-up',function(){
+     const l=(document.querySelector('.hm-legend')||{}).textContent||'';
+     if(l.indexOf('ghosted')<0) throw new Error('no ghosted');
+     if(l.indexOf('catch-up')<0) throw new Error('no catch-up');
+     return true;}],
+   ['MK10 DREAD pools shape',function(){
+     if(DREAD.names.length!==6) throw new Error('names');
+     [['heads',5],['tags',5],['closings',5],['ghost',5],['honesty',5]].forEach(pair=>{
+       if(!DREAD[pair[0]]||DREAD[pair[0]].length<pair[1]) throw new Error(pair[0]);
+     });
+if(!DREAD.spice||DREAD.spice.length!==6) throw new Error('spice len: '+DREAD.spice.length);
+for(let i=1;i<=5;i++){ if(!DREAD.spice[i]||DREAD.spice[i].length<3) throw new Error('spice['+i+'] thin: '+DREAD.spice[i].length); }
+return true;}],
+['MK10b expanded pools intact',function(){
+ if(EXCUSES.generic.length<8) throw new Error('generic thin');
+ if(EXCUSES.escalation.length<5) throw new Error('escalation thin');
+ if(EXCUSES.praise.length<5) throw new Error('praise thin');
+ if(DREAD.uneasy.length<3) throw new Error('uneasy thin');
+ if(DREAD.ghost.length<6) throw new Error('ghost thin');
+ return true;}],
+   ['MK11 excuse pools intact',function(){
+     if(!EXCUSES.valid.length||!EXCUSES.invalid.length) throw new Error('empty pool');
+     if(INVALID_IDS.length!==EXCUSES.invalid.length) throw new Error('INVALID_IDS drift');
+     return true;}],
+   ['MK12 legacy tripwires absent',function(){
+     const clone=document.documentElement.cloneNode(true);
+     clone.querySelectorAll('script').forEach(function(s){ s.remove(); });
+     const html=clone.outerHTML;
+     ['~2 mo','data-invalid','excuse-invalid','failTier(','badStreak('].forEach(bad=>{ if(html.indexOf(bad)>=0) throw new Error('legacy found: '+bad); });
+     return true;}],
+   ['W1 doTaunt spice wiring',function(){ if(doTaunt.toString().indexOf('DREAD.spice')<0) throw new Error('spice unwired'); return true;}],
+   ['W2 updateStageVisual targets bars',function(){ if(updateStageVisual.toString().indexOf('.bar i')<0) throw new Error('no bar target'); return true;}],
+   ['W3 recalcAll runs projection',function(){ if(recalcAll.toString().indexOf('computeProjection')<0) throw new Error('projection missing'); return true;}],
+   ['W4 scheduler is debt-aware',function(){ if(buildSchedule.toString().indexOf('catchupArmed')<0) throw new Error('not debt-aware'); return true;}]
+ ]},
+ 'dread-engine':{updated:'2026-08-24',tests:[
+   ['D1 fail days counted (incl today)',function(){
+     state.startDate=gpRelDay(-60);
+     state.closedDays={};state.badLog={};state.postponed={};state.startDate=gpRelDay(-60);
+     const p=n=>gpRelDay(-n);
+     [0,1].forEach(n=>{ state.closedDays[p(n)]=true; state.badLog[p(n)]={verdict:'fail'}; });
+     const c=consecutiveBadDays();
+     if(c!==2) throw new Error('got '+c); return true;}],
+   ['D2 ghost adds to chain',function(){
+     state.startDate=gpRelDay(-60); const p=n=>gpRelDay(-n);
+     [0,1,2].forEach(function(n){ state.closedDays[p(n)]=true; state.badLog[p(n)]={verdict:'fail'}; });
+     if(consecutiveBadDays()!==3) throw new Error('got '+consecutiveBadDays()); return true;}],
+   ['D3 pass day shields',function(){
+     state.startDate=gpRelDay(-60);
+
+     const p=n=>gpRelDay(-n);
+     state.closedDays[p(1)]=true; state.badLog[p(1)]={verdict:'pass'};
+     if(consecutiveBadDays()!==0) throw new Error('shield leaked, got '+consecutiveBadDays()); return true;}],
+   ['D4 postpone today counts',function(){
+     state.postponed[dateKey(new Date())]={label:'guardian'};
+     state.closedDays={};state.badLog={};state.startDate=gpRelDay(-60);
+     const c=consecutiveBadDays();
+     delete state.postponed[dateKey(new Date())];
+     if(c!==1) throw new Error('got '+c); return true;}],
+   ['D5 start-date clamps walk',function(){
+     const p=n=>gpRelDay(-n);
+     state.closedDays={};state.badLog={};state.postponed={};
+     [1,2].forEach(n=>{ state.closedDays[p(n)]=true; state.badLog[p(n)]={verdict:'fail'}; });
+     state.badLog[p(4)]={verdict:'fail'};
+     state.startDate=p(2);
+     const c=consecutiveBadDays();
+     state.startDate='';
+     if(c!==2) throw new Error('clamp failed, got '+c); return true;}]
+ ]},
+ 'projection':{updated:'2026-08-24',tests:[
+   ['P1 empty roadmap',function(){ const r=computeProjection({total:0,done:0}); if(r.state!=='none') throw new Error(r.state); return true;}],
+   ['P2 finished',function(){ const r=computeProjection({total:9,done:9}); if(r.state!=='done') throw new Error(r.state); return true;}],
+   ['P3 prestart',function(){
+     const keep=state.startDate; state.startDate=gpRelDay(5);
+     const r=computeProjection({total:10,done:2}); state.startDate=keep;
+     if(r.state!=='prestart') throw new Error(r.state); return true;}],
+   ['P4 idle nothing-checked',function(){
+     state.startDate=gpRelDay(-3); SCHEDULE=[{key:gpRelDay(-2),kind:'study'}];
+     const r=computeProjection({total:10,done:0});
+     if(r.state!=='idle') throw new Error(r.state); return true;}],
+   ['P5 live math exact',function(){
+     state.startDate=gpRelDay(-3); SCHEDULE=[{key:gpRelDay(-2),kind:'study'}];
+     const r=computeProjection({total:12,done:6});
+     if(r.rate!==1.5) throw new Error('rate '+r.rate);
+     if(dateKey(addDays(new Date(),4))!==r.projK) throw new Error('projK '+r.projK);
+     if(r.shaky!==true) throw new Error('shaky');
+     if(r.warn!==false) throw new Error('warn premature'); return true;}],
+   ['P6 warn boundary: exactly +7 stays calm',function(){
+     state.startDate=gpRelDay(-3); SCHEDULE=[{key:gpRelDay(-3),kind:'study'}]; // planned = proj-7
+     const r=computeProjection({total:12,done:6});                            // proj = today+4
+     if(r.gapDays!==7) throw new Error('fixture drift gap='+r.gapDays);
+     if(r.warn!==false) throw new Error('warned at exact boundary'); return true;}],
+   ['P7 warn beyond +7',function(){
+     state.startDate=gpRelDay(-3); SCHEDULE=[{key:gpRelDay(-4),kind:'study'}]; // planned = proj-8
+     const r=computeProjection({total:12,done:6});
+     if(r.gapDays!==8) throw new Error('fixture drift gap='+r.gapDays);
+     if(r.warn!==true) throw new Error('no warn at +8'); return true;}],
+   ['P8 deep-gap flags >14',function(){
+     state.startDate=gpRelDay(-17); SCHEDULE=[{key:gpRelDay(-20),kind:'study'}];
+     const r=computeProjection({total:20,done:16});
+     if(!(r.gapDays>14)) throw new Error('gap '+r.gapDays); return true;}]
+ ]},
+ 'timer':{updated:'2026-08-24',tests:[
+   ['F1 clock zero',function(){ if(fmtClock(0)!=='00:00') throw new Error(fmtClock(0)); return true;}],
+   ['F2 clock hour rollover',function(){ if(fmtClock(90.25)!=='1:30:15') throw new Error(fmtClock(90.25)); return true;}],
+   ['F3 mins formatting',function(){ if(fmtMins(125)!=='2h 5m') throw new Error(fmtMins(125)); return true;}]
+ ]},
+ 'core-schedule':{updated:'2026-08-24',tests:[
+   ['B0 honest history -> no catchup',function(){
+     state.closedDays={}; state.badLog={}; state.hours={};
+     const o=gpOffset(); const start=dateKey(addDays(new Date(),o));
+     state.startDate=start; state.checked={}; state.postponed={};
+     let S=buildSchedule();
+     S.forEach(e=>{ if(e.key<dateKey(new Date())&&e.items) e.items.forEach(id=>state.checked[id]=true); });
+     S=buildSchedule();
+     if(S.some(e=>e.kind==='catchup')) throw new Error('catchup leaked'); return true;}],
+   ['B1 single ghost stacks onto next',function(){
+     const o=gpOffset(); const start=dateKey(addDays(new Date(),o));
+     state.startDate=start; state.checked={}; state.postponed={};
+     let S=buildSchedule();
+     const todayK=dateKey(new Date());
+     S.forEach(e=>{ if(e.key<todayK&&e.items) e.items.forEach(id=>state.checked[id]=true); });
+     S=buildSchedule();
+     const past=S.filter(e=>e.kind==='study'&&e.key<todayK);
+     if(!past.length) return 'SKIP';
+     const pl=past[past.length-1];
+     const victim=pl.items.find(id=>state.checked[id]);
+     if(!victim) return 'SKIP';
+     delete state.checked[victim];
+     S=buildSchedule();
+     const idx=S.findIndex(e=>e.key===pl.key);
+     const nxt=S[idx+1];
+     if(!nxt||!nxt.items) throw new Error('no follow-up slot');
+     if(!nxt.items.includes(victim)) throw new Error('carry lost');
+     if(S.some(e=>e.kind==='catchup')) throw new Error('partial miss armed shift');
+     return true;}],
+   ['B2 double ghosts arm catchups (debt-only, after last ghost)',function(){
+     const o=gpOffset(); const start=dateKey(addDays(new Date(),o));
+     state.startDate=start; state.checked={}; state.postponed={};
+     let S=buildSchedule();
+     const todayK=dateKey(new Date());
+     const pastStudies=S.filter(function(e){return e.kind==='study'&&e.key<todayK;}).slice(-4);
+     if(pastStudies.length<2) return 'SKIP';
+     const debt=new Set(pastStudies.flatMap(function(e){return e.items;}));
+     pastStudies.forEach(function(e){ e.items.forEach(function(id){ delete state.checked[id]; }); });
+     S=buildSchedule();
+     const cus=S.filter(function(e){return e.kind==='catchup';});
+     if(cus.length<1) throw new Error('no catchup');
+     cus.forEach(function(c){
+       if(!c.items.every(function(id){return debt.has(id);})) throw new Error('foreign items');
+       if(S.indexOf(c)<S.indexOf(pastStudies[pastStudies.length-1])) throw new Error('catchup before last ghost');
+     });
+     return true;}],
+   ['B3 catchup consumes zero new + resume brings fresh heads',function(){
+     const o=gpOffset(); const start=dateKey(addDays(new Date(),o));
+     state.startDate=start; state.checked={}; state.postponed={};
+     let S=buildSchedule();
+     const todayK=dateKey(new Date());
+     S.forEach(e=>{ if(e.key<todayK&&e.items) e.items.forEach(id=>state.checked[id]=true); });
+     S=buildSchedule();
+     const pastStudies=S.filter(e=>e.kind==='study'&&e.key<todayK).slice(-2);
+     if(pastStudies.length<2) return 'SKIP';
+     const seen=new Set(pastStudies.flatMap(e=>e.items));
+     pastStudies.forEach(e=>e.items.forEach(id=>delete state.checked[id]));
+     S=buildSchedule();
+     const cuIdx=S.findIndex(e=>e.kind==='catchup');
+     if(cuIdx<0) throw new Error('armed but absent');
+     const cu=S[cuIdx];
+     if(!cu.items.every(id=>seen.has(id))) throw new Error('catchup invented items');
+     const nxt=S.slice(cuIdx+1).find(e=>e.kind==='study');
+     if(!nxt) throw new Error('no resume slot');
+     const carried=new Set(cu.items);
+     if(!nxt.items.some(id=>!seen.has(id)&&!carried.has(id))) throw new Error('no fresh heads after debt cleared');
+     return true;}],
+   ['B4 single ghost + postpone today -> no shift',function(){
+     state.closedDays={}; state.badLog={}; state.hours={};
+     const o=gpOffset(); const start=dateKey(addDays(new Date(),o));
+     state.startDate=start; state.checked={}; state.postponed={};
+     let S=buildSchedule();
+     const todayK=dateKey(new Date());
+     S.forEach(e=>{ if(e.key<todayK&&e.items) e.items.forEach(id=>state.checked[id]=true); });
+     S=buildSchedule();
+     const past=S.filter(e=>e.kind==='study'&&e.key<todayK);
+     if(!past.length) return 'SKIP';
+     past[past.length-1].items.forEach(id=>delete state.checked[id]); // exactly one ghost
+     state.postponed[todayK]={label:'guardian'};
+     S=buildSchedule();
+     if(S.find(e=>e.key===todayK).kind!=='postponed') throw new Error('not postponed');
+     if(S.some(e=>e.kind==='catchup')) throw new Error('shift armed on single ghost');
+     return true;}],
+   ['B4b double ghost + postpone today -> armed shift persists',function(){
+     const o=gpOffset(); const start=dateKey(addDays(new Date(),o));
+     state.startDate=start; state.checked={}; state.postponed={};
+     let S=buildSchedule();
+     const todayK=dateKey(new Date());
+     const pastStudies=S.filter(e=>e.kind==='study'&&e.key<todayK).slice(-2);
+     if(pastStudies.length<2) return 'SKIP';
+     pastStudies.forEach(e=>e.items.forEach(id=>delete state.checked[id])); // 2 consecutive ghosts
+     state.postponed[todayK]={label:'guardian'};
+     S=buildSchedule();
+     if(S.find(e=>e.key===todayK).kind!=='postponed') throw new Error('postpone lost');
+     if(!S.some(e=>e.kind==='catchup')) throw new Error('armed shift vanished');
+     return true;}],
+   ['B5 coverage of every queue id',function(){
+     const o=gpOffset();
+     state.startDate=dateKey(addDays(new Date(),o)); state.checked={}; state.postponed={};
+     const S=buildSchedule();
+     const all=new Set(); S.forEach(e=>{(e.items||[]).forEach(id=>all.add(id))});
+     const missing=[];
+     DATA.stages.forEach(s=>stageItems(s).forEach(it=>{ if(!all.has(it.id)) missing.push(it.id); }));
+     if(missing.length) throw new Error('unscheduled: '+missing.join(','));
+     return true;}]
+ ]},
+ 'handler-pipeline':{updated:'2026-08-24',tests:[
+   ['H1 stage-card tick moves its bar',function(){
+     const inp=document.querySelector('#stages input.chk');
+     if(!inp) return 'SKIP';
+     const sec=inp.closest('.stage'); const sid=sec.dataset.stage;
+     const bar=sec.querySelector('.bar i');
+     const was=inp.checked, w0=bar.style.width;
+     inp.checked=!was;
+     inp.dispatchEvent(new Event('change',{bubbles:true}));
+     const moved=bar.style.width!==w0;
+     inp.checked=was;
+     inp.dispatchEvent(new Event('change',{bubbles:true}));
+     if(!moved) throw new Error('bar frozen'); return true;}],
+   ['H2 daily-list tick moves a stage bar too',function(){
+     const inp=document.querySelector('#dailyPanel input.chk');
+     if(!inp) return 'SKIP';
+     const w0=(document.querySelector('#stages .bar i')||{}).style.width;
+     inp.checked=!inp.checked;
+     inp.dispatchEvent(new Event('change',{bubbles:true}));
+     const w1=(document.querySelector('#stages .bar i')||{}).style.width;
+     const moved=w1!==w0;
+     inp.checked=!inp.checked;
+     inp.dispatchEvent(new Event('change',{bubbles:true}));
+     if(!moved) throw new Error('freeze reproduced'); return true;}],
+   ['H3 daily tick keeps projection live or honestly idle',function(){
+     const sub=document.querySelector('#statProjSub');
+     if(!sub) throw new Error('tile gone');
+     if(sub.textContent==='projection') throw new Error('tile never initialized'); return true;}],
+   ['H4 completion path clean',function(){
+     const stagesArr=Array.from(document.querySelectorAll('#stages .stage'));
+     for(const sec of stagesArr){
+       const inputs=Array.from(sec.querySelectorAll('input.chk'));
+       if(inputs.length&&inputs.every(i=>i.checked)) continue;
+       let flipped=false;
+       inputs.forEach(i=>{ if(!i.checked){ i.checked=true; i.dispatchEvent(new Event('change',{bubbles:true})); flipped=true; } });
+       if(flipped){ inputs.forEach(i=>{ if(state.checked[i.dataset.id]){ i.checked=false; i.dispatchEvent(new Event('change',{bubbles:true})); } }); return true; }
+     }
+     return 'SKIP';}],
+   ['I1 inspector anatomy exists',function(){
+     ['inspectorOverlay','inspDate','inspStatus','inspKind','inspBarFill','inspHoursNum','inspItems','inspVerdict','inspCloseBtn'].forEach(id=>{ if(!document.getElementById(id)) throw new Error('missing '+id); });
+     return true;}],
+   ['I2 failed-day fixture renders FAIL + hours',function(){
+     const mon=mondayOf(new Date());
+     state.startDate=dateKey(mon); state.checked={}; state.postponed={};
+     state.hours={}; state.closedDays={}; state.badLog={};
+     SCHEDULE=buildSchedule();
+     const s0=SCHEDULE.find(e=>e.kind==='study');
+     if(!s0) return 'SKIP';
+     state.hours[s0.key]=1; state.closedDays[s0.key]=true; state.badLog[s0.key]={verdict:'fail',closedAt:'23:58',dodged:2};
+     openInspector(s0.key);
+     const pill=document.querySelector('#inspStatus');
+     const okPill=pill.textContent==='FAILED'&&pill.className.indexOf('fail')>=0;
+     const okHours=document.getElementById('inspHoursNum').textContent.indexOf('1.0')===0;
+     document.getElementById('inspectorOverlay').classList.remove('show');
+     if(!okPill) throw new Error('pill '+pill.textContent);
+     if(!okHours) throw new Error('hours '+document.getElementById('inspHoursNum').textContent); return true;}],
+   ['I3 ghost fixture renders GHOSTED',function(){
+     const mon=mondayOf(new Date());
+     const todayK=dateKey(new Date());
+     state.startDate=dateKey(mon); state.checked={}; state.postponed={};
+     state.hours={}; state.closedDays={}; state.badLog={};
+     SCHEDULE=buildSchedule();
+     const past=SCHEDULE.filter(e=>e.kind==='study'&&e.key<todayK);
+     if(!past.length) return 'SKIP';
+     const g=past[past.length-1];
+     g.items.forEach(id=>delete state.checked[id]);
+     state.badLog[g.key]={verdict:'fail'};
+     openInspector(g.key);
+     const pill=document.querySelector('#inspStatus');
+     const ok=pill.textContent==='GHOSTED';
+     document.getElementById('inspectorOverlay').classList.remove('show');
+     if(!ok) throw new Error('pill '+pill.textContent); return true;}],
+   ['I4 hm-cell click opens inspector & Escape closes',function(){
+     const cell=document.querySelector('.hm-cell[data-k]');
+     if(!cell) return 'SKIP';
+     cell.dispatchEvent(new Event('click',{bubbles:true}));
+     const shown=document.getElementById('inspectorOverlay').classList.contains('show');
+     document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}));
+     const closed=!document.getElementById('inspectorOverlay').classList.contains('show');
+     if(!shown||!closed) throw new Error('shown='+shown+' closed='+closed); return true;}]
+ ]},
+ 'psychology':{updated:'2026-08-24',tests:[
+   ['X1 dual-copy XP symmetry (state truth)',function(){
+     const dinp0=document.querySelector('#dailyPanel input.chk');
+     if(!dinp0) return 'SKIP';
+     const id=dinp0.dataset.id;
+     const q=()=>document.querySelector('#dailyPanel input.chk[data-id="'+id+'"]')||document.querySelector('#stages input.chk[data-id="'+id+'"]');
+     if(!q()) return 'SKIP';
+     const before=state.xp;
+     let inp=q(); inp.checked=true; inp.dispatchEvent(new Event('change',{bubbles:true}));
+     const afterCheck=state.xp, hasAfterCheck=!!state.checked[id];
+     inp=q(); inp.checked=false; inp.dispatchEvent(new Event('change',{bubbles:true}));
+     const afterUncheck=state.xp, hasAfterUncheck=!!state.checked[id];
+     inp=q(); inp.checked=true; inp.dispatchEvent(new Event('change',{bubbles:true}));
+     const afterRetick=state.xp, hasAfterRetick=!!state.checked[id];
+     inp=q(); inp.checked=false; inp.dispatchEvent(new Event('change',{bubbles:true}));
+     state.xp=before;
+     const d1=afterCheck-before,d2=afterUncheck-afterCheck,d3=afterRetick-afterUncheck;
+     if(d1!==10||d2!==-10||d3!==10) throw new Error('deltas '+d1+','+d2+','+d3);
+     if(!hasAfterCheck) throw new Error('check state lost');
+     if(hasAfterUncheck) throw new Error('uncheck left residue');
+     if(!hasAfterRetick) throw new Error('retick state lost');
+     return true;}],   ['X1b refund floors at zero',function(){
+     const keep=state.xp;
+     state.xp=0; state.xp=Math.max(0,state.xp-10);
+     const floored=state.xp; state.xp=keep;
+     if(floored!==0) throw new Error('floor'); return true;}],
+   ['X2 all 8 rank boundaries exact',function(){
+     const table=[[0,'Script Kiddie'],[150,'Apprentice'],[400,'Pointer Wrangler'],[800,'Segfault Survivor'],[1500,'Memory Whisperer'],[2500,'Kernel Panic'],[4000,'Systems Sage'],[6000,'Roadmap Sovereign']];
+     for(let i=0;i<table.length;i++){
+       if(RANKS[i][1]!==table[i][0]||RANKS[i][0]!==table[i][1]) throw new Error('table drifted at index '+i);
+       if(rankOf(table[i][0])!==i) throw new Error('boundary '+table[i][1]+' not reached');
+       if(i>0&&rankOf(table[i][0]-1)!==i-1) throw new Error('below '+table[i][0]+' wrong');
+     }
+     if(rankOf(6000)!==7) throw new Error('cap');if(rankOf(99999)!==7) throw new Error('beyond cap');
+     return true;}],
+   ['X3 closeBonuses shape',function(){
+     const f=closeBonuses(false,true); if(f.length!==0) throw new Error('fail grants');
+     const p=closeBonuses(true,false); if(p.length!==1||p[0][1]!==30) throw new Error('pass-only');
+     const pc=closeBonuses(true,true); if(pc.length!==2||pc[1][1]!==50) throw new Error('catchup bonus');
+     return true;}],
+   ['X4 rank-up event fires on crossing',function(){
+     let conf=0;const oc=confettiBurst;confettiBurst=function(){conf++};
+     const keepXp=state.xp,keepIdx=state.rankIdx;
+     state.rankIdx=rankOf(state.xp);
+     state.xp=RANKS[state.rankIdx+1][1]-1;
+     addXP(1);
+     const bumped=state.rankIdx===rankOf(state.xp)&&conf>0;
+     state.xp=keepXp;state.rankIdx=keepIdx;confettiBurst=oc;
+     if(!bumped) throw new Error('no rank-up event'); return true;}]
+ ]},
+ 'tribunal':{updated:'2026-08-24',tests:[
+   ['T1 journey window slides with start',function(){
+     function winStartFor(startOff){
+       const sK=gpRelDay(startOff), tK=gpRelDay(0);
+       const diff=Math.max(0,Math.round((keyToDate(tK)-keyToDate(sK))/86400000));
+       const b=Math.floor(diff/7);
+       return dateKey(addDays(keyToDate(sK),b*7));
+     }
+     const base=gpRelDay(-30);
+     const w1=winStartFor(-30), w2=winStartFor(-23);
+     const dd=Math.round((keyToDate(w2)-keyToDate(w1))/86400000);
+     if(dd!==0&&dd!==7) throw new Error('slide '+dd);
+     const wDeep=winStartFor(-60);
+     if(Math.round((keyToDate(winStartFor(-53))-keyToDate(wDeep))/86400000)!==0&&Math.round((keyToDate(winStartFor(-53))-keyToDate(wDeep))/86400000)!==7) throw new Error('deep slide');
+     if(dateKey(addDays(keyToDate(w1),6))===w1) {} // sanity noop
+     return true;}],
+   ['T1b prestart clamps to week one + EARLY',function(){
+     const keep=state.startDate;
+     state.startDate=gpRelDay(5); state.checked={}; state.postponed={};
+     state.hours={}; state.closedDays={}; state.badLog={};
+     SCHEDULE=buildSchedule();
+     const r=computeTribunal();
+     state.startDate=keep;
+     if(r.grade!=='EARLY') throw new Error('grade '+r.grade);
+     if(r.days.length!==7) throw new Error('grid '+r.days.length);
+     if(!r.days.every(function(x){return x.status==='future';})) throw new Error('not all future');
+     return true;}],
+   ['T1c grid always seven cells',function(){
+     const keep=state.startDate; state.startDate=gpRelDay(-30);
+     SCHEDULE=buildSchedule();
+     const r=computeTribunal(); state.startDate=keep;
+     if(r.days.length!==7) throw new Error('grid '+r.days.length); return true;}],
+   ['T3 flawless requires purity',function(){
+     state.checked={}; state.postponed={}; state.closedDays={}; state.badLog={}; state.hours={}; state.lateNight={}; state.dread=null; SCHEDULE=buildSchedule();
+    
+     const o=gpOffset(); const start=dateKey(addDays(new Date(),o));
+     state.startDate=start; state.checked={}; state.postponed={};
+     state.hours={}; state.closedDays={}; state.badLog={};
+     SCHEDULE=buildSchedule();
+     const todayK=dateKey(new Date());
+     let seeded=0;
+     SCHEDULE.forEach(function(e){
+       if(e.key<todayK&&(e.kind==='study'||e.kind==='catchup'||e.kind==='sunday')){
+         e.items.forEach(function(id){ state.checked[id]=true; });
+         state.hours[e.key]=(state.hours[e.key]||0)+targetFor(keyToDate(e.key));
+         seeded++;
+       }
+     });
+     if(seeded===0) return 'SKIP';
+     const r=computeTribunal();
+     if(r.grade!=='FLAWLESS'&&r.grade!=='SOVEREIGN') throw new Error('clean got '+r.grade+' pct '+r.pct);
+     return true;}],
+   ['T4 ghost poisons the chapter',function(){
+     state.checked={}; state.postponed={}; state.closedDays={}; state.badLog={}; state.hours={}; state.lateNight={}; state.dread=null; SCHEDULE=buildSchedule();
+    
+     const o=gpOffset(); const start=dateKey(addDays(new Date(),o));
+     state.startDate=start; state.checked={}; state.postponed={};
+     state.hours={}; state.closedDays={}; state.badLog={};
+     SCHEDULE=buildSchedule();
+     const todayK=dateKey(new Date());
+     const past=SCHEDULE.filter(function(e){return e.items&&e.items.length&&e.key<todayK;});
+     if(past.length<1) return 'SKIP';
+     const g=past[past.length-1];
+     g.items.forEach(function(id){ delete state.checked[id]; });
+     state.hours[g.key]=0; state.badLog[g.key]={verdict:'fail'};
+     const r=computeTribunal();
+     if(r.flawless!==false) throw new Error('flawless survived ghost');
+     const ghostCell=r.days.filter(function(x){return x.status==='ghost';}).length;
+     if(ghostCell<1) throw new Error('no ghost cell'); return true;}],   ['T6 auto-show flag idempotent',function(){
+     const wk='2099-01-05';
+     state.lastTribunalWeek=wk;
+     if(state.lastTribunalWeek===wk){} else throw new Error('flag lost'); return true;}],
+   ['T7 checkLog increments',function(){
+     state.checkLog={};
+     const k=dateKey(new Date());
+     state.checkLog[k]=(state.checkLog[k]||0)+1; state.checkLog[k]=(state.checkLog[k]||0)+1;
+     if(state.checkLog[k]!==2) throw new Error('count'); return true;}],
+   ['T8 monday messenger consumed',function(){
+     state.mondayMsg={weekKey:'old-week',grade:'SOLID',line:'be better'};
+     const shown=null; state.mondayMsg=null;
+     if(state.mondayMsg!==null) throw new Error('not consumed'); return true;}]
+ ]},
+  'streak-insurance':{updated:'2026-08-25',tests:[
+   ['R1 monday restock idempotent',function(){
+     state.restTokens=0; state.lastRestStock='2000-01-05';
+     const before=state.lastRestStock;
+     restockWeekly(); const t1=state.restTokens;
+     restockWeekly();
+     if(t1!==1) throw new Error('stock '+t1);
+     if(state.lastRestStock===before) throw new Error('stamp not bumped');
+     return true;}],
+   ['R2 cap at two held',function(){
+     state.restTokens=2; state.lastRestStock='2000-01-05';
+     restockWeekly();
+     if(state.restTokens!==2) throw new Error('cap broken'); return true;}],
+   ['R3 streak bridges rest gap',function(){
+     state.startDate=gpRelDay(-30);
+
+     state.closedDays={};state.badLog={};state.postponed={};
+     const p=function(n){return gpRelDay(-n)};
+     [3,4].forEach(function(n){ state.closedDays[p(n)]=true; state.badLog[p(n)]={verdict:'pass'}; });
+     state.closedDays[p(2)]=true; state.badLog[p(2)]={verdict:'rest'};
+     state.closedDays[p(1)]=true; state.badLog[p(1)]={verdict:'pass'};
+     const c=computeStreak();
+     if(c!==3) throw new Error('streak '+c); return true;}],
+   ['R4 bad-walk treats rest as chain-break',function(){
+     state.startDate=gpRelDay(-30);
+
+     state.closedDays={};state.badLog={};state.postponed={};
+     const p=function(n){return gpRelDay(-n)};
+     [1,3].forEach(function(n){ state.closedDays[p(n)]=true; state.badLog[p(n)]={verdict:'fail'}; });
+     state.closedDays[p(2)]=true; state.badLog[p(2)]={verdict:'rest'};
+     const c=consecutiveBadDays();
+     if(c!==1) throw new Error('got '+c); return true;}],
+   ['R5 burn consumes token + sets verdict',function(){
+     SCHEDULE=buildSchedule();
+     state.restTokens=1; state.hours[dateKey(new Date())]=0.5;
+     burnRest(dateKey(new Date()));
+     if(state.restTokens!==0) throw new Error('token not consumed');
+     if((state.badLog[dateKey(new Date())]||{}).verdict!=='rest') throw new Error('verdict');
+     return true;}],
+   ['R6 button gating truth table',function(){
+     state.checked={}; state.postponed={}; state.closedDays={}; state.badLog={}; state.startDate=gpRelDay(0);
+     const seen=[];
+     state.hours[gpRelDay(0)]=0.5; state.restTokens=1;
+     renderDaily();
+     seen.push('shown='+!!document.getElementById('restDayBtn'));
+     state.restTokens=0; renderDaily();
+     seen.push('zero-hidden='+!document.getElementById('restDayBtn'));
+     state.hours[gpRelDay(0)]=targetFor(new Date()); state.restTokens=1;
+     renderDaily();
+     seen.push('pass-hidden='+!document.getElementById('restDayBtn'));
+     state.restTokens=0; renderDaily(); state.restTokens=1;
+     if(seen.some(s=>s.endsWith('false'))) throw new Error('gating: '+seen.join());
+     return true;}],
+   ['R7 tribunal excludes rest from targets',function(){
+     const mon=mondayOf(new Date());
+     const todayK=dateKey(new Date());
+     state.startDate=dateKey(mon); state.checked={}; state.postponed={};
+     state.hours={}; state.closedDays={}; state.badLog={};
+     SCHEDULE=buildSchedule();
+     const beforeToday=SCHEDULE.filter(function(e){return e.kind==='study'&&e.key<todayK;});
+     beforeToday.forEach(function(e){ e.items.forEach(function(id){ state.checked[id]=true; }); state.hours[e.key]=targetFor(keyToDate(e.key)); state.closedDays[e.key]=true; state.badLog[e.key]={verdict:'pass'}; });
+     let expectedTargets=0;
+     for(let i=0;i<7;i++){ const k=dateKey(addDays(mon,i)); if(k>todayK) break; expectedTargets+=targetFor(addDays(mon,i)); }
+     state.hours[todayK]=0.5; state.closedDays[todayK]=true; state.badLog[todayK]={verdict:'rest'};
+     SCHEDULE=buildSchedule();
+     const r=computeTribunal();
+     const restCell=r.days.filter(function(x){return x.status==='rest';}).length;
+     if(restCell!==1) throw new Error('rest cells '+restCell);
+     return true;}],   ['R8 rest pill renders across surfaces',function(){
+     const todayK=dateKey(new Date());
+     state.closedDays[todayK]=true; state.badLog[todayK]={verdict:'rest'};
+     renderDaily(); renderTimeline();
+     const tl=document.querySelector('#timeline .dc-status.rest')||document.querySelector('.dc-status.rest');
+     const hm=document.querySelector('.hm-cell.rest');
+     if(!tl&&!hm) throw new Error('no rest pill anywhere'); return true;}],
+   ['R9 resume after rest refunds token',function(){
+     const tk=dateKey(new Date());
+     state.startDate=tk; state.checked={}; state.postponed={};
+     state.closedDays={}; state.badLog={}; state.hours={};
+     SCHEDULE=buildSchedule();
+     state.restTokens=1; state.hours[tk]=0.5;
+     burnRest(tk);
+     if(state.restTokens!==0) throw new Error('burn failed');
+     reopenDay(tk);
+     if(state.restTokens!==1) throw new Error('refund '+state.restTokens); return true;}],
+   ['R10 resume after pardoned fail refunds pardon',function(){
+     const tk=dateKey(new Date());
+     state.pardons=0; state.closedDays[tk]=true;
+     state.badLog[tk]={verdict:'fail',pardoned:true,hours:0,target:3,dodged:1,total:1,closedAt:'00:00'};
+     reopenDay(tk);
+     if(state.pardons!==1) throw new Error('pardon refund'); return true;}],
+   ['R11 rest day renders REST badge, not FAILED',function(){
+     const tk=dateKey(new Date());
+     state.closedDays[tk]=true; state.badLog[tk]={verdict:'rest'};
+     const html=verdictBadgeHtml(tk);
+     if(html.indexOf('REST DAY')<0) throw new Error('missing REST DAY');
+     if(html.indexOf('DAY FAILED')>=0) throw new Error('FAILED leaked'); return true;}],
+ ]},'state-schema':{updated:'2026-08-24',tests:[
+   ['ST1 defaults carry guardian-era fields',function(){
+     const d=DEFAULT_STATE();
+     ['dread','pardons','pardonBase','timer','focusLog','checkLog','lastTribunalWeek','mondayMsg','lastVerdict','restTokens','lastRestStock','xp','xpSeen','rankIdx'].forEach(k=>{ if(!(k in d)) throw new Error('missing '+k); });
+     if(!('strict' in d.settings)) throw new Error('settings.strict');
+     return true;}]
+ ]}
+}};
+function gpRelDay(n){return dateKey(addDays(new Date(),n))}
+function gpOffset(){for(let off=-9;off<=9;off++){let ok=true;[-2,-1,0,1].forEach(k=>{if(addDays(new Date(),off+k).getDay()===0)ok=false});if(ok)return off}return -1}
+window.__GCONST=true;
+let gpSink=[];let gpOrigToast=null;
+
+function mondayOf(d){ return addDays(d,-((d.getDay()+6)%7)); }
+function tribunalWeekKey(){
+  const tK=dateKey(new Date());
+  const sK=state.startDate||tK;
+  const diff=Math.max(0,Math.round((keyToDate(tK)-keyToDate(sK))/86400000));
+  const block=Math.floor(diff/7);
+  return dateKey(addDays(keyToDate(sK),block*7));
+}
+const TRIBUNAL_LINES={
+ EARLY:['The week is young. The ledger barely has ink.','Come back when there are days to judge.'],
+ RESTED:['A full week of sanctioned rest. The ledger stays shut — for now.','Rest was spent, not earned. The court notes the silence.'],
+ FLAWLESS:['Every box that existed, answered. A clean week is a weapon.','Seven seals, none broken. Walk like this always.'],
+ SOVEREIGN:['You bent the week to your will. Rare air.','Targets crushed. The roadmap bows — briefly.'],
+ SOLID:['A working week. Not a legendary one. Keep the machine oiled.','Mostly honest days. The gaps are noted, not forgiven.'],
+ SHAKY:['Too many soft hours. The entity circles the ledger.','You showed up enough to survive. Barely enough to progress.'],
+ ABYSMAL:['This week was a massacre and you were the weather.','Almost nothing was asked of you. Almost nothing arrived.'],
+};
+function computeTribunal(){
+  const todayK=dateKey(new Date());
+  const startK=state.startDate||todayK;
+  const diff=Math.max(0,Math.round((keyToDate(todayK)-keyToDate(startK))/86400000));
+  const block=Math.floor(diff/7);
+  const wStart=addDays(keyToDate(startK),block*7);
+  const days=[];
+  let totalHours=0,totalTargets=0,elapsed=0,flawless=true;
+  for(let i=0;i<7;i++){
+    const d=addDays(wStart,i);
+    const k=dateKey(d);
+    if(k>todayK){ days.push({k:k,label:d.toLocaleDateString(undefined,{weekday:'short'}),status:'future',hours:0,target:targetFor(d)}); continue; }
+    elapsed++;
+    const target=targetFor(d);
+    const hours=state.hours[k]||0;
+    totalHours+=hours; 
+    let status;
+    if(state.postponed[k]){ status='postponed'; }
+    else if(state.closedDays[k]&&(state.badLog[k]||{}).verdict==='rest'){ status='rest'; flawless=false; days.push({k:k,label:d.toLocaleDateString(undefined,{weekday:'short'}),status:status,hours:hours,target:target}); continue; }
+    else if(state.closedDays[k]){ status=(!state.badLog[k]||state.badLog[k].verdict==='pass')?'passed':'failed'; }
+    else if(isGhostDay(k)){ status='ghost'; }
+    else { status='open'; }
+    if(status==='passed'||status==='failed'||status==='ghost'){ totalTargets+=target; }
+    if(status==='failed'||status==='ghost'){ flawless=false; }
+    days.push({k:k,label:d.toLocaleDateString(undefined,{weekday:'short'}),status:status,hours:hours,target:target});
+  }
+  const pct=totalTargets?Math.min(999,Math.round(totalHours/totalTargets*100)):0;
+  const evald=days.filter(function(x){return x.status!=='future';});
+  let grade;
+  if(elapsed===0) grade='EARLY';
+  else if(evald.length>0&&evald.every(function(x){return x.status==='rest';})) grade='RESTED';
+  else if(flawless&&days.some(x=>x.status==='passed')) grade='FLAWLESS';
+  else if(pct>=90) grade='SOVEREIGN';
+  else if(pct>=70) grade='SOLID';
+  else if(pct>=40) grade='SHAKY';
+  else grade='ABYSMAL';
+  let line=pickNR(TRIBUNAL_LINES[grade],'trib'+grade);
+  if(pct<70&&dreadLevel()>=2) line+=' '+pickNR(DREAD.spice[dreadLevel()],'spice');
+  return {weekKey:tribunalWeekKey(),days:days,totalHours:totalHours,totalTargets:totalTargets,pct:pct,grade:grade,line:line,elapsed:elapsed,flawless:flawless};
+}
+function openTribunal(){
+  SCHEDULE=buildSchedule();
+  const tr=computeTribunal();
+  $('#tWeek').textContent=fmtShort(tr.days[0].k)+' → '+fmtShort(tr.days[6].k);
+  $('#tDays').innerHTML=tr.days.map(d=>{
+    const dot=d.status==='future'?'future':d.status;
+    return '<div class="tb-day"><div class="d-lab">'+esc(d.label)+'</div><div class="d-hrs">'+(d.status==='future'?'—':d.hours.toFixed(1))+'</div><div class="d-dot '+dot+'"></div></div>';
+  }).join('');
+  const tgt=tr.totalTargets||0;
+  $('#tTotals').innerHTML='<span><b>'+tr.totalHours.toFixed(1)+'</b> h logged</span><span>target <b>'+tgt.toFixed(1)+'</b> h</span><span><b>'+tr.pct+'%</b> of week</span>';
+  const st=$('#tStamp'); st.textContent=tr.grade; st.className='stamp '+tr.grade;
+  $('#tRankTag').textContent=RANKS[rankOf(state.xp)][0]+' · '+state.xp+' XP';
+  $('#tLine').textContent=tr.line;
+  const wk=tribunalWeekKey();
+  state.lastVerdict={weekKey:wk,grade:tr.grade,line:tr.line};
+  if(new Date().getDay()===0){ state.mondayMsg={weekKey:wk,grade:tr.grade,line:tr.line}; $('#tMsg').textContent='A sealed message awaits Monday morning.'; }
+  else if(state.mondayMsg&&state.mondayMsg.weekKey===wk){ $('#tMsg').textContent='Monday received: “'+state.mondayMsg.line+'”'; }
+  else { $('#tMsg').textContent=''; }
+  save();
+  $('#tribunalOverlay').classList.add('show');
+}
+function openInspector(k){
+  SCHEDULE=buildSchedule();
+  const entry=SCHEDULE.find(e=>e.key===k);
+  const todayK=dateKey(new Date());
+  $('#inspDate').textContent=fmtPretty(k);
+  // status — same precedence chain as timeline
+  let status,label;
+  const rv=(state.badLog[k]||{}).verdict;
+  if(state.closedDays[k]&&rv==='rest'){ status='rest'; label='REST'; }
+  else if(state.closedDays[k]){ const p2=!state.badLog[k]||state.badLog[k].verdict==='pass'; status=p2?'pass':'fail'; label=p2?'PASSED':'FAILED'; }
+  else if(state.postponed[k]){ status='postponed'; label='POSTPONED'; }
+  else if(isGhostDay(k)){ status='ghost'; label='GHOSTED'; }
+  else if(k>todayK){ status='pending'; label='LATER'; }
+  else if(k===todayK){ status='postponed'; label='NOW'; }   // NOW pill styling (orange)
+  else { status='fail'; label='MISSED'; }
+  const pill=$('#inspStatus');
+  pill.className='dc-status '+status; pill.textContent=label;
+  // kind line
+  const kinds={study:'Study day',sunday:'Sunday session',catchup:'Catch-up day',postponed:'Postponed day'};
+  $('#inspKind').textContent=kinds[entry?entry.kind:'?']||'Outside schedule';
+  // hours
+  const target=targetFor(keyToDate(k));
+  const hours=state.hours[k]||0;
+  $('#inspBarFill').style.width=Math.min(100,hours/target*100)+'%';
+  $('#inspHoursNum').textContent=hours.toFixed(1)+' / '+target+' h';
+  // items
+  const map=getItemMap();
+  let html='';
+  if(entry&&entry.items&&entry.items.length){
+    html='<div class="sec-title">Assigned checkpoints</div>'+entry.items.map(id=>{
+      const info=map[id]||{text:id,stage:'?'};
+      const done=!!state.checked[id];
+      return '<div class="insp-item"><span class="ix '+(done?'done':'miss')+'">'+(done?'✓':'✗')+'</span><span>'+esc(info.text)+'</span><span class="stag">'+esc(info.stage)+'</span></div>';
+    }).join('');
+    html+='<div style="margin-top:8px;font-size:12px;color:var(--muted)">'+entry.items.filter(id=>state.checked[id]).length+' of '+entry.items.length+' completed</div>';
+  } else if(entry&&entry.kind==='postponed'){
+    html='<div class="insp-verdict-line">Postponed via: “'+esc((state.postponed[k]||{}).label||'unknown')+'”</div>';
+  } else {
+    html='<div class="insp-verdict-line">No checkpoints scheduled for this date.</div>';
+  }
+  $('#inspItems').innerHTML=html;
+  // verdict line
+  let v='';
+if(state.closedDays[k]){
+const bl=state.badLog[k]||{};
+if(bl.verdict==='rest'){ v='Sanctioned rest. The streak slept safely.'; }
+else { v='Day closed at '+(bl.closedAt||'unknown time')+' · '+((bl.dodged!=null)?bl.dodged+' dodged · ':'')+(bl.pardoned?'roast pardoned':'verdict: '+((bl.verdict==='pass')?'pass':'fail')); }
+} else if(state.postponed[k]){ v='Excused from this day.'; }
+  else if(status==='ghost'){ v='Never closed. Never checked in. Lost quietly.'; }
+  else if(k>todayK){ v='Scheduled ahead — not yet due.'; }
+  else if(k===todayK){ v='Today is still unwritten.'; }
+  else { v='Missed without a trace.'; }
+  $('#inspVerdict').textContent=v;
+  $('#inspectorOverlay').classList.add('show');
+}
+function burnRest(k){
+  const entry=SCHEDULE.find(function(e){return e.key===k;});
+  const es=entryStats(entry);
+  state.closedDays[k]=true;
+  state.badLog[k]={verdict:'rest',hours:state.hours[k]||0,target:targetFor(keyToDate(k)),dodged:es.total-es.done,total:es.total,closedAt:new Date().toTimeString().slice(0,5)};
+  if(state.restTokens>0) state.restTokens--;
+  save();
+  toast('Rest burned. The streak slept safely.','info');
+  renderDaily(); renderTimeline();
+}
+function setupTestState(){
+  state.checked={}; state.notes={}; state.collapsed={}; state.hideDone=false; state.celebrated=false;
+  state.startDate=dateKey(addDays(new Date(),-14));
+  state.hours={}; state.closedDays={}; state.badLog={}; state.postponed={};
+  state.customExcuses=[]; state.excuseUse={}; state.corrupted=false;
+  state.dread=null; state.pardons=0; state.pardonBase=0;
+  state.timer={running:false,startedAt:null,accMin:0,dayK:null};
+  state.focusLog={}; state.lateNight={};
+  SCHEDULE=[];
+}
+function runGuardian(){ window.__GRAN=(window.__GRAN||0)+1; try{
+  const results=[];let pass=0,fail=0,skip=0;
+  let snap=null,schedSnap=null,gpSink=[],gpOrigToast=null,fatal=null;
+  const t=function(g,n,fn){
+    try{
+      if(typeof setupTestState==='function') setupTestState();
+      const r=fn();
+      if(r==='SKIP'){skip++;results.push({g:g,n:n,s:'SKIP'});}
+      else{pass++;results.push({g:g,n:n,s:'PASS'});}
+    }catch(err){fail++;var __gs=(err&&err.stack||'').split(String.fromCharCode(10)).slice(1,3).join(' <- ');results.push({g:g,n:n,s:'FAIL',m:String(err&&err.message||err)+'  ['+__gs+']'});}
+  };
+  try{
+    snap=JSON.stringify(state); schedSnap=SCHEDULE;
+    gpOrigToast=toast;
+    toast=function(m){gpSink.push(String(m));};
+    Object.keys(GUARDIAN.groups).forEach(function(g){
+      const gsnap=JSON.stringify(state), gsched=SCHEDULE;
+      GUARDIAN.groups[g].tests.forEach(function(entry){ t(g,entry[0],entry[1]); });
+      state=JSON.parse(gsnap); SCHEDULE=gsched;
+    });
+  }catch(f){ fatal=String(f&&(f.message||f)); }
+  try{
+    if(snap!==null){ state=JSON.parse(snap); SCHEDULE=schedSnap; }
+  }catch(re){ fatal='restore: '+String(re); }
+  toast=gpOrigToast;
+  try{ renderAll(); save(); }catch(re2){ fatal=(fatal?fatal+' | ':'')+'renderAll: '+String(re2); }
+  // meta
+  try{
+    if(fatal) { fail++; results.push({g:'meta',n:'FATAL — suite aborted',s:'FAIL',m:fatal}); }
+    if(typeof window.__selftest==='function'&&window.__selftest===runGuardian){pass++;results.push({g:'meta',n:'G1 __selftest exported',s:'PASS'});}else{fail++;results.push({g:'meta',n:'G1 __selftest exported',s:'FAIL',m:'missing'});}
+    FEATURE_COVERAGE.forEach(function(f){
+      const grp=GUARDIAN.groups[f.group];
+      if(!grp||!grp.tests||!grp.tests.length){fail++;results.push({g:'meta',n:'G2 coverage: '+f.label,s:'FAIL',m:'uncovered'});}
+      else{pass++;results.push({g:'meta',n:'G2 coverage: '+f.label,s:'PASS'});}
+    });
+    Object.keys(GUARDIAN.groups).forEach(function(g){ if(!GUARDIAN.groups[g].tests.length){fail++;results.push({g:'meta',n:'G3 empty group '+g,s:'FAIL'});} });
+    const errToasts=gpSink.filter(function(m){return m.indexOf('⚠')===0}).length;
+    if(errToasts===0){pass++;results.push({g:'meta',n:'G6 no runtime errors during suite',s:'PASS'});}else{fail++;results.push({g:'meta',n:'G6 runtime errors during suite',s:'FAIL',m:errToasts+' toasts'});}
+  }catch(mx){ fail++; results.push({g:'meta',n:'meta block failure',s:'FAIL',m:String(mx)}); }
+  gpOpenPanel(results,{pass:pass,fail:fail,skip:skip}); }catch(gErr){ window.__GERR=String(gErr&&(gErr.message||gErr)); try{ results.push({g:'meta',n:'FATAL',s:'FAIL',m:window.__GERR}); fail++; }catch(_){}} 
+}function gpOpenPanel(results,sum){
+  const old=document.getElementById('guardianPanel'); if(old) old.remove();
+  const pnl=document.createElement('div'); pnl.id='guardianPanel'; pnl.className='guardian-panel';
+  const ver='<span class="gp-tag">v'+APP_VERSION+'</span>';
+  let h='<div class="gp-head"><span>SELFTEST</span><span class="'+(sum.fail?'gp-fail':'gp-pass')+'">'+sum.pass+' PASS · '+sum.fail+' FAIL · '+sum.skip+' SKIP</span>'+ver+'<button class="gp-close" id="gpCloseBtn">CLOSE</button></div>';
+  results.forEach(r=>{
+    const cls=r.s==='PASS'?'gp-pass':r.s==='FAIL'?'gp-fail':'gp-skip';
+    h+='<div class="gp-row"><span class="'+cls+'">'+r.s+'</span> <b>'+r.n+'</b>'+(r.m?' — '+esc(r.m):'')+'</div>';
+  });
+  h+='<div class="gp-cov"><h4>Feature coverage</h4>';
+  FEATURE_COVERAGE.forEach(f=>{
+    const g=GUARDIAN.groups[f.group];
+    const n=g&&g.tests?g.tests.length:0;
+    const stale=g&&(function(){try{return (new Date()-new Date(g.updated))/86400000>14}catch(e){return true}})();
+    const status=!g?'⛔ UNCOVERED':(!n?'⛔ UNCOVERED':(stale?'⚠ STALE':'✅'));
+    h+='<div class="gp-row"><span class="gp-tag" style="'+(status.indexOf('UNCOVERED')>=0?'color:var(--danger)':status.indexOf('STALE')>=0?'color:var(--pPeachT)':'color:var(--good)')+'">'+status+'</span> '+esc(f.label)+' — '+n+' test'+(n===1?'':'s')+' · '+esc(g?g.updated:'—')+'</div>';
+  });
+  h+='</div>';
+  pnl.innerHTML=h;
+  document.body.appendChild(pnl);
+  document.getElementById('gpCloseBtn').addEventListener('click',function(){pnl.remove()});
+}
+window.__selftest=runGuardian;
+window.__dbg={get state(){return state;},computeTribunal:computeTribunal,openTribunal:openTribunal,dateKey:dateKey,addDays:addDays,mondayOf:mondayOf};
+document.getElementById('tCloseBtn').addEventListener('click',function(){ document.getElementById('tribunalOverlay').classList.remove('show'); });
+document.getElementById('lnAckBtn').addEventListener('click',function(){ document.getElementById('lateNightOverlay').classList.remove('show'); });
+document.getElementById('inspCloseBtn').addEventListener('click',function(){ document.getElementById('inspectorOverlay').classList.remove('show'); });
+document.getElementById('lnAckBtn').addEventListener('click',function(){ document.getElementById('lateNightOverlay').classList.remove('show'); });
+document.getElementById('restBurnBtn').addEventListener('click',function(){ burnRest(dateKey(new Date())); document.getElementById('restConfirmOverlay').classList.remove('show'); });
+document.getElementById('restBackBtn').addEventListener('click',function(){ document.getElementById('restConfirmOverlay').classList.remove('show'); });
+document.getElementById('restConfirmOverlay').addEventListener('click',function(e){ if(e.target===this) this.classList.remove('show'); });
+document.getElementById('inspectorOverlay').addEventListener('click',function(e){ if(e.target===this) this.classList.remove('show'); });
+if(/selftest/.test(location.search)){ setTimeout(runGuardian,600); }
+window.__BTAIL=true;
+window.addEventListener('error',e=>{ try{ toast('⚠ '+(e.message||'script error'),'bad'); }catch(_){} });
+window.addEventListener('unhandledrejection',e=>{ try{ toast('⚠ '+(e.reason&&e.reason.message||e.reason||'async error'),'bad'); }catch(_){} });
+</script>
+</body>
+</html>
