@@ -4,6 +4,7 @@ import { TopBar } from './TopBar';
 import { ErrorBoundary } from './ErrorBoundary';
 import { useLenis } from './useLenis';
 import { Modal } from '../components/ui/Modal';
+import { PHASES, STAGES } from '../data/curriculum';
 import { useState } from 'react';
 
 const pageMotion = {
@@ -112,7 +113,64 @@ export default function App() {
               />
               <Route
                 path="/roadmap"
-                element={<Stub title="Roadmap" note="The journey map lands in Phase 2." />}
+                element={
+                  <motion.div {...pageMotion}>
+                    <div style={{ display: 'grid', gap: 28 }}>
+                      {PHASES.map((ph) => (
+                        <section key={ph.id}>
+                          <h2 style={{ fontSize: 13, fontWeight: 800, letterSpacing: 2, textTransform: 'uppercase', color: `var(--${ph.id})` }}>
+                            Phase {ph.num} · {ph.title}
+                          </h2>
+                          <p style={{ color: 'var(--muted)', fontSize: 13, margin: '4px 0 14px' }}>{ph.tagline}</p>
+                          <div style={{ display: 'grid', gap: 10 }}>
+                            {ph.stageIds.map((sid) => {
+                              const st = STAGES.find((x) => x.id === sid)!;
+                              return (
+                                <div
+                                  key={sid}
+                                  style={{
+                                    border: '1px solid var(--border)',
+                                    borderRadius: 14,
+                                    padding: '14px 18px',
+                                    background: 'var(--panel)',
+                                    display: 'flex',
+                                    alignItems: 'baseline',
+                                    gap: 14,
+                                  }}
+                                >
+                                  <span className="mono" style={{ color: `var(--${ph.id})`, fontWeight: 600, fontSize: 13 }}>
+                                    {sid.toUpperCase()}
+                                  </span>
+                                  <span style={{ fontWeight: 700, fontSize: 15 }}>{st.title}</span>
+                                  <span style={{ marginLeft: 'auto', color: 'var(--muted)', fontSize: 12.5, whiteSpace: 'nowrap' }}>
+                                    {st.days === 0 ? 'ongoing' : `${st.days}d`} · {st.topics.length} topics · {st.drills.length} drills
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                          {ph.bossGateId && (
+                            <div
+                              className="mono"
+                              style={{
+                                marginTop: 10,
+                                fontSize: 11,
+                                letterSpacing: 2,
+                                color: 'var(--warn)',
+                                border: '1px dashed var(--border-strong)',
+                                borderRadius: 10,
+                                padding: '8px 14px',
+                                width: 'fit-content',
+                              }}
+                            >
+                              ⚔ BOSS GATE · {ph.bossGateId.toUpperCase()} · ≥80%
+                            </div>
+                          )}
+                        </section>
+                      ))}
+                    </div>
+                  </motion.div>
+                }
               />
               <Route
                 path="/arena"
