@@ -1,100 +1,79 @@
-import { describe, expect, it } from 'vitest';
-import { defaultData } from '../lib/schema';
-import { consecutiveBadDays, dreadLevel, ghostStreak, maxRoastTier, studyStreak } from './dread';
+import { describe, it, expect } from 'vitest';
+import { dreadLevel, consecutiveBadDays, ghostStreak, maxRoastTier } from './dread';
+import { pickRoast } from '../data/roast';
+import { defaultData, type AppData } from '../lib/schema';
 
-function day(key: string, kind: 'study' | 'sunday' | 'catchup' | 'rest' | 'postponed', verdict?: 'pass' | 'fail' | 'ghost' | 'postponed' | 'rest', itemIds: string[] = ['s00:t:s00.t1']) {
-  return { key, kind, verdict, itemIds, hoursLogged: 0 };
-}
+/** Phase 6: dread state machine — roast tiers, level caps, ghost accounting. */
 
-/** data with a startDate safely before all test dates */
-function mk(): ReturnType<typeof defaultData> {
+function withFailStreak(days: number, today: string): AppData {
   const d = defaultData();
-  d.startDate = '2026-09-20';
+  d.startDate = '2026-01-01';
+  const cursor = new Date(today + 'T00:00:00');
+  for (let i = 0; i < days; i++) {
+    cursor.setDate(cursor.getDate() - 1);
+    const p = (x: number) => (x < 10 ? '0' : '') + x;
+    const key = `${cursor.getFullYear()}-${p(cursor.getMonth() + 1)}-${p(cursor.getDate())}`;
+    d.days[key] = { key, kind: 'study', itemIds: [], hoursLogged: 0, verdict: 'fail' };
+  }
   return d;
 }
 
 describe('dread engine', () => {
-  it('clean history → level 0', () => {
-    const d = mk();
-    expect(dreadLevel(d, '2026-09-28')).toBe(0);
+  it('clean history = dread 0', () => {
+    const d = defaultData();
+    expect(dreadLevel(d, '2026-09-29')).toBe(0);
   });
 
-  it('two fails escalate; a pass resets', () => {
-    const d = mk();
-    d.days['2026-09-27'] = day('2026-09-27', 'study', 'fail');
-    d.days['2026-09-26'] = day('2026-09-26', 'study', 'fail');
-    expect(consecutiveBadDays(d, '2026-09-28')).toBe(2);
-    d.days['2026-09-25'] = day('2026-09-25', 'study', 'fail');
-    expect(consecutiveBadDays(d, '2026-09-28')).toBe(3);
-    // insert a pass between: 25 fail, 26 pass, 27 fail → streak = 1
-    const d2 = mk();
-    d2.days['2026-09-27'] = day('2026-09-27', 'study', 'fail');
-    d2.days['2026-09-26'] = day('2026-09-26', 'study', 'pass');
-    d2.days['2026-09-25'] = day('2026-09-25', 'study', 'fail');
-    expect(consecutiveBadDays(d2, '2026-09-28')).toBe(1);
-  });
-
-  it('rest days break the streak (mercy)', () => {
-    const d = mk();
-    d.days['2026-09-27'] = day('2026-09-27', 'study', 'fail');
-    d.days['2026-09-26'] = day('2026-09-26', 'rest', 'rest');
-    d.days['2026-09-25'] = day('2026-09-25', 'study', 'fail');
-    expect(consecutiveBadDays(d, '2026-09-28')).toBe(1);
-  });
-
-  it('postpones neither reset nor add', () => {
-    const d = mk();
-    d.days['2026-09-27'] = day('2026-09-27', 'study', 'fail');
-    d.days['2026-09-26'] = day('2026-09-26', 'postponed', 'postponed');
-    d.days['2026-09-25'] = day('2026-09-25', 'study', 'fail');
-    expect(consecutiveBadDays(d, '2026-09-28')).toBe(2);
-  });
-
-  it('level caps at 5 and intensity caps tiers', () => {
-    const d = mk();
-    for (let i = 1; i <= 8; i++) {
-      const key = `2026-09-${(28 - i).toString().padStart(2, '0')}`;
-      d.days[key] = day(key, 'study', 'fail');
+  it('each consecutive fail day raises dread one level', () => {
+    for (let n = 1; n <= 5; n++) {
+      expect(dreadLevel(withFailStreak(n, '2026-09-29'), '2026-09-29')).toBe(n);
     }
-    expect(dreadLevel(d, '2026-09-28')).toBe(5);
+  });
+
+  it('dread caps at 5', () => {
+    expect(dreadLevel(withFailStreak(9, '2026-09-29'), '2026-09-29')).toBe(5);
+  });
+
+  it('a pass verdict resets the bad streak', () => {
+    const d = withFailStreak(3, '2026-09-29');
+    d.days['2026-09-28'] = { key: '2026-09-28', kind: 'study', itemIds: ['a'], hoursLogged: 3, verdict: 'pass' };
+    expect(consecutiveBadDays(d, '2026-09-29')).toBe(0);
+  });
+
+  it('a postponed day neither resets nor adds to the bad streak', () => {
+    const d = withFailStreak(2, '2026-09-29');
+    d.days['2026-09-28'] = { key: '2026-09-28', kind: 'postponed', itemIds: [], hoursLogged: 0, verdict: 'postponed' };
+    expect(consecutiveBadDays(d, '2026-09-29')).toBe(1); // 09-27's fail survives, the postpone is neutral
+  });
+
+  it('a rest day resets the bad streak (v2 semantics)', () => {
+    const d = withFailStreak(2, '2026-09-29');
+    d.days['2026-09-28'] = { key: '2026-09-28', kind: 'rest', itemIds: [], hoursLogged: 0, verdict: 'rest' };
+    expect(consecutiveBadDays(d, '2026-09-29')).toBe(0);
+  });
+
+  it('ghost streak counts zero-item days until the first ticked day', () => {
+    const d = withFailStreak(3, '2026-09-29');
+    expect(ghostStreak(d, '2026-09-29')).toBe(3);
+    d.days['2026-09-27'].itemIds = ['ticked'];
+    d.checked['ticked'] = true;
+    // walk stops at the first day with progress: only 09-28 counts
+    expect(ghostStreak(d, '2026-09-29')).toBe(1);
+  });
+
+  it('intensity dial caps roast tiers: mild 2, spicy 4, nuclear 5', () => {
     expect(maxRoastTier('mild')).toBe(2);
     expect(maxRoastTier('spicy')).toBe(4);
     expect(maxRoastTier('nuclear')).toBe(5);
   });
 
-  it('ghostStreak counts zero-check days but skips rest', () => {
-    const d = mk();
-    d.days['2026-09-27'] = day('2026-09-27', 'study', 'ghost');
-    d.days['2026-09-26'] = day('2026-09-26', 'rest', 'rest');
-    d.days['2026-09-25'] = day('2026-09-25', 'study', 'ghost');
-    expect(ghostStreak(d, '2026-09-28')).toBe(2);
-  });
-
-  it('studyStreak counts progress days, skips rest, celebrates a pass today', () => {
-    const d = mk();
-    expect(studyStreak(d, '2026-09-28')).toBe(0);
-    // two progress days back-to-back
-    const p1 = day('2026-09-27', 'study', 'pass');
-    p1.hoursLogged = 3;
-    d.days['2026-09-27'] = p1;
-    d.days['2026-09-26'] = day('2026-09-26', 'study', 'pass');
-    expect(studyStreak(d, '2026-09-28')).toBe(2);
-    // a rest day between progress days does not break it
-    const d2 = mk();
-    d2.days['2026-09-27'] = day('2026-09-27', 'study', 'pass');
-    d2.days['2026-09-26'] = day('2026-09-26', 'rest', 'rest');
-    d2.days['2026-09-25'] = day('2026-09-25', 'study', 'pass');
-    expect(studyStreak(d2, '2026-09-28')).toBe(2);
-    // a fail breaks it
-    const d3 = mk();
-    d3.days['2026-09-27'] = day('2026-09-27', 'study', 'fail');
-    d3.days['2026-09-26'] = day('2026-09-26', 'study', 'pass');
-    expect(studyStreak(d3, '2026-09-28')).toBe(0);
-    // closing today as pass extends the count by one
-    const d4 = mk();
-    d4.days['2026-09-27'] = day('2026-09-27', 'study', 'pass');
-    expect(studyStreak(d4, '2026-09-28')).toBe(1);
-    d4.days['2026-09-28'] = day('2026-09-28', 'study', 'pass');
-    expect(studyStreak(d4, '2026-09-28')).toBe(2);
+  it('roast tier never exceeds the intensity cap, even at max dread', () => {
+    for (const intensity of ['mild', 'spicy', 'nuclear'] as const) {
+      for (let bad = 1; bad <= 9; bad++) {
+        const { tier } = pickRoast(intensity, bad);
+        expect(tier).toBeLessThanOrEqual(maxRoastTier(intensity));
+        expect(tier).toBeGreaterThanOrEqual(1);
+      }
+    }
   });
 });

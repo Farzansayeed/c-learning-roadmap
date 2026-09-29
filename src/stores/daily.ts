@@ -69,6 +69,8 @@ export const useDaily = create<DailyStore>((set, get) => {
         if (verdict === 'pass') d.xp += 10;
       });
       set({ verdict });
+      // Phase 6: dread/roast layers listen for this
+      window.dispatchEvent(new CustomEvent('forge:day-closed'));
     },
 
     postponeDay: (excuseId) => {

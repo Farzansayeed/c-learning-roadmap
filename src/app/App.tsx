@@ -4,6 +4,10 @@ import { TopBar } from './TopBar';
 import { ErrorBoundary } from './ErrorBoundary';
 import { useLenis } from './useLenis';
 import { Modal } from '../components/ui/Modal';
+import { DreadProvider } from '../features/dread/DreadProvider';
+import { RoastOverlay } from '../features/dread/RoastOverlay';
+import { BedtimeLockout } from '../features/dread/BedtimeLockout';
+import { SettingsPage } from '../features/settings/SettingsPage';
 import { RoadmapPage } from '../features/roadmap/RoadmapPage';
 import { TodayPage } from '../features/today/TodayPage';
 import { ArenaPage } from '../features/arena/ArenaPage';
@@ -104,6 +108,9 @@ export default function App() {
 
   return (
     <ErrorBoundary>
+      <DreadProvider />
+      <RoastOverlay />
+      <BedtimeLockout />
       <div>
         <TopBar />
         <main style={{ maxWidth: 1160, margin: '0 auto', padding: '28px 20px 90px' }}>
@@ -139,10 +146,7 @@ export default function App() {
                 path="/library"
                 element={<Stub title="Library" note="Lands in Phase 7." />}
               />
-              <Route
-                path="/settings"
-                element={<Stub title="Settings" note="Full surface lands in Phase 3." />}
-              />
+              <Route path="/settings" element={<SettingsPage />} />
               <Route
                 path="*"
                 element={<Stub title="Lost?" note="That route doesn't exist — yet." />}

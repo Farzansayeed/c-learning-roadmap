@@ -47,6 +47,7 @@ export function TopBar() {
           alt="The Forge logo"
           width={34}
           height={34}
+          className="forge-logo"
           style={{
             flex: 'none',
             borderRadius: 8,
