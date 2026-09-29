@@ -1,0 +1,262 @@
+import type { QuizItem } from './types';
+
+/**
+ * S16 — Interview Patterns Sprint: 18-item set (BLUEPRINT: 18).
+ * The operating system, the pattern map, C-for-interviews pragmatics.
+ */
+
+export const s16Items: QuizItem[] = [
+  /* mcq ×6 */
+  {
+    id: 'q.s16.mc1',
+    stageId: 's16',
+    format: 'mcq',
+    difficulty: 1,
+    targets: 's16.t1 — the interview operating system',
+    explanation: 'Clarify → brute force → optimize → code → test. Stating the brute force FIRST is scoring: it proves you have a baseline before you optimize.',
+    prompt: 'What comes FIRST in the interview operating system?',
+    options: [
+      'Code the optimal solution immediately',
+      'Clarify the problem (constraints, edge cases, examples) before any solving',
+      'Write tests',
+      'Pick the pattern',
+    ],
+    answer: 1,
+  },
+  {
+    id: 'q.s16.mc2',
+    stageId: 's16',
+    format: 'mcq',
+    difficulty: 2,
+    targets: 's16.tr2 — silent coding fails',
+    explanation: 'Interviewers grade the process they can SEE. Silence hides your reasoning; narration of tradeoffs and dead-ends scores even when the final code is imperfect.',
+    prompt: 'Why is thinking out loud non-negotiable in interviews?',
+    options: [
+      'It fills the silence',
+      'Interviewers grade the reasoning process — unspoken insights earn nothing',
+      'It makes the code compile faster',
+      'It is only needed for senior roles',
+    ],
+    answer: 1,
+  },
+  {
+    id: 'q.s16.mc3',
+    stageId: 's16',
+    format: 'mcq',
+    difficulty: 2,
+    targets: 's16.t2 — pattern recognition cues',
+    explanation: 'Recognition cues: sorted input → two pointers/binary search; top-K or "kth" → heap/quickselect; "all possible" → backtracking; "longest/shortest substring" → sliding window; "count ways" → DP.',
+    prompt: 'The problem says "kth largest element in a stream". Which pattern family?',
+    options: ['Sliding window', 'Heap (size-K) / quickselect', 'Union-find', 'Prefix tree'],
+    answer: 1,
+  },
+  {
+    id: 'q.s16.mc4',
+    stageId: 's16',
+    format: 'mcq',
+    difficulty: 2,
+    targets: 's16.t2 — "all combinations" smell',
+    explanation: '"Generate ALL…" or "count all ways…" means the output itself is exponential — backtracking (for enumerating) or DP (for counting) is the family, never sorting.',
+    prompt: '"Return all possible subsets" maps to:',
+    options: ['Binary search', 'Backtracking (2ⁿ include/exclude tree)', 'Two heaps', 'Hashing'],
+    answer: 1,
+  },
+  {
+    id: 'q.s16.mc5',
+    stageId: 's16',
+    format: 'mcq',
+    difficulty: 2,
+    targets: 's16.t3 — C-for-interviews pragmatics',
+    explanation: 'C interviews reward static buffers, helper structs, and clear invariants — and the wisdom to say "in C++ this is vector<string>" when the judge fights back. Knowing the friction is the skill.',
+    prompt: 'When is switching to C++ (string/vector) pragmatic mid-interview?',
+    options: [
+      'Never — C is the point',
+      'When the problem is string-heavy and the judge fights C idioms — say so out loud and move on',
+      'Always — C is obsolete',
+      'Only for graph problems',
+    ],
+    answer: 1,
+  },
+  {
+    id: 'q.s16.mc6',
+    stageId: 's16',
+    format: 'mcq',
+    difficulty: 3,
+    targets: 's16.t4 — complexity-first communication',
+    explanation: 'State time AND space before coding and again after: "O(n) time, O(1) space" is the sentence interviewers listen for — it frames the code that follows.',
+    prompt: 'When should you state complexity in an interview?',
+    options: [
+      'Only if asked',
+      'Before coding and again after — time and space, explicitly',
+      'At the very end, once',
+      'Never — the code speaks',
+    ],
+    answer: 1,
+  },
+
+  /* predict-output ×3 */
+  {
+    id: 'q.s16.po1',
+    stageId: 's16',
+    format: 'predict-output',
+    difficulty: 2,
+    targets: 's16.t2 — cyclic sort recognition',
+    explanation: 'Numbers 1..n with one missing: XOR or sum arithmetic finds it without sorting — sum 1..6 = 21, present sum 18, missing = 3. The cyclic-sort family\'s first cousin.',
+    prompt: 'Which number is missing?',
+    code: `/* array of 1..6 with one missing: {1, 2, 4, 5, 6}\n   sum(1..n) - sum(array) = ? */`,
+    answer: '3',
+  },
+  {
+    id: 'q.s16.po2',
+    stageId: 's16',
+    format: 'predict-output',
+    difficulty: 2,
+    targets: 's16.t2 — fast & slow finds the duplicate',
+    explanation: 'Array of n+1 values in 1..n: treat values as next-pointers — a cycle exists (duplicate), Floyd finds its entrance = the duplicate. The interview-famous fusion of S08 + arrays.',
+    prompt: 'What does Floyd\'s algorithm return here?',
+    code: `/* nums = {1, 3, 4, 2, 2} — values are "next" indices\n   phase 1: slow/fast meet inside the cycle\n   phase 2: reset one to start, step both by 1\n   they meet at: ? */`,
+    answer: '2',
+  },
+  {
+    id: 'q.s16.po3',
+    stageId: 's16',
+    format: 'predict-output',
+    difficulty: 3,
+    targets: 's16.t2 — merge intervals recognition',
+    explanation: 'Sort by start, merge overlapping: [1,3]+[2,6]→[1,6], [8,10] standalone, [15,18] standalone. Output: [1,6],[8,10],[15,18] — the pattern\'s canonical trace.',
+    prompt: 'Merge the intervals — how many remain?',
+    code: `/* intervals: [1,3] [2,6] [8,10] [15,18]\n   sort by start, merge while next.start <= cur.end */`,
+    answer: '3',
+  },
+
+  /* fill-blank ×3 */
+  {
+    id: 'q.s16.fb1',
+    stageId: 's16',
+    format: 'fill-blank',
+    difficulty: 1,
+    targets: 's16.t4 — the complexity sentence',
+    explanation: '"O(n) time, O(1) space" — the two axes, stated in order, before and after the code.',
+    prompt: 'State the complexity sentence for an in-place single-pass solution.',
+    code: `/* O(___) time, O(1) space */`,
+    answers: [['n', 'N']],
+  },
+  {
+    id: 'q.s16.fb2',
+    stageId: 's16',
+    format: 'fill-blank',
+    difficulty: 2,
+    targets: 's16.t2 — sliding window invariant',
+    explanation: 'The window is valid while the constraint holds (≤ k distinct, no repeats, sum ≥ target...). The while-loop that shrinks from the left IS the invariant.',
+    prompt: 'Shrink the window while the constraint is violated.',
+    code: `for (hi = 0; hi < n; hi++) {\n    /* add s[hi] */\n    while (window_invalid())\n        ___;\n    best = max(best, hi - lo + 1);\n}`,
+    answers: [['lo++', 'lo ++', '++lo']],
+  },
+  {
+    id: 'q.s16.fb3',
+    stageId: 's16',
+    format: 'fill-blank',
+    difficulty: 2,
+    targets: 's16.t6 — journal revisit dates',
+    explanation: 'Every solved problem earns a pattern tag, a mistake tag, and a revisit date — mistakes resurface (spaced review) until they stop happening.',
+    prompt: 'Tag the problem for the journal.',
+    code: `journal_add(problem, pattern: "sliding-window",\n            mistake: "forgot shrink", revisit: ___);`,
+    answers: [['today + 3', '+3d', 'date+3']],
+  },
+
+  /* find-the-bug ×2 */
+  {
+    id: 'q.s16.ftb1',
+    stageId: 's16',
+    format: 'find-bug',
+    difficulty: 2,
+    targets: 's16.tr1 — template applied without re-derivation',
+    explanation: 'The two-pointer template assumes SORTED input. Applied to an unsorted pair-sum, it silently misses answers — re-derive the preconditions every time, not just the template.',
+    prompt: 'Two-pointer pair-sum misses answers. Click the assumption it skipped.',
+    code: `int pair_sum(int *a, int n, int t) {\n    int lo = 0, hi = n - 1;   /* ??? precondition */\n    while (lo < hi) {\n        int s = a[lo] + a[hi];\n        if (s == t) return 1;\n        if (s < t) lo++; else hi--;\n    }\n    return 0;\n}`,
+    answerLine: 2,
+  },
+  {
+    id: 'q.s16.ftb2',
+    stageId: 's16',
+    format: 'find-bug',
+    difficulty: 3,
+    targets: 's16.t3 — static buffer overflow in C interviews',
+    explanation: 'Static buffers with unchecked lengths overflow on exactly the test cases interviewers love (the "longest possible input"). Bound every write, or size from the constraint math out loud.',
+    prompt: 'This C interview answer overflows on big inputs. Click the unbounded write.',
+    code: `char *build(int n) {\n    static char buf[64];\n    int p = 0;\n    for (int i = 0; i < n; i++)\n        buf[p++] = 'x';       /* ??? */\n    buf[p] = '\\0';\n    return buf;\n}\n/* called with n = 100 */`,
+    answerLine: 5,
+  },
+
+  /* why-crash ×1 */
+  {
+    id: 'q.s16.wc1',
+    stageId: 's16',
+    format: 'why-crash',
+    difficulty: 2,
+    targets: 's16.t1 — testing before declaring done',
+    explanation: 'The last interview step is TEST: trace the given example, an edge (empty/single), and the boundary. Code without a traced example ships off-by-ones — the #1 mock-interview deduction.',
+    prompt: 'The candidate "finished" and failed the mock. Which step was skipped?',
+    code: `/* code written, complexity stated, no example traced,\n   submitted immediately */`,
+    options: [
+      'The code step',
+      'The TEST step — trace the example and an edge case before declaring done',
+      'The clarify step',
+      'The optimize step',
+    ],
+    answer: 1,
+  },
+
+  /* ordering ×1 */
+  {
+    id: 'q.s16.ord1',
+    stageId: 's16',
+    format: 'ordering',
+    difficulty: 2,
+    targets: 's16.t1 — the five-step protocol in order',
+    explanation: 'Clarify → brute force → optimize → code → test: each step exists because skipping it costs more time than it saves. The protocol IS the mock rubric.',
+    prompt: 'Order the interview operating system.',
+    steps: [
+      'Clarify — restate, constraints, edge cases',
+      'Brute force — state a working baseline out loud',
+      'Optimize — identify the bottleneck, pick the pattern',
+      'Code — narrating decisions',
+      'Test — trace the example + an edge case',
+    ],
+  },
+
+  /* match ×1 */
+  {
+    id: 'q.s16.match1',
+    stageId: 's16',
+    format: 'match',
+    difficulty: 3,
+    targets: 's16.t2 — problem phrase → pattern',
+    explanation: 'The pattern map in one table: sorted → two pointers; kth/streaming top-K → heap; all subsets → backtracking; substrings with constraints → sliding window; connected/groups → union-find.',
+    prompt: 'Match each problem phrase to its pattern.',
+    pairs: [
+      { left: '"pair sum in a SORTED array"', right: 'two pointers converging' },
+      { left: '"kth largest in a stream"', right: 'size-K heap' },
+      { left: '"all permutations"', right: 'backtracking with swap/unswap' },
+      { left: '"longest substring without repeats"', right: 'sliding window + last-seen' },
+      { left: '"number of friend circles"', right: 'union-find / components' },
+    ],
+  },
+
+  /* fix-code ×1 */
+  {
+    id: 'q.s16.fix1',
+    stageId: 's16',
+    format: 'fix-code',
+    difficulty: 3,
+    targets: 's16.t1 + s16.tr2 — the TEST step applied: find the bug the tracing would have caught',
+    explanation: 'The missing branch: when a[lo]+a[hi] > target, neither pointer moves — infinite loop. Trace t=4 on {1,3,5,9}: 1+9=10 > 4 and the loop spins forever. Fix: add the else hi--; arm (shrink the too-big sum from the right), then run all three cases — 10→1, 4→1, 100→0.',
+    prompt:
+      'This "done" pair-sum function loops forever on some inputs. Trace it by hand, find the bug, fix it in the online compiler until every test case returns, then confirm.',
+    code: `#include <stdio.h>\n\nint pair_sum(int *a, int n, int t) {\n    int lo = 0, hi = n - 1;\n    while (lo < hi) {\n        int s = a[lo] + a[hi];\n        if (s == t) return 1;\n        if (s < t) lo++;\n        /* one branch forgot to move */\n    }\n    return 0;\n}\n\nint main(void) {\n    int a[] = {1, 3, 5, 9};\n    printf(\"10: %d\\n\", pair_sum(a, 4, 10));   /* 1+9 */\n    printf(\"4: %d\\n\",  pair_sum(a, 4, 4));    /* 1+3 */\n    printf(\"100: %d\\n\", pair_sum(a, 4, 100)); /* absent */\n    return 0;\n}`,
+    runnerUrl: 'https://www.onlinegdb.com/',
+    runnerName: 'OnlineGDB',
+    solutionNote:
+      'The s > t case never moves hi: add else hi--; — without it, a[lo]+a[hi] > t loops forever (100 never returns). Tracing the absent-target case FIRST is exactly why the TEST step exists.',
+  },
+];

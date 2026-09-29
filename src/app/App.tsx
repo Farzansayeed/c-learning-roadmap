@@ -11,6 +11,7 @@ import { SettingsPage } from '../features/settings/SettingsPage';
 import { StatsPage } from '../features/stats/StatsPage';
 import { LibraryPage } from '../features/library/LibraryPage';
 import { VizPage } from '../features/viz/VizPage';
+import { DiagnosticsPage } from '../features/diagnostics/DiagnosticsPage';
 import { Onboarding, needsOnboarding } from '../features/onboarding/Onboarding';
 import { CommandPalette } from './CommandPalette';
 import { RoadmapPage } from '../features/roadmap/RoadmapPage';
@@ -152,6 +153,7 @@ export default function App() {
               <Route path="/stats" element={<StatsPage />} />
               <Route path="/library" element={<LibraryPage />} />
               <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/diagnostics" element={<DiagnosticsPage />} />
               <Route
                 path="*"
                 element={<Stub title="Lost?" note="That route doesn't exist — yet." />}

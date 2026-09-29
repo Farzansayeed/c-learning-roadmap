@@ -33,10 +33,14 @@ export const BOSS_BLUEPRINT: Record<string, number> = {
 };
 
 /**
- * Content coverage — what is AUTHORED so far. Phase 5 covers Phases 0–2
- * (s00–s06 + boss.p1/p2); Phase 8 fills the rest. The validator enforces
- * exact blueprint counts for everything in this list, so any authoring
- * slip is CI-red; extending coverage is a one-line edit here.
+ * Content coverage — what is AUTHORED. Complete as of Phase 8: all 17
+ * static stages + all 4 boss exams (s18 is dynamic/review-driven). The
+ * validator enforces exact blueprint counts for everything in this list,
+ * so any authoring slip is CI-red.
  */
-export const COVERED_STAGES: string[] = ['s00', 's01', 's02', 's03', 's04', 's05', 's06'];
-export const COVERED_BOSSES: string[] = ['boss.p1', 'boss.p2'];
+export const COVERED_STAGES: string[] = [
+  's00', 's01', 's02', 's03', 's04', 's05', 's06',
+  's07', 's08', 's09', 's10', 's11',
+  's12', 's13', 's14', 's15', 's16', 's17',
+];
+export const COVERED_BOSSES: string[] = ['boss.p1', 'boss.p2', 'boss.p3', 'boss.p4'];

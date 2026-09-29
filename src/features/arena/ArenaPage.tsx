@@ -170,7 +170,7 @@ export function ArenaPage() {
             <div style={{ marginTop: 10 }}>
               {!set ? (
                 <div className="mono" style={{ border: '1px dashed var(--border-strong)', borderRadius: 10, padding: '12px 16px', fontSize: 11.5, color: 'var(--faint)' }}>
-                  boss exam for {ph.title} — authoring lands in Phase {ph.num <= 2 ? 5 : 8}
+                  boss exam for {ph.title} — not authored yet
                 </div>
               ) : (
                 <SetCard
@@ -210,7 +210,7 @@ export function ArenaPage() {
             );
           })}
           <div className="mono" style={{ border: '1px dashed var(--border-strong)', borderRadius: 10, padding: '12px 16px', fontSize: 11.5, color: 'var(--faint)' }}>
-            stages without a set: authoring lands in Phase 8 (S07–S18) — the validator holds CI to the blueprint counts
+            all 17 stages authored (s00–s17) · s18 composes itself from your review queue · the validator holds CI to the blueprint counts
           </div>
         </div>
       </section>

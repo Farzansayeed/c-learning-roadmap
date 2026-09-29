@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { exportData, importData, loadData, saveData } from '../../lib/storage';
 import { defaultData, todayKey, type AppData, type RoastIntensity } from '../../lib/schema';
+import { importV2 } from '../../lib/v2import';
 import { useSettings } from '../../stores/settings';
 import { useDaily } from '../../stores/daily';
 import { TribunalCard } from '../dread/TribunalCard';
@@ -85,12 +86,21 @@ export function SettingsPage() {
   const onImport = (file: File): void => {
     const reader = new FileReader();
     reader.onload = () => {
-      const d = importData(String(reader.result));
+      const text = String(reader.result);
+      // v4 export first; legacy v2 ledger second (one-way migration).
+      const asV4 = importData(text);
+      const v2 = asV4 ? null : importV2(text);
+      const d = asV4 ?? (v2 ? importData(JSON.stringify(v2.data)) : null);
       if (d) {
-        setImportMsg('Imported — the ledger continues.');
+        setImportMsg(
+          v2
+            ? `v2 ledger migrated — ${v2.summary}. Hours, verdicts and XP carried; the old curriculum's checkboxes stay behind.`
+            : 'Imported — the ledger continues.',
+        );
+        setData({ ...d });
         refreshDaily(todayKey());
       } else {
-        setImportMsg('Rejected: not a valid Forge export.');
+        setImportMsg('Rejected: not a Forge export (v4) or a legacy v2 ledger.');
       }
     };
     reader.readAsText(file);
@@ -197,7 +207,8 @@ export function SettingsPage() {
         <h2 style={{ fontSize: 15, fontWeight: 700 }}>Data</h2>
         <p style={{ color: 'var(--muted)', fontSize: 12.5, lineHeight: 1.6 }}>
           Everything lives in this browser (localStorage, schema v4). Export before clearing
-          browser data; imports replace current state.
+          browser data; imports replace current state. A legacy v2 export
+          (<span className="mono">c-learning-roadmap-v1</span>) is also accepted and migrated.
         </p>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
           <button type="button" style={btn('ghost')} onClick={onExport}>
