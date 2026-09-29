@@ -210,7 +210,7 @@ export function ArenaPage() {
             );
           })}
           <div className="mono" style={{ border: '1px dashed var(--border-strong)', borderRadius: 10, padding: '12px 16px', fontSize: 11.5, color: 'var(--faint)' }}>
-            stages without a set: authoring in Phases 5 (S00–S06) & 8 (S07–S18) — the validator will hold CI to the blueprint counts
+            stages without a set: authoring lands in Phase 8 (S07–S18) — the validator holds CI to the blueprint counts
           </div>
         </div>
       </section>
