@@ -8,6 +8,11 @@ import { DreadProvider } from '../features/dread/DreadProvider';
 import { RoastOverlay } from '../features/dread/RoastOverlay';
 import { BedtimeLockout } from '../features/dread/BedtimeLockout';
 import { SettingsPage } from '../features/settings/SettingsPage';
+import { StatsPage } from '../features/stats/StatsPage';
+import { LibraryPage } from '../features/library/LibraryPage';
+import { VizPage } from '../features/viz/VizPage';
+import { Onboarding, needsOnboarding } from '../features/onboarding/Onboarding';
+import { CommandPalette } from './CommandPalette';
 import { RoadmapPage } from '../features/roadmap/RoadmapPage';
 import { TodayPage } from '../features/today/TodayPage';
 import { ArenaPage } from '../features/arena/ArenaPage';
@@ -105,12 +110,15 @@ function Stub({ title, note }: { title: string; note: string }) {
 export default function App() {
   useLenis();
   const location = useLocation();
+  const [onboard] = useState(() => needsOnboarding());
 
   return (
     <ErrorBoundary>
       <DreadProvider />
       <RoastOverlay />
       <BedtimeLockout />
+      <CommandPalette />
+      {onboard && <Onboarding />}
       <div>
         <TopBar />
         <main style={{ maxWidth: 1160, margin: '0 auto', padding: '28px 20px 90px' }}>
@@ -140,12 +148,9 @@ export default function App() {
                   </motion.div>
                 }
               />
-              <Route path="/viz" element={<Stub title="Viz Lab" note="Lands in Phase 7." />} />
-              <Route path="/stats" element={<Stub title="Stats" note="Lands in Phase 7." />} />
-              <Route
-                path="/library"
-                element={<Stub title="Library" note="Lands in Phase 7." />}
-              />
+              <Route path="/viz" element={<VizPage />} />
+              <Route path="/stats" element={<StatsPage />} />
+              <Route path="/library" element={<LibraryPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route
                 path="*"
