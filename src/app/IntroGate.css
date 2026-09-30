@@ -1,0 +1,96 @@
+.forge-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.forge-intro-cover {
+  position: absolute;
+  inset: 0;
+  background: var(--bg, #0b0e14);
+}
+
+.forge-intro-logo {
+  position: absolute;
+  inset: 0;
+}
+
+.forge-intro-tag {
+  position: absolute;
+  bottom: 9vh;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 10.5px;
+  letter-spacing: 3px;
+  color: var(--muted, #8b94a3);
+  text-transform: uppercase;
+  animation: forge-intro-tag-in 0.45s ease 0.5s both;
+}
+
+.forge-intro-veil {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44vmin;
+  height: 44vmin;
+  margin: -22vmin 0 0 -22vmin;
+  border-radius: 50%;
+  background: var(--bg, #0b0e14);
+  box-shadow:
+    0 0 80px 46px var(--bg, #0b0e14),
+    0 0 160px 90px var(--bg, #0b0e14);
+  animation: forge-intro-veil-burst 0.85s cubic-bezier(0.7, 0, 0.3, 1) both;
+  animation-play-state: paused;
+}
+
+/* open phase: tear the veil open, fade the whole overlay */
+.forge-intro[data-phase='open'] {
+  animation: forge-intro-fade 0.55s ease-in-out both;
+}
+
+.forge-intro[data-phase='open'] .forge-intro-veil {
+  animation-play-state: running;
+}
+
+.forge-intro[data-phase='open'] .forge-intro-tag {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+@keyframes forge-intro-veil-burst {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(16);
+    opacity: 0;
+  }
+}
+
+@keyframes forge-intro-fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes forge-intro-tag-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.85;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .forge-intro {
+    display: none;
+  }
+}

@@ -17,6 +17,7 @@
     "framer-motion": "^11.11.9",
     "lenis": "^1.1.14",
     "motion": "^12.43.0",
+    "ogl": "^1.0.11",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",

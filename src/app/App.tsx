@@ -17,6 +17,7 @@ import { CommandPalette } from './CommandPalette';
 import { RoadmapPage } from '../features/roadmap/RoadmapPage';
 import { TodayPage } from '../features/today/TodayPage';
 import { ArenaPage } from '../features/arena/ArenaPage';
+import { IntroGate } from './IntroGate';
 import { useState } from 'react';
 
 const pageMotion = {
@@ -115,13 +116,14 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <DreadProvider />
-      <RoastOverlay />
-      <BedtimeLockout />
-      <CommandPalette />
-      {onboard && <Onboarding />}
-      <div>
-        <TopBar />
+      <IntroGate>
+        <DreadProvider />
+        <RoastOverlay />
+        <BedtimeLockout />
+        <CommandPalette />
+        {onboard && <Onboarding />}
+        <div>
+          <TopBar />
         <main style={{ maxWidth: 1160, margin: '0 auto', padding: '28px 20px 90px' }}>
           <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
@@ -162,6 +164,7 @@ export default function App() {
           </AnimatePresence>
         </main>
       </div>
+      </IntroGate>
     </ErrorBoundary>
   );
 }
