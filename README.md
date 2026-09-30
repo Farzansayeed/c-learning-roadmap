@@ -29,6 +29,8 @@ The app is a full multi-page SPA:
 
 Plus a **command palette** (`Ctrl+K`) with fuzzy navigation, a 5-step **onboarding wizard** on first run, and an installable **PWA** that works offline.
 
+Every load opens with **The Ignition** — a WebGL electric Forge logo that crackles to life, fires a blast ripple, and tears open to reveal the site (skippable by click or key; disabled under `prefers-reduced-motion`).
+
 ## The curriculum
 
 - **6 phases**: Launchpad → C Fluency → Systems C → Data Structures → Algorithms & Interview Core → Interview Endgame
