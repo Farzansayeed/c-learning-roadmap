@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  Component,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 import ElectricLogo from '../components/ElectricLogo/ElectricLogo';
 import './IntroGate.css';
 
@@ -21,7 +28,20 @@ const CRACKLE_MS = 1100; // logo forms and charges
 const SPREAD_MS = 850; // blast → veil tears open
 const TOTAL_MS = CRACKLE_MS + SPREAD_MS + 600; // + overlay fade
 
-export function IntroGate({ children }: { children: React.ReactNode }) {
+/** Isolate WebGL crashes (some drivers throw on `new Renderer`): the intro
+ * degrades to a plain cover + tag instead of nuking the whole site through
+ * the app-wide ErrorBoundary. */
+class LogoBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError(): { failed: boolean } {
+    return { failed: true };
+  }
+  render(): ReactNode {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
+export function IntroGate({ children }: { children: ReactNode }) {
   const reduced =
     typeof window !== 'undefined' &&
     (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false);
@@ -98,7 +118,8 @@ export function IntroGate({ children }: { children: React.ReactNode }) {
         >
           <div className="forge-intro-cover" />
           <div ref={logoWrapRef} className="forge-intro-logo" aria-hidden>
-            <ElectricLogo
+            <LogoBoundary>
+              <ElectricLogo
               src="/logo.png"
               color="#7ee2a8"
               glowColor="#39d98a"
@@ -114,6 +135,7 @@ export function IntroGate({ children }: { children: React.ReactNode }) {
               fill={0.35}
               interactive
             />
+            </LogoBoundary>
           </div>
           <div className="forge-intro-veil" aria-hidden />
           <div className="forge-intro-tag mono">the forge ignites — click to skip</div>

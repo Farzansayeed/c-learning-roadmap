@@ -30,6 +30,10 @@
   animation: forge-intro-tag-in 0.45s ease 0.5s both;
 }
 
+/* The blast wave: invisible while the logo crackles (paused at 0%), then a
+   green flash that blooms at the logo and spreads past the viewport as the
+   site burns through. Must NEVER be an opaque disc — it sits ABOVE the logo
+   and an opaque fill would hide the whole intro (shipped that way once). */
 .forge-intro-veil {
   position: absolute;
   left: 50%;
@@ -38,10 +42,15 @@
   height: 44vmin;
   margin: -22vmin 0 0 -22vmin;
   border-radius: 50%;
-  background: var(--bg, #0b0e14);
-  box-shadow:
-    0 0 80px 46px var(--bg, #0b0e14),
-    0 0 160px 90px var(--bg, #0b0e14);
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(234, 255, 242, 0.95) 0%,
+    rgba(126, 226, 168, 0.55) 18%,
+    rgba(57, 217, 138, 0.22) 40%,
+    rgba(57, 217, 138, 0) 62%
+  );
+  opacity: 0;
   animation: forge-intro-veil-burst 0.85s cubic-bezier(0.7, 0, 0.3, 1) both;
   animation-play-state: paused;
 }
@@ -63,6 +72,10 @@
 @keyframes forge-intro-veil-burst {
   0% {
     transform: scale(1);
+    opacity: 0;
+  }
+  12% {
+    transform: scale(1.15);
     opacity: 1;
   }
   100% {
